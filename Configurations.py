@@ -7,8 +7,8 @@ import json
 import numpy
 import re
 import psycopg2
-import time
 import subprocess
+import time
 import os
 import glob
 
@@ -41,16 +41,16 @@ class TuningParam:
     def scaled_line(self, factor):
         """ Outputs associated configuration line scaled by factor """
         scaledLine = self.sline
-        for nr in self.numbers:
-            intNr = int(nr)
-            scaledIntNr = int(factor * intNr)
-            scaledNr = str(scaledIntNr)
-            scaledLine = scaledLine.replace(nr, scaledNr)
+        if factor != 1:
+            for nr in self.numbers:
+                intNr = int(nr)
+                scaledIntNr = int(factor * intNr)
+                scaledNr = str(scaledIntNr)
+                scaledLine = scaledLine.replace(nr, scaledNr)
         return scaledLine
 
 class TuningConfig:
     """ Represents configuration file and offers associated functions """
-
     def __init__(self, path):
         """ Reads tunable parameters from tuning file """
         print("Initializing tuning configuration")
@@ -71,6 +71,7 @@ class TuningConfig:
                         print("Numeric parameter")
                         self.idToTunable[lineID] = param
                         self.idToFactor[lineID] = 1
+        self.nr_evaluations = 0 # number of evaluations
 
     def set_scale(self, lineID, factor):
         """ Set scaling factor for parameter """
@@ -117,39 +118,82 @@ class TuningConfig:
                 f.write(self.idToLine[lineID])
         f.close()
         
-    def change_config(self, dbname, dbuser, dbpassword):
-        """ Change database configuration """
-        self.write_config(self.configPath)
+    def exec_sql(self, query, dbname, dbuser, dbpassword):
+        """ Runs given query on given database """
         connection = psycopg2.connect(database = dbname, 
                 user = dbuser, password = dbpassword,
                 host = "localhost")
+        connection.autocommit = True
         cursor = connection.cursor()
-        cursor.execute('SELECT pg_reload_conf();')
-        # Wait until configuration has effect
-        sleep(3)
+        cursor.execute(query)
         connection.close()
+        
+    def change_config(self):
+        """ Change database configuration """
+        self.write_config(self.configPath)
+        # Restart database server
+        os.system('sudo sh -c "pg_ctlcluster 10 main restart"')
+        """
+        code = subprocess.run(['sudo', 'sh', '-c', 
+                               '"pg_ctlcluster', 
+                               '10', 'main', 'restart"'])
+        print(f'Restarted server - return code {code}')
+        """
+        print("Restarted server")
+        
+    def reload_db(self):
+        """ reload TPC-C database from template """
+        connection = psycopg2.connect(database = 'postgres', 
+                user = 'postgres', password = 'postgres',
+                host = 'localhost')
+        connection.autocommit = True
+        cursor = connection.cursor()
+        cursor.execute('drop database if exists tpccs2;')
+        cursor.execute('create database tpccs2 with template tpcc;')
+        connection.close()
+        
+    def tpch_eval(self):
+        """ Evaluate current configuration with TPC-H """
+        self.change_config()
+        # Iterate over TPC-H queries
+        error = True
+        total_ms = -1
+        start_ms = time.time() * 1000.0
+        try:
+            for q in range(1,23):
+                query_path = f'queries/{q}.sql'
+                query = open(query_path, "r").read()
+                self.exec_sql(query, 'tpchs1oltp', 
+                              'postgres', 'postgres')
+            end_ms = time.time() * 1000.0
+            total_ms = end_ms - start_ms
+            error = False
+        except Exception as e:
+            print(e)
+        return error, total_ms
 
     def evaluateConfig(self, dbname, dbuser, dbpassword):
         """ evaluates current configuration via benchmark """
+        self.nr_evaluations += 1
         self.remove_results()
-        self.change_config(dbname, dbuser, dbpassword)
-        """ Load configuration for given database and login """
-        connection = None
-        totalmillis = None
         throughput = None
         error = True
         try:
-            # Start time measurements for new configuration
-            #startmillis = time.time() * 1000.0
-            # Iterate over all queries
+            # Reload database
+            self.reload_db()
+            print('Reloaded database')
+            # Change to configuration to evaluate
+            self.change_config()
+            print('Changed configuration')
+            # Run benchmark
             return_code = subprocess.run(\
                 ['./oltpbenchmark', \
                 '-b', 'tpcc', '-c', \
                 'firsttest/sample_tpcc_config.xml', \
                 '--execute=true', '-s', '5', \
                 '-o', 'paramtest'],\
-                cwd = '/home/ubuntu/oltpbench/oltpbench')
-            print(f'Return code: {return_code}')
+                cwd = '/home/ubuntu/oltpbench/oltpbench')                
+            print(f'Benchmark return code: {return_code}')
             # Extract throughput from generated files
             with open('/home/ubuntu/oltpbench/oltpbench/results'\
                       '/paramtest.summary') as result_file:
@@ -157,28 +201,7 @@ class TuningConfig:
                 throughput = result_data['Throughput (requests/second)']
                 print(f'Throughput: {throughput}')
                 result_file.close()
-            #totalmillis = time.time() * 1000.0 - startmillis
-            # ./oltpbenchmark -b tpcc -c 
-            #firsttest/sample_tpcc_config.xml --execute=true -s 5 -o testout3
-            """
-            #for q in range(1,23):
-            for q in range(1,2):
-                #q_padded = str(q).zfill(2)
-                query_path = f'queries/{q}.sql'
-                query = open(query_path, "r").read()
-                #print(f'query nr. {q}: {query}')
-                cursor.execute(query)
-            endmillis = time.time() * 1000.0
-            totalmillis = endmillis - startmillis
-            result = cursor.fetchone()
-            #print(result)
-            cursor.close()
-            """
             error = False
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        finally:
-            if connection is not None:
-                connection.close()
-                #print("Database connection closed")
         return error, throughput
