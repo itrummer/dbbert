@@ -13,7 +13,6 @@ import os
 import glob
 
 from sentence_transformers import SentenceTransformer
-from time import sleep
 
 # Initialize NLP via BERT
 model = SentenceTransformer('bert-base-nli-mean-tokens')
@@ -54,7 +53,7 @@ class TuningConfig:
     def __init__(self, path):
         """ Reads tunable parameters from tuning file """
         print("Initializing tuning configuration")
-        self.configPath = path # path to tuning file
+        self.config_path = path # path to tuning file
         self.nrLines = 0 # counts number of lines in file
         self.idToLine = {} # maps line ID to line string
         self.idToTunable = {} # maps line ID to parameter
@@ -118,6 +117,10 @@ class TuningConfig:
                 f.write(self.idToLine[lineID])
         f.close()
         
+    def override_config(self):
+        """ Write configuration to configuration source file """
+        self.write_config(self.config_path)
+        
     def exec_sql(self, query, dbname, dbuser, dbpassword):
         """ Runs given query on given database """
         connection = psycopg2.connect(database = dbname, 
@@ -130,15 +133,9 @@ class TuningConfig:
         
     def change_config(self):
         """ Change database configuration """
-        self.write_config(self.configPath)
+        self.write_config(self.config_path)
         # Restart database server
         os.system('sudo sh -c "pg_ctlcluster 10 main restart"')
-        """
-        code = subprocess.run(['sudo', 'sh', '-c', 
-                               '"pg_ctlcluster', 
-                               '10', 'main', 'restart"'])
-        print(f'Restarted server - return code {code}')
-        """
         print("Restarted server")
         
     def reload_db(self):
