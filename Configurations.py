@@ -14,6 +14,15 @@ import glob
 
 from sentence_transformers import SentenceTransformer
 
+def alternative_vals(val):
+    """ Returns alternative parameter values to try """
+    if val.isdigit():
+        return [str(int(val) * 0.2), str(int(val) * 5), val]
+    elif val.lower() in ['on', 'off']:
+        return ['on', 'off']
+    else:
+        return [val]
+
 # Initialize NLP via BERT
 model = SentenceTransformer('bert-base-nli-mean-tokens')
 
@@ -25,7 +34,7 @@ class TuningParam:
         self.sline = line.strip("#").rstrip("\n")
         self.tokens = re.split("_| |\=|\\t|#|kB|MB|GB|TB", self.sline)
         print(self.tokens)
-        self.name = self.sline.split()[0]
+        self.name = re.split(" |\=", self.sline)[0]
         print(f'Parameter name is {self.name}')
         self.numbers = list(filter(lambda x : x.isdigit(), self.tokens))
         print(self.numbers)
@@ -119,7 +128,9 @@ class TuningConfig:
         
     def override_config(self):
         """ Write configuration to configuration source file """
-        self.write_config(self.config_path)
+        self.write_config('tempConfig')
+        os.system(f'sudo cp tempConfig {self.config_path}')
+        print(f'Overrode configuration at {self.config_path}')
         
     def exec_sql(self, query, dbname, dbuser, dbpassword):
         """ Runs given query on given database """
