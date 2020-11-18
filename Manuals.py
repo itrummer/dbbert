@@ -37,7 +37,14 @@ for page_nr in range(665,814):
         for p in p_to_text:
             if p in s:
                 p_to_text[p] += [s]
-                p_mentions.append(p)
+                # Avoid parameter substrings
+                substring = False
+                for old_p in p_mentions:
+                    if p in old_p:
+                        substring = True
+                        break
+                if not substring:
+                    p_mentions.append(p)
         # Check for multi-parameter mentions
         if len(p_mentions) > 1:
             multi_param_s[s] = p_mentions
