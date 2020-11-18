@@ -6,8 +6,20 @@ Created on Nov 11, 2020
 """ Analyze impact of tuning parameters. """
 
 import configparser
-import Configurations
 import Evaluate
+
+def alternative_vals(val):
+    """ Returns alternative parameter values to try. 
+        The original value is returned as last element. """
+    alt_vals = []
+    if val.isdigit():
+        alt_vals += [str(int(int(val) * 0.2)), 
+                     str(int(val) * 5)]
+    elif val.lower() == 'on':
+        alt_vals += ['off']
+    elif val.lower() == 'off':
+        alt_vals += ['on']
+    return alt_vals + [val]
 
 # Prepare tuning and perform NLP analysis
 """
@@ -26,25 +38,15 @@ f = open("mysqlTpchAnalysis.txt", "w")
 for param in config['mysqld-5.7']:
     # Extract original parameter value
     val = config['mysqld-5.7'][param]
-    print(f"Parameter {param} with value {val}")
+    print(f"Parameter {param} with value {val}", flush=True)
     # Iterate over alternative values
-    for alt_val in Configurations.alternative_vals(val):
-        config['mysqld-5.7'][param] = alt_val
-        print(f'Trying alternative value {alt_val}')
-        error, millis = tpch_eval.tpch_eval()
-        f.write(f'{param}\t{alt_val}\t{error}\t{millis}\n')
-        f.flush()
+    alt_vals = alternative_vals(val)
+    print(f"Alternative values: {alt_vals}", flush=True)
+    if len(alt_vals) > 1:
+        for alt_val in alt_vals:
+            config['mysqld-5.7'][param] = alt_val
+            print(f'Alternative {alt_val} to {val}', flush=True)
+            error, millis = tpch_eval.tpch_eval()
+            f.write(f'{param}\t{alt_val}\t{error}\t{millis}\n')
+            f.flush()
 f.close()
-
-"""
-f = open("tpchAnalysis.txt", "w")
-for lineID, param in pg_config.idToTunable.items():
-    for factor in (0.2, 5, 1):
-        pg_config.set_scale(lineID, factor)
-        print(f'Trying with factor {factor} for {param.name}')
-        error, millis = pg_config.tpch_eval()
-        print(f'Trying with factor {factor}')
-        f.write(f'{param.name}\t{factor}\t{error}\t{millis}\n')
-        f.flush()
-f.close()
-"""

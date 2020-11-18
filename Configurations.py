@@ -14,15 +14,6 @@ import glob
 
 from sentence_transformers import SentenceTransformer
 
-def alternative_vals(val):
-    """ Returns alternative parameter values to try """
-    if val.isdigit():
-        return [str(int(val) * 0.2), str(int(val) * 5), val]
-    elif val.lower() in ['on', 'off']:
-        return ['on', 'off']
-    else:
-        return [val]
-
 # Initialize NLP via BERT
 model = SentenceTransformer('bert-base-nli-mean-tokens')
 
