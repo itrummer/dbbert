@@ -23,8 +23,8 @@ print(pdfReader.numPages)
 multi_param_s = {}
 
 # extract sentences that relate to parameters
-for page_nr in range(665,814):
-#for page_nr in range(0, pdfReader.numPages):
+#for page_nr in range(665,814):
+for page_nr in range(0, pdfReader.numPages):
     if page_nr % 10 == 0:
         print(f"Scanning page {page_nr}")
     page = pdfReader.getPage(page_nr)
@@ -42,7 +42,8 @@ for page_nr in range(665,814):
                 for old_p in p_mentions:
                     if p in old_p:
                         substring = True
-                        break
+                    elif old_p in p:
+                        p_mentions.remove(old_p)
                 if not substring:
                     p_mentions.append(p)
         # Check for multi-parameter mentions
@@ -50,17 +51,15 @@ for page_nr in range(665,814):
             multi_param_s[s] = p_mentions
 
 # print parameters with associated sentences
-for p in p_to_text:
-    if len(p_to_text[p])>0:
-        print(p)
-        print(p_to_text[p])
+with open('param_text.txt', 'w') as f:
+    for p in p_to_text:
+        if len(p_to_text[p])>0:
+            f.write(f'{p}\t{p_to_text[p]}\n')
         
 # print sentences with multiple parameters
-print(" *** MULTI-PARAMETER SENTENCES *** ")
-for s in multi_param_s:
-    print(" --- ")
-    print(multi_param_s[s])
-    print(s)
+with open('multi_param.txt', 'w') as f:
+    for s in multi_param_s:
+        f.write(f'{multi_param_s[s]}\t{s}\n')
                 
 # close manual PDF object  
 pdfFileObj.close()
