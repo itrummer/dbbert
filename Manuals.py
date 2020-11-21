@@ -15,7 +15,7 @@ p_to_text = {p:[] for p in config['mysqld-5.7']}
 
 # reading parameter descriptions from manual
 print("Reading text from PDF database manual")
-pdfFileObj = open('manuals/refman-5.7-en.pdf', 'rb')  
+pdfFileObj = open('manuals/msql5.7.pdf', 'rb')  
 pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
 print(pdfReader.numPages)
 
@@ -30,8 +30,20 @@ for page_nr in range(0, pdfReader.numPages):
     page = pdfReader.getPage(page_nr)
     raw_text = page.extractText()
     text = raw_text.replace("\n", " ")
-    all_sentences = re.split("\.", text)
-    for s in all_sentences:
+    snippets = re.split("\.", text)
+    """
+    # Split input text into snippets
+    words = re.split("\\n|\.| ", text)
+    snippets = []
+    snip_len = 20
+    for i in range(0, len(words), snip_len):
+        snippet = " ".join(words[i:min(i+snip_len, len(words))])
+        snippets.append(snippet)
+    """
+    for s in snippets:
+        # Truncate if required
+        if len(s) > 250:
+            s = s[0:250]
         # Iterate over parameters
         p_mentions = []
         for p in p_to_text:
@@ -54,7 +66,7 @@ for page_nr in range(0, pdfReader.numPages):
 with open('param_text.txt', 'w') as f:
     for p in p_to_text:
         if len(p_to_text[p])>0:
-            f.write(f'{p}\t{p_to_text[p]}\n')
+            f.write(f'{p}\t{". ".join(p_to_text[p])}\n')
         
 # print sentences with multiple parameters
 with open('multi_param.txt', 'w') as f:

@@ -42,23 +42,24 @@ class MySQLeval:
         """ Evaluate current configuration with TPC-H """
         # Change configuration and iterate over TPC-H queries
         error = False
-        total_ms = -1
+        times = [-1 for _ in range(22)]
         try:
             error |= self.change_config()
             print(f"Error status is {error}")
             if not error:
                 print("About to run benchmark", flush=True)
-                start_ms = time.time() * 1000.0
-                for q in range(1,12):
+                error = True
+                for q in range(1, 23):
+                    start_ms = time.time() * 1000.0
                     r_code = os.system(
                         f'sudo time mysql tpchs1 ' \
-                        f'< queries/{q}.sql')
+                        f'< queries/ms/{q}.sql')
                     print(f"Executed with code {r_code}", 
                           flush=True)
-                end_ms = time.time() * 1000.0
-                total_ms = end_ms - start_ms
+                    end_ms = time.time() * 1000.0
+                    times[q-1] = end_ms - start_ms
                 error = False
         except Exception as e:
             error = True
             print(f'Exception: {e}')
-        return error, total_ms
+        return error, times

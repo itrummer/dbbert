@@ -7,6 +7,7 @@ Created on Nov 11, 2020
 
 import configparser
 import Evaluate
+import re
 
 def alternative_vals(val):
     """ Returns alternative parameter values to try. 
@@ -19,6 +20,14 @@ def alternative_vals(val):
         alt_vals += ['off']
     elif val.lower() == 'off':
         alt_vals += ['on']
+    elif re.match("[0-9]+.*", val):
+        # Numbers followed by unit
+        m = re.match("([0-9]+)(.*)", val)
+        nr = m.group(1)
+        unit = m.group(2)
+        alt_vals += [
+            str(int(int(nr) * 0.2)) + unit, 
+            str(int(int(nr) * 5)) + unit]
     return alt_vals + [val]
 
 # Prepare tuning and perform NLP analysis
@@ -33,8 +42,11 @@ config.read('mysql/all_tunable_config.cnf')
 print("Create MySQL evaluation object")
 tpch_eval = Evaluate.MySQLeval(config)
 
-# Iterate over all parameters and try different settings
-f = open("mysqlTpchAnalysis.txt", "w")
+# Initialize file for result output
+f = open("mysqlTpch.txt", "w")
+f.write('param\tval\tquery\terror\tmillis')
+f.flush()
+# Iterate over parameters
 for param in config['mysqld-5.7']:
     # Extract original parameter value
     val = config['mysqld-5.7'][param]
@@ -46,7 +58,9 @@ for param in config['mysqld-5.7']:
         for alt_val in alt_vals:
             config['mysqld-5.7'][param] = alt_val
             print(f'Alternative {alt_val} to {val}', flush=True)
-            error, millis = tpch_eval.tpch_eval()
-            f.write(f'{param}\t{alt_val}\t{error}\t{millis}\n')
-            f.flush()
+            error, times = tpch_eval.tpch_eval()
+            for q in range(22):
+                f.write(f'{param}\t{alt_val}\t{q+1}' 
+                        f'\t{error}\t{times[q]}\n')
+                f.flush()
 f.close()
