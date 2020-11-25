@@ -3,9 +3,22 @@ Created on Nov 16, 2020
 
 @author: immanueltrummer
 '''
+import json
+import glob
 import os
 import psycopg2
+import subprocess
 import time
+
+def remove_oltp_results():
+    """ remove old result files from OLTP benchmark """
+    files = glob.glob('/home/ubuntu/oltpbench/oltpbench/'\
+                      'results/paramtest*')
+    for f in files:
+        try:
+            os.remove(f)
+        except OSError as e:
+            print("Error: %s : %s" % (f, e.strerror))
 
 class MySQLeval:
     """ Benchmarks MySQL database """
@@ -39,7 +52,7 @@ class MySQLeval:
         time.sleep(5)
         return r_code != 0
         
-    def tpch_eval(self):
+    def tpch_eval(self, queries):
         """ Evaluate current configuration with TPC-H """
         # Change configuration and iterate over TPC-H queries
         error = False
@@ -50,20 +63,63 @@ class MySQLeval:
             if not error:
                 print("About to run benchmark", flush=True)
                 error = True
-                for q in range(1, 23):
+                for q in queries:
                     start_ms = time.time() * 1000.0
                     r_code = os.system(
                         f'sudo time mysql tpchs1 ' \
-                        f'< queries/ms/{q}.sql')
+                        f'< queries/ms/{q+1}.sql')
                     print(f"Executed with code {r_code}", 
                           flush=True)
                     end_ms = time.time() * 1000.0
-                    times[q-1] = end_ms - start_ms
+                    times[q] = end_ms - start_ms
                 error = False
         except Exception as e:
             error = True
             print(f'Exception: {e}')
         return error, times
+    
+    def copy_db(self, source_dump, target_db):
+        """ reload database from reference """
+        os.system(f"sudo mysql -e 'drop database if exists {target_db}'")
+        print("Dropped old database", flush=True)
+        os.system(f"sudo mysql -e 'create database {target_db}'")
+        print("Created new database", flush=True)
+        os.system(f"sudo mysql {target_db} < {source_dump}")
+        print("Initialized new database", flush=True)
+        
+    def tpcc_eval(self):
+        """ evaluates current configuration via benchmark """
+        remove_oltp_results()
+        throughput = -1
+        had_error = True
+        try:
+            # Change to configuration to evaluate
+            self.change_config()
+            print('Changed configuration', flush=True)
+            # Reload database
+            self.copy_db('tpccdump.sql', 'tpcc')
+            print('Reloaded database', flush=True)
+            # Run benchmark
+            return_code = subprocess.run(\
+                ['./oltpbenchmark', \
+                '-b', 'tpcc', '-c', \
+                'firsttest/mysql_tpcc.xml', \
+                '--execute=true', '-s', '5', \
+                '-o', 'paramtest'],\
+                cwd = '/home/ubuntu/oltpbench/oltpbench')                
+            print(f'Benchmark return code: {return_code}')
+            # Extract throughput from generated files
+            with open('/home/ubuntu/oltpbench/oltpbench/results'\
+                      '/paramtest.summary') as result_file:
+                result_data = json.load(result_file)
+                throughput = result_data[
+                    'Throughput (requests/second)']
+                print(f'Throughput: {throughput}', flush=True)
+                result_file.close()
+            had_error = False
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        return had_error, throughput
     
 class PostgresEval():
     """ Benchmark Postgres database """
@@ -102,7 +158,7 @@ class PostgresEval():
         cursor.execute(query)
         connection.close()
         
-    def tpch_eval(self):
+    def tpch_eval(self, queries):
         """ Evaluate current configuration with TPC-H """
         # Change configuration and iterate over TPC-H queries
         error = False
@@ -113,16 +169,62 @@ class PostgresEval():
             if not error:
                 print("About to run benchmark", flush=True)
                 error = True
-                for q in range(1, 23):
+                for q in queries:
                     start_ms = time.time() * 1000.0
-                    with open(f'queries/pg/{q}.sql') as q_file:
+                    with open(f'queries/pg/{q+1}.sql') as q_file:
                         query = q_file.read()
                         self.exec_sql(query, 'tpchs1', 
                                       'postgres', 'postgres')
                     end_ms = time.time() * 1000.0
-                    times[q-1] = end_ms - start_ms
+                    times[q] = end_ms - start_ms
                 error = False
         except Exception as e:
             error = True
             print(f'Exception: {e}')
         return error, times
+    
+    def copy_db(self, source_db, target_db):
+        """ reload database from template """
+        connection = psycopg2.connect(database = 'postgres', 
+                user = 'postgres', password = 'postgres',
+                host = 'localhost')
+        connection.autocommit = True
+        cursor = connection.cursor()
+        cursor.execute(f'drop database if exists {target_db};')
+        cursor.execute(f'create database {target_db} ' \
+                       f'with template {source_db};')
+        connection.close()
+        
+    def tpcc_eval(self):
+        """ evaluates current configuration via benchmark """
+        remove_oltp_results()
+        throughput = -1
+        had_error = True
+        try:
+            # Change to configuration to evaluate
+            self.change_config()
+            print('Changed configuration', flush=True)
+            # Reload database
+            self.copy_db('tpcc', 'tpccs2')
+            print('Reloaded database', flush=True)
+            # Run benchmark
+            return_code = subprocess.run(\
+                ['./oltpbenchmark', \
+                '-b', 'tpcc', '-c', \
+                'firsttest/sample_tpcc_config.xml', \
+                '--execute=true', '-s', '5', \
+                '-o', 'paramtest'],\
+                cwd = '/home/ubuntu/oltpbench/oltpbench')                
+            print(f'Benchmark return code: {return_code}')
+            # Extract throughput from generated files
+            with open('/home/ubuntu/oltpbench/oltpbench/results'\
+                      '/paramtest.summary') as result_file:
+                result_data = json.load(result_file)
+                throughput = result_data[
+                    'Throughput (requests/second)']
+                print(f'Throughput: {throughput}', flush=True)
+                result_file.close()
+            had_error = False
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(e)
+        return had_error, throughput
