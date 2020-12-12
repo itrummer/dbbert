@@ -45,10 +45,13 @@ class MySQLeval:
         r_code = os.system('sudo rm /var/lib/mysql/ib_logfile*')
         print(f'removed old log files with code {r_code}',
               flush=True)
+        # Wait to avoid error due to early restart
+        time.sleep(5)
         # Start server with new configuration
         r_code = os.system('sudo /etc/init.d/mysql start')
         print(f'started server with return {r_code}', 
               flush=True)
+        # Wait to avoid error due to early restart
         time.sleep(5)
         return r_code != 0
         

@@ -1,0 +1,387 @@
+param	val	query	error	metric
+port	1086# (change requires restart)	tpcc	True	None
+port	27160# (change requires restart)	tpcc	True	None
+port	5432# (change requires restart)	tpcc	False	1149.4255381975327
+max_connections	20# (change requires restart)	tpcc	False	1160.8762893488367
+max_connections	500# (change requires restart)	tpcc	False	1136.899547505008
+max_connections	100# (change requires restart)	tpcc	False	1153.290904994151
+authentication_timeout	0min# 1s-600s	tpcc	True	None
+authentication_timeout	5min# 1s-600s	tpcc	False	1142.1161498781441
+authentication_timeout	1min# 1s-600s	tpcc	False	1147.6885432730282
+ssl	off	tpcc	False	1236.4309732338916
+ssl	on	tpcc	False	1134.570128827984
+tcp_keepalives_idle	0# TCP_KEEPIDLE, in seconds;	tpcc	False	1152.3921927686051
+tcp_keepalives_idle	0# TCP_KEEPIDLE, in seconds;	tpcc	False	1156.1018655964967
+tcp_keepalives_idle	0# TCP_KEEPIDLE, in seconds;	tpcc	False	1174.6980860644085
+tcp_keepalives_interval	0# TCP_KEEPINTVL, in seconds;	tpcc	False	1163.5629310593217
+tcp_keepalives_interval	0# TCP_KEEPINTVL, in seconds;	tpcc	False	1146.6266913039108
+tcp_keepalives_interval	0# TCP_KEEPINTVL, in seconds;	tpcc	False	1140.8247791735369
+tcp_keepalives_count	0# TCP_KEEPCNT;	tpcc	False	1144.8826818148777
+tcp_keepalives_count	0# TCP_KEEPCNT;	tpcc	False	1155.6049886716937
+tcp_keepalives_count	0# TCP_KEEPCNT;	tpcc	False	1134.609684902701
+shared_buffers	25MB# min 128kB	tpcc	False	1093.9547978040878
+shared_buffers	640MB# min 128kB	tpcc	False	1150.2431725207716
+shared_buffers	128MB# min 128kB	tpcc	False	1149.8171019694837
+temp_buffers	1MB# min 800kB	tpcc	False	1156.8031996843774
+temp_buffers	40MB# min 800kB	tpcc	False	1139.4324774296374
+temp_buffers	8MB# min 800kB	tpcc	False	1171.7979701334364
+max_prepared_transactions	0# zero disables the feature	tpcc	False	1157.2973830034277
+max_prepared_transactions	0# zero disables the feature	tpcc	False	1159.9906281263845
+max_prepared_transactions	0# zero disables the feature	tpcc	False	1168.0819276051375
+work_mem	0MB# min 64kB	tpcc	True	None
+work_mem	20MB# min 64kB	tpcc	False	1136.6150481902941
+work_mem	4MB# min 64kB	tpcc	False	1136.6751330558102
+maintenance_work_mem	12MB# min 1MB	tpcc	False	1127.2661388931829
+maintenance_work_mem	320MB# min 1MB	tpcc	False	1140.9921363202295
+maintenance_work_mem	64MB# min 1MB	tpcc	False	1082.4890106344983
+replacement_sort_tuples	30000# limits use of replacement selection sort	tpcc	False	1159.030590332904
+replacement_sort_tuples	750000# limits use of replacement selection sort	tpcc	False	1162.7078130729963
+replacement_sort_tuples	150000# limits use of replacement selection sort	tpcc	False	1131.7871463362087
+max_stack_depth	0MB# min 100kB	tpcc	True	None
+max_stack_depth	10MB# min 100kB	tpcc	True	None
+max_stack_depth	2MB# min 100kB	tpcc	False	1121.9967999529267
+max_files_per_process	200# min 25	tpcc	False	1108.9704048269741
+max_files_per_process	5000# min 25	tpcc	False	1139.5278285712577
+max_files_per_process	1000# min 25	tpcc	False	1126.0490903212424
+vacuum_cost_delay	0# 0-100 milliseconds	tpcc	False	1108.8504410540138
+vacuum_cost_delay	0# 0-100 milliseconds	tpcc	False	1108.4579380961586
+vacuum_cost_delay	0# 0-100 milliseconds	tpcc	False	1127.7649329536353
+vacuum_cost_page_hit	0# 0-10000 credits	tpcc	False	1128.4303357551953
+vacuum_cost_page_hit	5# 0-10000 credits	tpcc	False	1116.198631109035
+vacuum_cost_page_hit	1# 0-10000 credits	tpcc	False	1117.5097811115252
+vacuum_cost_page_miss	2# 0-10000 credits	tpcc	False	1132.930752894722
+vacuum_cost_page_miss	50# 0-10000 credits	tpcc	False	1109.2876362127931
+vacuum_cost_page_miss	10# 0-10000 credits	tpcc	False	1145.1857272505945
+vacuum_cost_page_dirty	4# 0-10000 credits	tpcc	False	1144.5428543328246
+vacuum_cost_page_dirty	100# 0-10000 credits	tpcc	False	1150.8130384216795
+vacuum_cost_page_dirty	20# 0-10000 credits	tpcc	False	1104.9458432674007
+vacuum_cost_limit	40# 1-10000 credits	tpcc	False	1107.195372384497
+vacuum_cost_limit	1000# 1-10000 credits	tpcc	False	1117.6574652918812
+vacuum_cost_limit	200# 1-10000 credits	tpcc	False	1131.7572733453746
+bgwriter_delay	40ms# 10-10000ms between rounds	tpcc	False	1126.209577102298
+bgwriter_delay	1000ms# 10-10000ms between rounds	tpcc	False	1139.0206772060276
+bgwriter_delay	200ms# 10-10000ms between rounds	tpcc	False	1148.275805064914
+bgwriter_lru_maxpages	20# 0-1000 max buffers written/round	tpcc	False	1147.4035346905823
+bgwriter_lru_maxpages	500# 0-1000 max buffers written/round	tpcc	False	1134.0628012658105
+bgwriter_lru_maxpages	100# 0-1000 max buffers written/round	tpcc	False	1147.11660911965
+bgwriter_lru_multiplier	0.0# 0-10.0 multiplier on buffers scanned/round	tpcc	False	1140.5309539196396
+bgwriter_lru_multiplier	10.0# 0-10.0 multiplier on buffers scanned/round	tpcc	False	1101.4257501822572
+bgwriter_lru_multiplier	2.0# 0-10.0 multiplier on buffers scanned/round	tpcc	False	1157.2876697942509
+bgwriter_flush_after	102kB# measured in pages, 0 disables	tpcc	False	1122.780891135191
+bgwriter_flush_after	2560kB# measured in pages, 0 disables	tpcc	True	None
+bgwriter_flush_after	512kB# measured in pages, 0 disables	tpcc	False	1129.525271666739
+effective_io_concurrency	0# 1-1000; 0 disables prefetching	tpcc	False	1163.5226229332914
+effective_io_concurrency	5# 1-1000; 0 disables prefetching	tpcc	False	1119.7480252870325
+effective_io_concurrency	1# 1-1000; 0 disables prefetching	tpcc	False	1140.8369759803795
+max_worker_processes	1# (change requires restart)	tpcc	False	1146.7586432471487
+max_worker_processes	40# (change requires restart)	tpcc	False	1150.7960493747023
+max_worker_processes	8# (change requires restart)	tpcc	False	1158.9429303515462
+max_parallel_workers_per_gather	0# taken from max_parallel_workers	tpcc	False	1147.5475726882485
+max_parallel_workers_per_gather	10# taken from max_parallel_workers	tpcc	False	1145.157928214634
+max_parallel_workers_per_gather	2# taken from max_parallel_workers	tpcc	False	1097.4255114860723
+max_parallel_workers	1# maximum number of max_worker_processes that	tpcc	False	1123.1831782966153
+max_parallel_workers	40# maximum number of max_worker_processes that	tpcc	False	1115.3960266061445
+max_parallel_workers	8# maximum number of max_worker_processes that	tpcc	False	1120.2495805412154
+backend_flush_after	0# measured in pages, 0 disables	tpcc	False	1101.0043199124727
+backend_flush_after	0# measured in pages, 0 disables	tpcc	False	1125.815366593845
+backend_flush_after	0# measured in pages, 0 disables	tpcc	False	1103.0082145904703
+wal_writer_delay	40ms# 1-10000 milliseconds	tpcc	False	1109.6598424620731
+wal_writer_delay	1000ms# 1-10000 milliseconds	tpcc	False	1104.8180410755951
+wal_writer_delay	200ms# 1-10000 milliseconds	tpcc	False	1110.4590561879263
+wal_writer_flush_after	0MB# measured in pages, 0 disables	tpcc	False	1102.3470865885124
+wal_writer_flush_after	5MB# measured in pages, 0 disables	tpcc	False	1109.0824015370558
+wal_writer_flush_after	1MB# measured in pages, 0 disables	tpcc	False	1089.1123817259245
+commit_delay	0# range 0-100000, in microseconds	tpcc	False	1119.33251758245
+commit_delay	0# range 0-100000, in microseconds	tpcc	False	1129.7034120824733
+commit_delay	0# range 0-100000, in microseconds	tpcc	False	1120.8149734141257
+commit_siblings	1# range 1-1000	tpcc	False	1081.5941592293009
+commit_siblings	25# range 1-1000	tpcc	False	1108.9998458308412
+commit_siblings	5# range 1-1000	tpcc	False	1124.8307488097216
+checkpoint_timeout	1min# range 30s-1d	tpcc	False	1104.2875010851094
+checkpoint_timeout	25min# range 30s-1d	tpcc	False	1083.014966437247
+checkpoint_timeout	5min# range 30s-1d	tpcc	False	1095.6928493075884
+max_wal_size	0GB	tpcc	True	None
+max_wal_size	5GB	tpcc	False	1075.8247223169412
+max_wal_size	1GB	tpcc	False	1076.1259764698368
+min_wal_size	16MB	tpcc	False	1063.0890246334734
+min_wal_size	400MB	tpcc	False	1034.7473105710194
+min_wal_size	80MB	tpcc	False	1055.3811169450394
+checkpoint_completion_target	0.5# checkpoint target duration, 0.0 - 1.0	tpcc	False	1122.9587388587101
+checkpoint_completion_target	0.5# checkpoint target duration, 0.0 - 1.0	tpcc	False	1081.689269217964
+checkpoint_completion_target	0.5# checkpoint target duration, 0.0 - 1.0	tpcc	False	1099.4250124807547
+checkpoint_flush_after	51kB# measured in pages, 0 disables	tpcc	False	1105.792983043187
+checkpoint_flush_after	1280kB# measured in pages, 0 disables	tpcc	False	1081.44326140087
+checkpoint_flush_after	256kB# measured in pages, 0 disables	tpcc	False	1108.2476711283439
+checkpoint_warning	6s# 0 disables	tpcc	False	1113.9493720853047
+checkpoint_warning	150s# 0 disables	tpcc	False	1125.8708458410345
+checkpoint_warning	30s# 0 disables	tpcc	False	1101.7823130094594
+archive_timeout	0# force a logfile segment switch after this	tpcc	False	1100.7098407246604
+archive_timeout	0# force a logfile segment switch after this	tpcc	False	1110.7912861385712
+archive_timeout	0# force a logfile segment switch after this	tpcc	False	1108.9644823762912
+max_wal_senders	2# max number of walsender processes	tpcc	False	1119.344650909525
+max_wal_senders	50# max number of walsender processes	tpcc	False	1134.8074444736362
+max_wal_senders	10# max number of walsender processes	tpcc	False	1141.5431777003785
+wal_keep_segments	0# in logfile segments, 16MB each; 0 disables	tpcc	False	1129.3641453235668
+wal_keep_segments	0# in logfile segments, 16MB each; 0 disables	tpcc	False	1114.9838004366093
+wal_keep_segments	0# in logfile segments, 16MB each; 0 disables	tpcc	False	1146.959379345554
+wal_sender_timeout	12s# in milliseconds; 0 disables	tpcc	False	1114.4637769807603
+wal_sender_timeout	300s# in milliseconds; 0 disables	tpcc	False	1096.8690007880718
+wal_sender_timeout	60s# in milliseconds; 0 disables	tpcc	False	1081.129978244653
+max_replication_slots	2# max number of replication slots	tpcc	False	1085.2083439144883
+max_replication_slots	50# max number of replication slots	tpcc	False	1110.0136907199617
+max_replication_slots	10# max number of replication slots	tpcc	False	1121.817759137621
+vacuum_defer_cleanup_age	0# number of xacts by which cleanup is delayed	tpcc	False	1110.812988320537
+vacuum_defer_cleanup_age	0# number of xacts by which cleanup is delayed	tpcc	False	1125.8180011219374
+vacuum_defer_cleanup_age	0# number of xacts by which cleanup is delayed	tpcc	False	1128.481677606208
+max_standby_archive_delay	6s# max delay before canceling queries	tpcc	False	1107.0315557028234
+max_standby_archive_delay	150s# max delay before canceling queries	tpcc	False	1083.0084055146497
+max_standby_archive_delay	30s# max delay before canceling queries	tpcc	False	1104.2741072704036
+max_standby_streaming_delay	6s# max delay before canceling queries	tpcc	False	1124.6769686781804
+max_standby_streaming_delay	150s# max delay before canceling queries	tpcc	False	1136.4105583273345
+max_standby_streaming_delay	30s# max delay before canceling queries	tpcc	False	1130.5887943651087
+wal_receiver_status_interval	2s# send replies at least this often	tpcc	False	1128.8497632491358
+wal_receiver_status_interval	50s# send replies at least this often	tpcc	False	1124.7917893381032
+wal_receiver_status_interval	10s# send replies at least this often	tpcc	False	1131.042407255768
+wal_receiver_timeout	12s# time that receiver waits for	tpcc	False	1134.8747042378614
+wal_receiver_timeout	300s# time that receiver waits for	tpcc	False	1131.2255272927284
+wal_receiver_timeout	60s# time that receiver waits for	tpcc	False	1149.4458994283834
+wal_retrieve_retry_interval	1s# time to wait before retrying to	tpcc	False	1124.8915930476867
+wal_retrieve_retry_interval	25s# time to wait before retrying to	tpcc	False	1125.2738353469988
+wal_retrieve_retry_interval	5s# time to wait before retrying to	tpcc	False	1138.5065467453646
+max_logical_replication_workers	0# taken from max_worker_processes	tpcc	False	1140.6143100624508
+max_logical_replication_workers	20# taken from max_worker_processes	tpcc	False	1136.353369646651
+max_logical_replication_workers	4# taken from max_worker_processes	tpcc	False	1124.8257141763816
+max_sync_workers_per_subscription	0# taken from max_logical_replication_workers	tpcc	False	1132.3158189961728
+max_sync_workers_per_subscription	10# taken from max_logical_replication_workers	tpcc	False	1159.3959760457394
+max_sync_workers_per_subscription	2# taken from max_logical_replication_workers	tpcc	False	1131.8803704855463
+enable_bitmapscan	off	tpcc	False	1315.316723782315
+enable_bitmapscan	on	tpcc	False	1123.5408657251157
+enable_hashagg	off	tpcc	False	1149.2814956130674
+enable_hashagg	on	tpcc	False	1108.7555675526644
+enable_hashjoin	off	tpcc	False	1145.5917445031182
+enable_hashjoin	on	tpcc	False	1151.9336607790328
+enable_indexscan	off	tpcc	False	1148.8705028815918
+enable_indexscan	on	tpcc	False	1130.5401523815437
+enable_indexonlyscan	off	tpcc	False	1131.525068316749
+enable_indexonlyscan	on	tpcc	False	1131.177999508565
+enable_material	off	tpcc	False	1155.330126772333
+enable_material	on	tpcc	False	1151.9888924111974
+enable_mergejoin	off	tpcc	False	1150.6749856274048
+enable_mergejoin	on	tpcc	False	1163.7195714960062
+enable_nestloop	off	tpcc	False	800.7617493756081
+enable_nestloop	on	tpcc	False	1126.8685016334473
+enable_seqscan	off	tpcc	False	1144.5137302763346
+enable_seqscan	on	tpcc	False	1133.2868617676354
+enable_sort	off	tpcc	False	1129.1762661766556
+enable_sort	on	tpcc	False	1104.0987345924402
+enable_tidscan	off	tpcc	False	1120.7461651054887
+enable_tidscan	on	tpcc	False	1119.0825852452765
+seq_page_cost	0.0# measured on an arbitrary scale	tpcc	False	3180.1089098510174
+seq_page_cost	5.0# measured on an arbitrary scale	tpcc	False	1125.1524198658406
+seq_page_cost	1.0# measured on an arbitrary scale	tpcc	False	1110.0135038126891
+random_page_cost	0.0# same scale as above	tpcc	False	1123.4370980926103
+random_page_cost	20.0# same scale as above	tpcc	False	1327.3080746289575
+random_page_cost	4.0# same scale as above	tpcc	False	1138.14044978761
+cpu_tuple_cost	0.01# same scale as above	tpcc	False	1111.3936522381086
+cpu_tuple_cost	0.01# same scale as above	tpcc	False	1097.109928345483
+cpu_tuple_cost	0.01# same scale as above	tpcc	False	1111.9166535909874
+cpu_index_tuple_cost	0.005# same scale as above	tpcc	False	1120.4307023939796
+cpu_index_tuple_cost	0.005# same scale as above	tpcc	False	1111.6867533269028
+cpu_index_tuple_cost	0.005# same scale as above	tpcc	False	1096.4635445901588
+cpu_operator_cost	0.0025# same scale as above	tpcc	False	1111.1810328367214
+cpu_operator_cost	0.0025# same scale as above	tpcc	False	1109.6590231688663
+cpu_operator_cost	0.0025# same scale as above	tpcc	False	1113.2981756382796
+parallel_tuple_cost	0.1# same scale as above	tpcc	False	1140.092687920538
+parallel_tuple_cost	0.1# same scale as above	tpcc	False	1105.5211318808542
+parallel_tuple_cost	0.1# same scale as above	tpcc	False	1137.363261666446
+parallel_setup_cost	200.0# same scale as above	tpcc	False	1138.3961353777045
+parallel_setup_cost	5000.0# same scale as above	tpcc	False	1120.553427365274
+parallel_setup_cost	1000.0# same scale as above	tpcc	False	1133.2916263726074
+min_parallel_table_scan_size	1MB	tpcc	False	1100.3445351572052
+min_parallel_table_scan_size	40MB	tpcc	False	1127.6598375774845
+min_parallel_table_scan_size	8MB	tpcc	False	1124.1980939033951
+min_parallel_index_scan_size	102kB	tpcc	False	1137.5656621203493
+min_parallel_index_scan_size	2560kB	tpcc	False	1104.965322971941
+min_parallel_index_scan_size	512kB	tpcc	False	1130.1133849680784
+effective_cache_size	0GB	tpcc	True	None
+effective_cache_size	20GB	tpcc	False	1133.533033702768
+effective_cache_size	4GB	tpcc	False	1124.04358266658
+geqo	off	tpcc	False	1105.8604507172283
+geqo	on	tpcc	False	1128.0970730716292
+geqo_threshold	2	tpcc	False	1133.2754275661748
+geqo_threshold	60	tpcc	False	1126.0926873042342
+geqo_threshold	12	tpcc	False	1152.4741050698083
+geqo_effort	1# range 1-10	tpcc	False	1146.6970514596483
+geqo_effort	25# range 1-10	tpcc	True	None
+geqo_effort	5# range 1-10	tpcc	False	1140.047294648769
+geqo_pool_size	0# selects default based on effort	tpcc	False	1130.0310403308479
+geqo_pool_size	0# selects default based on effort	tpcc	False	1131.1134655401515
+geqo_pool_size	0# selects default based on effort	tpcc	False	1140.7417413530027
+geqo_generations	0# selects default based on effort	tpcc	False	1130.524048957979
+geqo_generations	0# selects default based on effort	tpcc	False	1127.6863324603669
+geqo_generations	0# selects default based on effort	tpcc	False	1141.80734917557
+geqo_selection_bias	0.0# range 1.5-2.0	tpcc	True	None
+geqo_selection_bias	10.0# range 1.5-2.0	tpcc	True	None
+geqo_selection_bias	2.0# range 1.5-2.0	tpcc	False	1141.9645290422975
+geqo_seed	0.0# range 0.0-1.0	tpcc	False	1147.3806057227882
+geqo_seed	0.0# range 0.0-1.0	tpcc	False	1130.108260751907
+geqo_seed	0.0# range 0.0-1.0	tpcc	False	1150.847277421415
+default_statistics_target	20# range 1-10000	tpcc	False	1126.5588845511813
+default_statistics_target	500# range 1-10000	tpcc	False	1155.4757765954423
+default_statistics_target	100# range 1-10000	tpcc	False	1140.7422661666337
+cursor_tuple_fraction	0.1# range 0.0-1.0	tpcc	False	1123.375809489082
+cursor_tuple_fraction	0.1# range 0.0-1.0	tpcc	False	1107.6582994098728
+cursor_tuple_fraction	0.1# range 0.0-1.0	tpcc	False	1134.0197755221063
+from_collapse_limit	1	tpcc	False	1145.770313448761
+from_collapse_limit	40	tpcc	False	1124.2979365572587
+from_collapse_limit	8	tpcc	False	1124.8358649841878
+join_collapse_limit	1# 1 disables collapsing of explicit	tpcc	False	1114.014709992663
+join_collapse_limit	40# 1 disables collapsing of explicit	tpcc	False	1088.2158782723998
+join_collapse_limit	8# 1 disables collapsing of explicit	tpcc	False	1130.8993327505452
+force_parallel_mode	on	tpcc	False	1137.1419949941644
+force_parallel_mode	off	tpcc	False	1146.8415497082954
+log_file_mode	120# creation mode for log files,	tpcc	False	1163.7468793545556
+log_file_mode	3000# creation mode for log files,	tpcc	True	None
+log_file_mode	0600# creation mode for log files,	tpcc	False	962.7926491583564
+log_rotation_age	0d# Automatic rotation of logfiles will	tpcc	False	797.9149914707393
+log_rotation_age	5d# Automatic rotation of logfiles will	tpcc	False	810.6901514725279
+log_rotation_age	1d# Automatic rotation of logfiles will	tpcc	False	800.4611066204714
+log_rotation_size	2MB# Automatic rotation of logfiles will	tpcc	False	806.2976964469749
+log_rotation_size	50MB# Automatic rotation of logfiles will	tpcc	False	800.4919346118571
+log_rotation_size	10MB# Automatic rotation of logfiles will	tpcc	False	811.2937473726106
+syslog_sequence_numbers	off	tpcc	False	797.5742968385392
+syslog_sequence_numbers	on	tpcc	False	801.8040385095779
+syslog_split_messages	off	tpcc	False	799.8208796771104
+syslog_split_messages	on	tpcc	False	802.9908612145413
+debug_print_parse	on	tpcc	False	804.6224552118113
+debug_print_parse	off	tpcc	False	807.0612372159974
+debug_print_rewritten	on	tpcc	False	799.4660040825669
+debug_print_rewritten	off	tpcc	False	804.1784418594742
+debug_print_plan	on	tpcc	False	793.6872928525418
+debug_print_plan	off	tpcc	False	806.7302345883837
+debug_pretty_print	off	tpcc	False	798.4079449512799
+debug_pretty_print	on	tpcc	False	801.6730947586009
+log_checkpoints	on	tpcc	False	808.0993705983368
+log_checkpoints	off	tpcc	False	797.3433832060673
+log_connections	on	tpcc	False	787.901839755491
+log_connections	off	tpcc	False	809.227872798519
+log_disconnections	on	tpcc	False	811.2236970233627
+log_disconnections	off	tpcc	False	805.06084735142
+log_duration	on	tpcc	False	748.6260726640305
+log_duration	off	tpcc	False	810.5241539041331
+log_hostname	on	tpcc	False	797.4581518442213
+log_hostname	off	tpcc	False	807.4906685027858
+log_replication_commands	on	tpcc	False	803.8739454254408
+log_replication_commands	off	tpcc	False	814.5734829813043
+update_process_title	off	tpcc	False	797.7881409905925
+update_process_title	on	tpcc	False	809.2438076528965
+track_activities	off	tpcc	False	814.6213167694374
+track_activities	on	tpcc	False	812.8948139343108
+track_counts	off	tpcc	False	809.295913286589
+track_counts	on	tpcc	False	803.3997574803932
+track_io_timing	on	tpcc	False	810.6917205362768
+track_io_timing	off	tpcc	False	802.9935617448374
+track_activity_query_size	204# (change requires restart)	tpcc	False	807.0477846776432
+track_activity_query_size	5120# (change requires restart)	tpcc	False	806.7554167444872
+track_activity_query_size	1024# (change requires restart)	tpcc	False	811.4566698203844
+log_parser_stats	on	tpcc	False	806.375332288272
+log_parser_stats	off	tpcc	False	810.1910550181411
+log_planner_stats	on	tpcc	False	631.6706701968334
+log_planner_stats	off	tpcc	False	810.845453008439
+log_executor_stats	on	tpcc	False	728.9273310298212
+log_executor_stats	off	tpcc	False	793.9997477944407
+log_statement_stats	on	tpcc	False	674.1120276523964
+log_statement_stats	off	tpcc	False	805.3660838500773
+autovacuum_max_workers	0# max number of autovacuum subprocesses	tpcc	True	None
+autovacuum_max_workers	15# max number of autovacuum subprocesses	tpcc	False	843.6080339815311
+autovacuum_max_workers	3# max number of autovacuum subprocesses	tpcc	False	803.7614926529982
+autovacuum_naptime	0min# time between autovacuum runs	tpcc	True	None
+autovacuum_naptime	5min# time between autovacuum runs	tpcc	False	862.6715942829662
+autovacuum_naptime	1min# time between autovacuum runs	tpcc	False	798.6391534922769
+autovacuum_vacuum_threshold	10# min number of row updates before	tpcc	False	807.1112530217445
+autovacuum_vacuum_threshold	250# min number of row updates before	tpcc	False	807.2744045420548
+autovacuum_vacuum_threshold	50# min number of row updates before	tpcc	False	802.0521438842437
+autovacuum_analyze_threshold	10# min number of row updates before	tpcc	False	813.5933264193807
+autovacuum_analyze_threshold	250# min number of row updates before	tpcc	False	807.3114373338524
+autovacuum_analyze_threshold	50# min number of row updates before	tpcc	False	811.0929300003299
+autovacuum_vacuum_scale_factor	0.2# fraction of table size before vacuum	tpcc	False	806.5570420349267
+autovacuum_vacuum_scale_factor	0.2# fraction of table size before vacuum	tpcc	False	805.5975772592728
+autovacuum_vacuum_scale_factor	0.2# fraction of table size before vacuum	tpcc	False	807.4432570849856
+autovacuum_analyze_scale_factor	0.1# fraction of table size before analyze	tpcc	False	808.290971699691
+autovacuum_analyze_scale_factor	0.1# fraction of table size before analyze	tpcc	False	808.639709740931
+autovacuum_analyze_scale_factor	0.1# fraction of table size before analyze	tpcc	False	808.5227990473539
+autovacuum_freeze_max_age	40000000# maximum XID age before forced vacuum	tpcc	False	883.5091451176856
+autovacuum_freeze_max_age	1000000000# maximum XID age before forced vacuum	tpcc	False	818.6538841785804
+autovacuum_freeze_max_age	200000000# maximum XID age before forced vacuum	tpcc	False	812.4831937487206
+autovacuum_multixact_freeze_max_age	80000000# maximum multixact age	tpcc	False	805.4816399021583
+autovacuum_multixact_freeze_max_age	2000000000# maximum multixact age	tpcc	False	809.8643436247879
+autovacuum_multixact_freeze_max_age	400000000# maximum multixact age	tpcc	False	812.1996517411336
+autovacuum_vacuum_cost_delay	4ms# default vacuum cost delay for	tpcc	False	807.9696475802839
+autovacuum_vacuum_cost_delay	100ms# default vacuum cost delay for	tpcc	False	802.2985292730117
+autovacuum_vacuum_cost_delay	20ms# default vacuum cost delay for	tpcc	False	794.8206139284258
+check_function_bodies	off	tpcc	False	810.8101297397251
+check_function_bodies	on	tpcc	False	814.5267033031755
+default_transaction_read_only	on	tpcc	True	None
+default_transaction_read_only	off	tpcc	False	935.9253429643103
+default_transaction_deferrable	on	tpcc	False	804.7427672804924
+default_transaction_deferrable	off	tpcc	False	799.478463922435
+statement_timeout	0# in milliseconds, 0 is disabled	tpcc	False	806.2297204598248
+statement_timeout	0# in milliseconds, 0 is disabled	tpcc	False	807.3949764881024
+statement_timeout	0# in milliseconds, 0 is disabled	tpcc	False	807.4758749554069
+lock_timeout	0# in milliseconds, 0 is disabled	tpcc	False	806.8605527211715
+lock_timeout	0# in milliseconds, 0 is disabled	tpcc	False	799.4914617909592
+lock_timeout	0# in milliseconds, 0 is disabled	tpcc	False	807.3940479314483
+idle_in_transaction_session_timeout	0# in milliseconds, 0 is disabled	tpcc	False	792.1669374661577
+idle_in_transaction_session_timeout	0# in milliseconds, 0 is disabled	tpcc	False	802.8695395047536
+idle_in_transaction_session_timeout	0# in milliseconds, 0 is disabled	tpcc	False	814.2647211303973
+vacuum_freeze_min_age	10000000	tpcc	False	806.247960598378
+vacuum_freeze_min_age	250000000	tpcc	False	807.0003426708669
+vacuum_freeze_min_age	50000000	tpcc	False	803.3760328042856
+vacuum_freeze_table_age	30000000	tpcc	False	814.4573526816986
+vacuum_freeze_table_age	750000000	tpcc	False	807.414356765321
+vacuum_freeze_table_age	150000000	tpcc	False	793.3106714740036
+vacuum_multixact_freeze_min_age	1000000	tpcc	False	802.7051135112207
+vacuum_multixact_freeze_min_age	25000000	tpcc	False	799.3661820908872
+vacuum_multixact_freeze_min_age	5000000	tpcc	False	794.2162254386546
+vacuum_multixact_freeze_table_age	30000000	tpcc	False	805.5619642121267
+vacuum_multixact_freeze_table_age	750000000	tpcc	False	806.5112340558404
+vacuum_multixact_freeze_table_age	150000000	tpcc	False	807.8608745061616
+gin_fuzzy_search_limit	0	tpcc	False	815.0772620401623
+gin_fuzzy_search_limit	0	tpcc	False	800.1645495691238
+gin_fuzzy_search_limit	0	tpcc	False	811.6319513811369
+gin_pending_list_limit	0MB	tpcc	True	None
+gin_pending_list_limit	20MB	tpcc	False	861.9602084010733
+gin_pending_list_limit	4MB	tpcc	False	792.7077829956716
+extra_float_digits	0# min -15, max 3	tpcc	False	808.9647461573937
+extra_float_digits	0# min -15, max 3	tpcc	False	809.7742180963511
+extra_float_digits	0# min -15, max 3	tpcc	False	813.0769192676454
+deadlock_timeout	0s	tpcc	True	None
+deadlock_timeout	5s	tpcc	False	848.6392571446061
+deadlock_timeout	1s	tpcc	False	821.0098744109252
+max_locks_per_transaction	12# min 10	tpcc	False	797.8533595704838
+max_locks_per_transaction	320# min 10	tpcc	False	804.0825676323069
+max_locks_per_transaction	64# min 10	tpcc	False	806.5322971812911
+max_pred_locks_per_transaction	12# min 10	tpcc	False	1028.7085384628715
+max_pred_locks_per_transaction	320# min 10	tpcc	False	788.8120112559386
+max_pred_locks_per_transaction	64# min 10	tpcc	False	801.2814344298806
+max_pred_locks_per_page	0            # min 0	tpcc	False	822.3441944555732
+max_pred_locks_per_page	10            # min 0	tpcc	False	809.3474447956929
+max_pred_locks_per_page	2            # min 0	tpcc	False	797.8526877254443
+array_nulls	off	tpcc	False	810.0308142320047
+array_nulls	on	tpcc	False	803.9345047119668
+default_with_oids	on	tpcc	False	809.3169419610217
+default_with_oids	off	tpcc	False	804.1340989635949
+escape_string_warning	off	tpcc	False	805.4899211128379
+escape_string_warning	on	tpcc	False	800.6724541073072
+lo_compat_privileges	on	tpcc	False	810.6893333923189
+lo_compat_privileges	off	tpcc	False	805.3636036457506
+operator_precedence_warning	on	tpcc	False	802.8551204153098
+operator_precedence_warning	off	tpcc	False	804.7218359165879
+quote_all_identifiers	on	tpcc	False	809.0150323753998
+quote_all_identifiers	off	tpcc	False	806.7150346014802
+standard_conforming_strings	off	tpcc	False	802.0677402869447
+standard_conforming_strings	on	tpcc	False	805.2801543588935
+synchronize_seqscans	off	tpcc	False	809.5412677346997
+synchronize_seqscans	on	tpcc	False	811.5317164645926
+transform_null_equals	on	tpcc	False	806.5909850176034
+transform_null_equals	off	tpcc	False	811.6437612325923
