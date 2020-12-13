@@ -1,0 +1,78 @@
+Performance Optimization - PostgreSQL wiki
+Want to edit, but don't see an edit button when logged in?
+Click here.
+Performance Optimization
+From PostgreSQL wiki
+Jump to: navigation, search
+Contents
+1 How to Effectively Ask Questions Regarding Performance on Postgres Lists
+2 General Setup and Optimization
+3 Critical maintenance for performance
+4 Database architecture
+5 Database Hardware Selection and Setup
+6 Benchmark Workloads
+How to Effectively Ask Questions Regarding Performance on Postgres Lists
+Slow_Query_Questions
+General Setup and Optimization
+Tuning Your PostgreSQL Server by Greg Smith, Robert Treat, and Christopher Browne
+PostgreSQL Query Profiler in dbForge Studio by Devart
+Performance Tuning PostgreSQL by Frank Wiles
+QuickStart Guide to Tuning
+PostgreSQL by Christopher Browne
+Performance Tuning by Josh Berkus and Shridhar Daithankar
+Replacing Slow Loops in PostgreSQL by Joel Burton
+PostgreSQL Hardware Performance Tuning by Bruce Momjian
+The effects of data fragmentation in a mixed load database by Dmitry Dvoinikov
+Understanding Postgres Performance by Craig Kerstiens
+More on Postgres Performance by Craig Kerstiens
+Faster PostgreSQL counting by Joe Nelson
+Row count estimates in Postgres by David Conlin
+Index-only scans in Postgres by David Conlin
+Optimize PostgreSQL Server Performance Through Configuration by Tom Swartz
+Performance courses are available from a number of companies. Check events and trainings for further details.
+Critical maintenance for performance
+Introduction to VACUUM, ANALYZE, EXPLAIN, and COUNT by Jim Nasby.
+VACUUM FULL and why you should avoid it
+Planner Statistics
+Using EXPLAIN
+Logging Difficult Queries
+Logging Checkpoints
+Bulk Loading and Restores
+Performance Analysis Tools by Craig Ringer
+Database architecture
+Limiting and prioritizing user/query/database resource usage by Craig Ringer
+Prioritizing databases by separating into multiple clusters by Craig Ringer
+Clustering
+Shared Storage
+Database Hardware Selection and Setup
+Database Hardware
+Reliable Writes
+Benchmark Workloads
+Category:Benchmarking
+Retrieved from "https://wiki.postgresql.org/index.php?title=Performance_Optimization&oldid=35388"
+Categories: AdministrationPerformanceBenchmarkingGeneral articles and guides
+Navigation menu
+Views
+Page
+Discussion
+View source
+History
+Personal tools
+Log in
+Navigation
+Main Page
+Random page
+Recent changes
+Help
+Search
+Tools
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+Page information
+This page was last edited on 29 September 2020, at 13:37.
+Privacy policy
+About PostgreSQL wiki
+Disclaimers

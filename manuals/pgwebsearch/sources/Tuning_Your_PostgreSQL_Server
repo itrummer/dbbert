@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>Tuning Your PostgreSQL Server - PostgreSQL wiki</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Tuning_Your_PostgreSQL_Server","wgTitle":"Tuning Your PostgreSQL Server","wgCurRevisionId":35462,"wgRevisionId":35462,"wgArticleId":367,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Administration","Performance"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Tuning_Your_PostgreSQL_Server","wgRelevantArticleId":367,"wgRequestId":"7d3bf3528b088cad41ef9691","wgIsProbablyEditable":false,"wgRelevantPageIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[]});mw.loader.state({"site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","site":"ready","user.options":"ready","user.tokens":"loading","mediawiki.legacy.shared":"ready","mediawiki.legacy.commonPrint":"ready","mediawiki.sectionAnchor":"ready","mediawiki.skinning.interface":"ready","mediawiki.skinning.content.externallinks":"ready","skins.postgresql.styles":"ready"});mw.loader.implement("user.tokens@1i9goa3",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+});mw.loader.load(["mediawiki.page.startup","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest"]);});</script>
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.content.externallinks%7Cmediawiki.skinning.interface%7Cskins.postgresql.styles&amp;only=styles&amp;skin=postgresql"/>
+<script async="" src="/load.php?debug=false&amp;lang=en&amp;modules=startup&amp;only=scripts&amp;skin=postgresql"></script>
+<!--[if IE 6]><link rel="stylesheet" href="/skins/PostgreSQL/IE60Fixes.css?303" media="screen"/><![endif]--><!--[if IE 7]><link rel="stylesheet" href="/skins/PostgreSQL/IE70Fixes.css?303" media="screen"/><![endif]-->
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/load.php?debug=false&amp;lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=postgresql"/>
+<meta name="generator" content="MediaWiki 1.31.10"/>
+<link rel="shortcut icon" href="/favicon.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="PostgreSQL wiki (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="https://wiki.postgresql.org/api.php?action=rsd"/>
+<link rel="alternate" type="application/atom+xml" title="PostgreSQL wiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom"/>
+<!--[if lt IE 9]><script src="/load.php?debug=false&amp;lang=en&amp;modules=html5shiv&amp;only=scripts&amp;skin=postgresql&amp;sync=1"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Tuning_Your_PostgreSQL_Server rootpage-Tuning_Your_PostgreSQL_Server skin-postgresql action-view"><div id="globalWrapper">
+		<div id="column-content">
+			<div id="content" class="mw-body" role="main">
+				<a id="top"></a>
+									<div id="siteNotice"><div id="localNotice" lang="en" dir="ltr"><div class="mw-parser-output"><p><b><a rel="nofollow" class="external text" href="https://wiki.postgresql.org/wiki/WikiEditing">Want to edit, but don't see an edit button when logged in?  Click here.</a></b>
+</p></div></div></div>
+				<div class="mw-indicators mw-body-content">
+</div>
+				<h1 id="firstHeading" class="firstHeading" lang="en">Tuning Your PostgreSQL Server</h1>
+				
+				<div id="bodyContent" class="mw-body-content">
+					<div id="siteSub">From PostgreSQL wiki</div>
+					<div id="contentSub"></div>
+										<div id="jump-to-nav" class="mw-jump">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+
+					<!-- start content -->
+					<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><p><i>by Greg Smith, Robert Treat, and Christopher Browne</i>
+</p><p><br />
+</p><p>PostgreSQL ships with a basic configuration tuned for wide compatibility rather than performance. Odds are good the default parameters are very undersized for your system. Rather than get dragged into the details of everything you should eventually know (which you can find if you want it at the <a rel="nofollow" class="external text" href="http://www.pgcon.org/2008/schedule/events/104.en.html">GUC Three Hour Tour</a>), here we're going to sprint through a simplified view of the basics, with a look at the most common things people new to PostgreSQL aren't aware of.  You should click on the name of the parameter in each section to jump to the relevant documentation in the PostgreSQL manual for more details after reading the quick intro here.  There is also additional information available about many of these parameters, as well as a list of parameters you shouldn't adjust, at <a rel="nofollow" class="external text" href="https://www.packtpub.com/article/server-configuration-tuning-postgresql">Server Configuration Tuning</a>.
+</p>
+<h2><span class="mw-headline" id="Background_Information_on_Configuration_Settings">Background Information on Configuration Settings</span></h2>
+<p>PostgreSQL settings can be manipulated a number of different ways, but generally you will want them changed in your configuration files, either directly or, starting with PostgreSQL 9.4, through <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/sql-altersystem.html"><tt>ALTER SYSTEM</tt></a>. The specific options available change from release to release, the definitive list is in the source code at src/backend/utils/misc/guc.c for your version of PostgreSQL (but the pg_settings view works well enough for most purposes).
+</p>
+<h3><span class="mw-headline" id="The_types_of_settings">The types of settings</span></h3>
+<p>There are several different types of configuration settings, divided up based on the possible inputs they take
+</p>
+<ul><li>Boolean: true, false, on, off</li>
+<li>Integer: Whole numbers  (2112)</li>
+<li>Float: Decimal values (21.12)</li>
+<li>Memory / Disk: Integers (2112) or "computer units" (512MB, 2112GB).  Avoid integers--you need to know the underlying unit to figure out what they mean.</li>
+<li>Time: "Time units" aka d,m,s (30s).  Sometimes the unit is left out; don't do that</li>
+<li>Strings: Single quoted text ('pg_log')</li>
+<li>ENUMs: Strings, but from a specific list ('WARNING', 'ERROR')</li>
+<li>Lists: A comma separated list of strings ('"$user",public,tsearch2)</li></ul>
+<h3><span class="mw-headline" id="When_they_take_effect">When they take effect</span></h3>
+<p>PostgreSQL settings have different levels of flexibility for when they can be changed, usually related to internal code restrictions. The complete list of levels is:
+</p>
+<ul><li>Postmaster: requires restart of server</li>
+<li>Sighup: requires a HUP of the server, either by kill -HUP (usually -1), pg_ctl reload, or <tt>SELECT pg_reload_conf()</tt>;</li>
+<li>User: can be set within individual sessions, take effect only within that session</li>
+<li>Internal: set at compile time, can't be changed, mainly for reference</li>
+<li>Backend: settings which must be set before session start</li>
+<li>Superuser: can be set at runtime for the server by superusers</li></ul>
+<p>Most of the time you'll only use the first of these, but the second can be useful if you have a server you don't want to take down, while the user session settings can be helpful for some special situations.  You can tell which type of parameter a setting is by looking at the "context" field in the pg_settings view.
+</p>
+<h3><span class="mw-headline" id="Important_notes_about_configuration_files">Important notes about configuration files</span></h3>
+<ul><li>Command line options override postgresql.auto.conf settings override postgresql.conf settings.</li>
+<li>If the same setting is listed multiple times, the last one wins.</li>
+<li>You can figure out the postgresql.conf location with <tt>SHOW config_file</tt>.  It will generally be $PGDATA/postgresql.conf (<tt>SHOW data_directory</tt>), but watch out for symbolic links, <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/app-pg-ctl.html#AEN93617">postmaster.opts</a> and other trickiness</li>
+<li>Lines with # are comments and have no effect. For a new database, this will mean the setting is using the default, but on running systems this may not hold true! Changes to the configuration files do not take effect without a reload/restart, so it's possible for the system to be running something different from what is in the file.</li></ul>
+<h3><span class="mw-headline" id="Viewing_the_current_settings">Viewing the current settings</span></h3>
+<ul><li>Look at the configuration files.  This is generally not definitive!</li>
+<li><tt>SHOW ALL</tt>, <tt>SHOW &lt;setting&gt;</tt> will show you the current value of the setting.  Watch out for session specific changes</li>
+<li><tt>SELECT * FROM pg_settings</tt> will label session specific changes as locally modified</li></ul>
+<h3><span class="mw-headline" id="Tuning_tools">Tuning tools</span></h3>
+<ul><li><a rel="nofollow" class="external text" href="https://www.devart.com/dbforge/postgresql/studio/query-profiler.html">dbForge Studio for PostgreSQL</a> helps to identify productivity bottlenecks, and provides PostgreSQL performance tuning.</li>
+<li>The <a rel="nofollow" class="external text" href="https://github.com/jfcoz/postgresqltuner">postgresqltuner.pl</a> script can analyze the configuration and make tuning recommendations.</li>
+<li><a rel="nofollow" class="external text" href="https://pgbadger.darold.net/">PgBadger</a> analyse PostgreSQL logs to generate performance reports.</li>
+<li><a rel="nofollow" class="external text" href="https://www.pgmustard.com/">pgMustard</a> provides tuning advice based on EXPLAIN ANALYZE output.</li></ul>
+<h2><span class="mw-headline" id="listen_addresses"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-connection.html#GUC-LISTEN-ADDRESSES">listen_addresses</a></span></h2>
+<p>By default, PostgreSQL only responds to connections from the local host.  If you want your server to be accessible from other systems via standard TCP/IP networking, you need to change listen_addresses from its default.  The usual approach is to set it to listen to all addresses like this:
+</p>
+<code><pre>listen_addresses = '*'
+</pre></code>
+<p>And then control who can and cannot connect via the <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html">pg_hba.conf</a> file.
+</p>
+<h2><span class="mw-headline" id="max_connections"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-connection.html#GUC-MAX-CONNECTIONS">max_connections</a></span></h2>
+<p>max_connections sets exactly that:  the maximum number of client connections allowed.  This is very important to some of the below parameters (particularly work_mem) because there are some memory resources that are or can be allocated on a per-client basis, so the maximum number of clients suggests the maximum possible memory use.  Generally, PostgreSQL on good hardware can support a few hundred connections.  If you want to have thousands instead, you should consider using <a href="/wiki/Replication,_Clustering,_and_Connection_Pooling" title="Replication, Clustering, and Connection Pooling">connection pooling software</a> to reduce the connection overhead.
+</p>
+<h2><span class="mw-headline" id="shared_buffers"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</a></span></h2>
+<p>The shared_buffers configuration parameter determines how much memory is dedicated to PostgreSQL to use for caching data.  One reason the defaults are low is because on some platforms (like older Solaris versions and SGI), having large values requires invasive action like recompiling the kernel.  Even on a modern Linux system, the stock kernel will likely not allow setting shared_buffers to over 32MB without adjusting kernel settings first.  (PostgreSQL 9.4 and later use a different shared memory mechanism, so kernel settings will usually not have to be adjusted there.)
+</p><p>If you have a system with 1GB or more of RAM, a reasonable starting value for shared_buffers is 1/4 of the memory in your system.  If you have less RAM you'll have to account more carefully for how much RAM the OS is taking up; closer to 15% is more typical there.  There are some workloads where even larger settings for shared_buffers are effective, but given the way PostgreSQL also relies on the operating system cache, it's unlikely you'll find using more than 40% of RAM to work better than a smaller amount.
+</p><p>Be aware that if your system or PostgreSQL build is 32-bit, it might not be practical to set shared_buffers above 2 ~ 2.5GB. See <a rel="nofollow" class="external text" href="http://rhaas.blogspot.jp/2011/05/sharedbuffers-on-32-bit-systems.html">this blog post</a> for details.
+</p><p>Note that on Windows, large values for shared_buffers aren't as effective, and you may find better results keeping it relatively low and using the OS cache more instead.  On Windows the useful range is 64MB to 512MB.
+</p><p>Changing this setting requires restarting the database. Also, this is a hard allocation of memory; the whole thing gets allocated out of virtual memory when the database starts.
+</p>
+<dl><dt>PostgreSQL 9.2 or earlier</dt></dl>
+<p>If you are running PostgreSQL 9.2 or earlier, it's likely that in order to increase the value of shared_buffers you will have to increase the amount of memory your operating system allows you to allocate to a single shared memory segment.  On UNIX-like systems, if you set it above what's supported, you'll get a message like this:
+</p>
+<code><pre>IpcMemoryCreate: shmget(key=5432001, size=415776768, 03600) failed: Invalid argument 
+
+This error usually means that PostgreSQL's request for a shared memory 
+segment exceeded your kernel's SHMMAX parameter. You can either 
+reduce the request size or reconfigure the kernel with larger SHMMAX. 
+To reduce the request size (currently 415776768 bytes), reduce 
+PostgreSQL's shared_buffers parameter (currently 50000) and/or 
+its max_connections parameter (currently 12).
+</pre></code>
+<p>See <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/kernel-resources.html">Managing Kernel Resources</a> for details on how to correct this.
+</p>
+<h2><span class="mw-headline" id="effective_cache_size"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-EFFECTIVE-CACHE-SIZE">effective_cache_size</a></span></h2>
+<p>effective_cache_size should be set to an estimate of how much memory is available for disk caching by the operating system and within the database itself, after taking into account what's used by the OS itself and other applications.  This is a guideline for how much memory you expect to be available in the OS and PostgreSQL buffer caches, not an allocation!  This value is used only by the PostgreSQL query planner to figure out whether plans it's considering would be expected to fit in RAM or not.  If it's set too low, indexes may not be used for executing queries the way you'd expect.  The setting for shared_buffers is not taken into account here--only the effective_cache_size value is, so it should include memory dedicated to the database too.
+</p><p>Setting effective_cache_size to 1/2 of total memory would be a normal conservative setting, and 3/4 of memory is a more aggressive but still reasonable amount.  You might find a better estimate by looking at your operating system's statistics. On UNIX-like systems, add the free+cached numbers from free or top to get an estimate. On Windows see the "System Cache" size in the Windows Task Manager's Performance tab.  Changing this setting does not require restarting the database (HUP is enough).
+</p>
+<h2><span class="mw-headline" id="checkpoint_segments_checkpoint_completion_target"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-wal.html#RUNTIME-CONFIG-WAL-CHECKPOINTS">checkpoint_segments checkpoint_completion_target</a></span></h2>
+<p><b>Note</b>: This applies to PostgreSQL 9.4 and below. <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/9.5/release-9-5.html">PostgreSQL 9.5 introduced min_wal_size and max_wal_size</a> configuration parameters and removed checkpoint_segments. Please review the release notes and the documentation on <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-MIN-WAL-SIZE">min_wal_size</a>, <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-MAX-WAL-SIZE">max_wal_size</a> and <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/wal-configuration.html">WAL configuration</a>.
+</p><p>PostgreSQL writes new transactions to the database in files called WAL segments that are 16MB in size.  Every time checkpoint_segments worth of these files have been written, by default 3, a checkpoint occurs.  Checkpoints can be resource intensive, and on a modern system doing one every 48MB will be a serious performance bottleneck.  Setting checkpoint_segments to a much larger value improves that.  Unless you're running on a very small configuration, you'll almost certainly be better setting this to at least 10, which also allows usefully increasing the completion target.
+</p><p>For more write-heavy systems, values from 32 (checkpoint every 512MB) to 256 (every 4GB) are popular nowadays.  Very large settings use a lot more disk and will cause your database to take longer to recover, so make sure you're comfortable with both those things before large increases.  Normally the large settings (&gt;64/1GB) are only used for bulk loading.  Note that whatever you choose for the segments, you'll still get a checkpoint at least every 5 minutes unless you also increase checkpoint_timeout (which isn't necessary on most systems).
+</p><p>Checkpoint writes are spread out a bit while the system starts working toward the next checkpoint.  You can spread those writes out further, lowering the average write overhead, by increasing the checkpoint_completion_target parameter to its useful maximum of 0.9 (aim to finish by the time 90% of the next checkpoint is here) rather than the default of 0.5 (aim to finish when the next one is 50% done).  A setting of 0 gives something similar to the behavior of obsolete versions.  The main reason the default isn't just 0.9 is that you need a larger checkpoint_segments value than the default for broader spreading to work well.  For lots more information on checkpoint tuning, see <a rel="nofollow" class="external text" href="http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm">Checkpoints and the Background Writer</a> (where you'll also learn why tuning the background writer parameters is challenging to do usefully).
+</p>
+<h2><span class="mw-headline" id="autovacuum"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/routine-vacuuming.html#AUTOVACUUM">autovacuum</a></span></h2>
+<p>The autovacuum process takes care of several maintenance chores inside your database that you really need. Generally, if you think you need to turn regular vacuuming off because it's taking too much time or resources, that means you're doing it wrong.  The answer to almost all vacuuming problems is to vacuum more often, not less, so that each individual vacuum operation has less to clean up.
+</p><p>However, it's acceptable to disable autovacuum for short periods of time, for instance when bulk loading large amounts of data.
+</p>
+<h2><span class="mw-headline" id="Logging"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-logging.html">Logging</a></span></h2>
+<p>There are many things you can log that may or may not be important to you. You should investigate the documentation on all of the options, but here are some tips &amp; tricks to get you started:
+</p>
+<ul><li>log_destination &amp; log_directory (&amp; log_filename):  What you set these options to is not as important as knowing they can give you hints to determine where your database server is logging to. Best practice would be to try and make this as similar as possible across your servers.  Note that in some cases, the init script starting your database may be customizing the log destination in the command line used to start the database, overriding what's in the configuration files (and making it so you'll get different behavior if you run pg_ctl manually instead of using the init script).</li></ul>
+<ul><li>log_min_error_statement:  You should probably make sure this is at least on error, so that you will see any SQL commands which cause an error. should be the default on recent versions.</li></ul>
+<ul><li>log_min_duration_statement:  Not necessary for everyday use, but this can generate <a href="/wiki/Logging_Difficult_Queries" title="Logging Difficult Queries">logs of "slow queries"</a> on your system.</li></ul>
+<ul><li>log_line_prefix:  Appends information to the start of each line. A good generic recommendation is '%t:%r:%u@%d:[%p]: '&#160;:&#160;%t=timestamp,&#160;%u=db user name,&#160;%r=host connecting from,&#160;%d=database connecting to,&#160;%p=PID of connection. It may not be obvious what the PID is useful at first, but it can be vital for trying to troubleshoot problems in the future so better to put in the logs from the start.</li></ul>
+<ul><li>log_statement:  Choices of none, ddl, mod, all. Using all or mod in production would introduce overhead of the logging. The performance penalties for "all" would be significant if the workload is select intensive and less significant for write-intensive workloads. Turning the synchronous_commit to off would cause a more severe performance regression. DDL can sometime be helpful to discover rogue changes made outside of your recommend processes, by "cowboy DBAs" for example.</li></ul>
+<p>There are also external tools such <a rel="nofollow" class="external text" href="https://pgbadger.darold.net/">pgbadger</a> that can analyze Postgres logs, see <a href="/wiki/Monitoring" title="Monitoring">Monitoring</a> for a comprehensive list.
+</p>
+<h2><span class="mw-headline" id="default_statistics_target"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-DEFAULT-STATISTICS-TARGET">default_statistics_target</a></span></h2>
+<p>The database software collects statistics about each of the tables in your database to decide how to execute queries against it.  If you're not getting good execution query plans particularly on larger (or more varied) tables you should increase default_statistics_target then ANALYZE the database again (or wait for autovacuum to do it for you).  
+</p><p>Increasing the default_statistics_target may be useful but the default value shipped with PostgreSQL is a reasonable starting point.
+</p>
+<dl><dt>PostgreSQL 8.3 and earlier</dt></dl>
+<p>In PostgreSQL 8.3 and earlier increasing the supplied default_statistics_target would often greatly improve query plans. The starting default_statistics_target value was raised from 10 to 100 in PostgreSQL 8.4. The maximum value for the parameter was also increased from 1000 to 10,000 in 8.4.
+</p>
+<h2><span class="mw-headline" id="work_mem"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-WORK-MEM">work_mem</a></span></h2>
+<p>If you do a lot of complex sorts, and have a lot of memory, then increasing the <code>work_mem</code> parameter allows PostgreSQL to do larger in-memory sorts which, unsurprisingly, will be faster than disk-based equivalents.
+</p><p>This size is applied to each and every sort done by each user, and complex queries can use multiple working memory sort buffers. Set it to 50MB, and have 30 users submitting queries, and you are soon using 1.5GB of real memory. Furthermore, if a query involves doing merge sorts of 8 tables, that requires 8 times work_mem. You need to consider what you set max_connections to in order to size this parameter correctly. This is a setting where data warehouse systems, where users are submitting very large queries, can readily make use of many gigabytes of memory.
+</p><p><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/9.3/static/runtime-config-logging.html#GUC-LOG-TEMP-FILES">log_temp_files</a> can be used to log sorts, hashes, and temp files which can be useful in figuring out if sorts are spilling to disk instead of fitting in memory. You can see sorts spilling to disk using <code>EXPLAIN ANALYZE</code> plans as well. For example, if you see a line like <code>Sort Method:  external merge  Disk: 7526kB</code> in the output of EXPLAIN ANALYZE, a <code>work_mem</code> of at least 8MB would keep the intermediate data in memory and likely improve the query response time (although it may take substantially more than 8MB to do the sort entirely in memory, as data on disk is stored in a more compact format).
+</p>
+<h2><span class="mw-headline" id="maintenance_work_mem"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</a></span></h2>
+<p>Specifies the maximum amount of memory to be used by maintenance operations, such as VACUUM, CREATE INDEX, and ALTER TABLE ADD FOREIGN KEY. It defaults to 64 megabytes (64MB) since version 9.4. Since only one of these operations can be executed at a time by a database session, and an installation normally doesn't have many of them running concurrently, it's safe to set this value significantly larger than work_mem. Larger settings might improve performance for vacuuming and for restoring database dumps.
+</p>
+<h2><span class="mw-headline" id="wal_sync_method_wal_buffers"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-wal.html#GUC-WAL-SYNC-METHOD">wal_sync_method wal_buffers</a></span></h2>
+<p>After every transaction, PostgreSQL forces a commit to disk out to its write-ahead log. This can be done a couple of ways, and on some platforms other options than the shipped wal_sync_method are considerably faster than the conservative default.  open_sync is the most common non-default setting switched to, on platforms that support it but default to one of the fsync methods. See <a rel="nofollow" class="external text" href="http://www.westnet.com/~gsmith/content/postgresql/TuningPGWAL.htm">Tuning PostgreSQL WAL Synchronization</a> for a lot of background on this topic. Note that open_sync writing is buggy on some platforms (such as <a rel="nofollow" class="external text" href="http://lwn.net/Articles/350219/">Linux</a>), and you should (as always) do plenty of tests under a heavy write load to make sure that you haven't made your system less stable with this change.  <a href="/wiki/Reliable_Writes" title="Reliable Writes">Reliable Writes</a> contains more information on this topic.
+</p><p>wal_buffers defaults to 1/32 of the size of shared_buffers, with an upper limit of 16MB (reached when shared_buffers=512MB).  Adjustments to the default are required much less often than in earlier PostgreSQL releases.
+</p>
+<dl><dt>PostgreSQL 9.0 and earlier</dt></dl>
+<p>Linux kernels starting with version 2.6.33 cause PostgreSQL versions before 9.0.2 to default to wal_sync_method=open_datasync; before kernel 2.6.32 the default picked was always fdatasync.  This can cause a significant performance decrease when combined with small writes and/or small values for wal_buffers.  PostgreSQL versions starting with 9.0.2 again default wal_sync_method to fdatasync when running on Linux.
+</p><p>On PostgreSQL 9.0 and earlier, increasing wal_buffers from its tiny default of a small number of kilobytes is helpful for write-heavy systems.  Benchmarking generally suggests that just increasing to 1MB is enough for some large systems, and given the amount of RAM in modern servers allocating a full WAL segment (16MB, the useful upper-limit here) is reasonable. 
+</p><p>Changing wal_buffers requires a database restart.
+</p>
+<h2><span class="mw-headline" id="constraint_exclusion"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-CONSTRAINT-EXCLUSION">constraint_exclusion</a></span></h2>
+<p><tt>constraint_exclusion</tt> now defaults to a new choice: <tt>partition</tt>. This will only enable constraint exclusion for partitioned tables which is the right thing to do in nearly all cases.
+</p>
+<h2><span class="mw-headline" id="max_prepared_transactions"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-resource.html#GUC-MAX-PREPARED-TRANSACTIONS">max_prepared_transactions</a></span></h2>
+<p>This setting is used for managing 2 phase commit. If you do not use two phase commit (and if you don't know what it is, you don't use it), then you can set this value to 0. That will save a little bit of shared memory. For database systems with a large number (at least hundreds) of concurrent connections, be aware that this setting also affects the number of available lock-slots in pg_locks, so you may want to leave it at the default setting.  There is a formula for how much memory gets allocated <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/kernel-resources.html#SHARED-MEMORY-PARAMETERS">in the docs</a> and in the default postgresql.conf.
+</p><p>Changing max_prepared_transactions requires a server restart.
+</p>
+<h2><span class="mw-headline" id="synchronous_commit"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT">synchronous_commit</a></span></h2>
+<p>PostgreSQL can only safely use a write cache if it has a battery backup. See <a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/wal-reliability.html">WAL reliability</a> for an essential introduction to this topic.  No, really; go read that right now, it's vital to understand that if you want your database to work right.
+</p><p>You may be limited to approximately 100 transaction commits per second per client in situations where you don't have such a durable write cache (and perhaps only 500/second even with lots of clients).
+</p><p>For situations where a small amount of data loss is acceptable in return for a large boost in how many updates you can do to the database per second, consider switching synchronous commit off. This is particularly useful in the situation where you do not have a battery-backed write cache on your disk controller, because you could potentially get thousands of commits per second instead of just a few hundred.
+</p><p>For obsolete versions of PostgreSQL, you may find people recommending that you set <i>fsync=off</i> to speed up writes on busy systems.  This is dangerous--a power loss could result in your database getting corrupted and not able to start again.  Synchronous commit doesn't introduce the risk of <i>corruption</i>, which is really bad, just some risk of data <i>loss</i>.
+</p>
+<h2><span class="mw-headline" id="random_page_cost"><a rel="nofollow" class="external text" href="http://www.postgresql.org/docs/current/static/runtime-config-query.html#GUC-RANDOM-PAGE-COST">random_page_cost</a></span></h2>
+<p>This setting suggests to the optimizer how long it will take your disks to seek to a random disk page, as a multiple of how long a sequential read (with a cost of 1.0) takes. If you have particularly fast disks, as commonly found with  RAID arrays of SCSI disks, it may be appropriate to lower random_page_cost, which will encourage the query optimizer to use random access index scans. Some feel that 4.0 is always too large on current hardware; it's not unusual for administrators to standardize on always setting this between 2.0 and 3.0 instead.  In some cases that behavior is a holdover from earlier PostgreSQL versions where having random_page_cost too high was more likely to screw up plan optimization than it is now (and setting at or below 2.0 was regularly necessary). Since these cost estimates are just that--estimates--it shouldn't hurt to try lower values.
+</p><p>But this not where you should start to search for plan problems. Note that random_page_cost is pretty far down this list (at the end in fact). If you are getting bad plans, this shouldn't be the first thing you look at, even though lowering this value may be effective. Instead, you should start by making sure autovacuum is working properly, that you are collecting enough statistics, and that you have correctly sized the memory parameters for your server--all the things gone over above.  After you've done all those much more important things, if you're still getting bad plans <i>then</i> you should see if lowering random_page_cost is still useful.
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20201210151601
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.027 seconds
+Real time usage: 0.030 seconds
+Preprocessor visited node count: 105/1000000
+Preprocessor generated node count: 142/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 516/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    2.062      1 Template:Languages
+100.00%    2.062      1 -total
+-->
+</div>
+<!-- Saved in parser cache with key wikidb:pcache:idhash:367-0!canonical and timestamp 20201210151601 and revision id 35462
+ -->
+</div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://wiki.postgresql.org/index.php?title=Tuning_Your_PostgreSQL_Server&amp;oldid=35462">https://wiki.postgresql.org/index.php?title=Tuning_Your_PostgreSQL_Server&amp;oldid=35462</a>"</div>
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/wiki/Category:Administration" title="Category:Administration">Administration</a></li><li><a href="/wiki/Category:Performance" title="Category:Performance">Performance</a></li></ul></div></div>					<!-- end content -->
+										<div class="visualClear"></div>
+				</div>
+			</div>
+		</div>
+		<div id="column-one">
+			<h2>Navigation menu</h2>
+					<div id="p-cactions" class="portlet" role="navigation">
+			<h3>Views</h3>
+
+			<div class="pBody">
+				<ul>
+				<li id="ca-nstab-main" class="selected"><a href="/wiki/Tuning_Your_PostgreSQL_Server" title="View the content page [c]" accesskey="c">Page</a></li>
+				<li id="ca-talk"><a href="/wiki/Talk:Tuning_Your_PostgreSQL_Server" rel="discussion" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				<li id="ca-viewsource"><a href="/index.php?title=Tuning_Your_PostgreSQL_Server&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li>
+				<li id="ca-history"><a href="/index.php?title=Tuning_Your_PostgreSQL_Server&amp;action=history" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+				</ul>
+							</div>
+		</div>
+				<div class="portlet" id="p-personal" role="navigation">
+				<h3>Personal tools</h3>
+
+				<div class="pBody">
+					<ul>
+													<li id="pt-login"><a href="/index.php?title=Special:UserLogin&amp;returnto=Tuning+Your+PostgreSQL+Server" title="You must log in to edit any pages on this site. [o]" accesskey="o">Log in</a></li>
+											</ul>
+				</div>
+			</div>
+			<div class="portlet" id="p-logo" role="banner">
+				<a href="/wiki/Main_Page" class="mw-wiki-logo" title="Visit the main page"></a>
+			</div>
+				<div class="generated-sidebar portlet" id="p-navigation" role="navigation">
+		<h3>Navigation</h3>
+		<div class='pBody'>
+							<ul>
+											<li id="n-mainpage"><a href="/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main Page</a></li>
+											<li id="n-randompage"><a href="/wiki/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li>
+											<li id="n-recentchanges"><a href="/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+											<li id="n-help"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents" title="The place to find out">Help</a></li>
+									</ul>
+					</div>
+		</div>
+			<div id="p-search" class="portlet" role="search">
+			<h3><label for="searchInput">Search</label></h3>
+
+			<div id="searchBody" class="pBody">
+				<form action="/index.php" id="searchform">
+					<input type='hidden' name="title" value="Special:Search"/>
+					<input type="search" name="search" placeholder="Search PostgreSQL wiki" title="Search PostgreSQL wiki [f]" accesskey="f" id="searchInput"/>
+					<input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchGoButton" class="searchButton"/>&#160;
+						<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton"/>
+				</form>
+
+							</div>
+		</div>
+			<div class="portlet" id="p-tb" role="navigation">
+			<h3>Tools</h3>
+
+			<div class="pBody">
+				<ul>
+											<li id="t-whatlinkshere"><a href="/wiki/Special:WhatLinksHere/Tuning_Your_PostgreSQL_Server" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+											<li id="t-recentchangeslinked"><a href="/wiki/Special:RecentChangesLinked/Tuning_Your_PostgreSQL_Server" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+											<li id="t-specialpages"><a href="/wiki/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li>
+											<li id="t-print"><a href="/index.php?title=Tuning_Your_PostgreSQL_Server&amp;printable=yes" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>
+											<li id="t-permalink"><a href="/index.php?title=Tuning_Your_PostgreSQL_Server&amp;oldid=35462" title="Permanent link to this revision of the page">Permanent link</a></li>
+											<li id="t-info"><a href="/index.php?title=Tuning_Your_PostgreSQL_Server&amp;action=info" title="More information about this page">Page information</a></li>
+									</ul>
+							</div>
+		</div>
+			</div><!-- end of the left (by default at least) column -->
+		<div class="visualClear"></div>
+					<div id="footer" role="contentinfo">
+						<div id="f-poweredbyico">
+									<a href="//www.mediawiki.org/"><img src="/resources/assets/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31"/></a>
+							</div>
+					<ul id="f-list">
+									<li id="lastmod"> This page was last edited on 14 October 2020, at 11:57.</li>
+									<li id="privacy"><a href="/wiki/PostgreSQL_wiki:Privacy_policy" title="PostgreSQL wiki:Privacy policy">Privacy policy</a></li>
+									<li id="about"><a href="/wiki/PostgreSQL_wiki:About" title="PostgreSQL wiki:About">About PostgreSQL wiki</a></li>
+									<li id="disclaimer"><a href="/wiki/PostgreSQL_wiki:General_disclaimer" title="PostgreSQL wiki:General disclaimer">Disclaimers</a></li>
+							</ul>
+		</div>
+		</div>
+		<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.027","walltime":"0.030","ppvisitednodes":{"value":105,"limit":1000000},"ppgeneratednodes":{"value":142,"limit":1000000},"postexpandincludesize":{"value":0,"limit":2097152},"templateargumentsize":{"value":0,"limit":2097152},"expansiondepth":{"value":2,"limit":40},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":516,"limit":5000000},"timingprofile":["100.00%    2.062      1 Template:Languages","100.00%    2.062      1 -total"]},"cachereport":{"timestamp":"20201210151601","ttl":86400,"transientcontent":false}}});});</script><script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":74});});</script></body></html>

@@ -1,0 +1,88 @@
+H2 Database - Performance Tuning
+H2 Database
+Search
+everywhere
+only in this topic
+Advanced Search
+Performance Tuning
+‹
+Previous Topic
+Next Topic
+›
+Classic
+List
+Threaded
+♦
+♦
+Locked
+2 messages
+Chris-3
+Reply |
+Threaded
+Open this post in threaded view
+♦
+♦
+|
+Performance Tuning
+Hi,
+I'm having some trouble tracking down a performance issue in my code.
+I'm pretty certain that it's related to H2, but not 100%...  What I
+find is as follows:
+1. When using Derby insert time remains constant for inserting
+~1million rows
+2. When using H2 insert time starts out much lower than Derby, but
+once you get past a certain # of rows maybe 150k H2 insert time
+rapidly rises.
+3. I've tried playing with a couple config options in H2 - notably
+CACHE SIZE and MAX_MEMORY_UNDO - increasing these values doesn't seem
+to change the performance characteristics very much...
+Another quirk is that I'm unable to create a standalone app that
+mirrors this problem.  If I build a sample program the insert time
+stays constant.
+I stuck a profiler on my app to see what the differences were in the
+beginning when things look good and later on when performance had
+degraded.  In the "good" scenario in 1875 ms I'm able to execute 3142
+inserts (1.67 inserts/ms).  There's nothing in the profile stack that
+jumps out as being particularly "hot" or taking a long time.
+Int the "bad" scenario I'm only able to execute 709 inserts in 2246
+ms.  .31 inserts/ms.  I find that 1206 ms is spent in the method
+org.h2.store.FileObjectDisk.sync() (34.3% of time).   There is only 1
+thread accessing the DB.  this method does not show up at all on the
+"good" profile  and it's only invoked 2 times out of the 709 on the
+"bad" profile.  Take those two out and you end up with 707 inserts in
+1040ms - .67 inserts/ms.  Still not as good as the original but
+accounting for a lot of the overhead.
+Any ideas on what this could be, things to look for/settings to tweak?
+Chris
+--
+You received this message because you are subscribed to the Google Groups "H2 Database" group.
+To post to this group, send email to [hidden email].
+To unsubscribe from this group, send email to [hidden email].
+For more options, visit this group at http://groups.google.com/group/h2-database?hl=en.
+Thomas Mueller Graf
+Reply |
+Threaded
+Open this post in threaded view
+♦
+♦
+|
+Re: Performance Tuning
+Hi,
+It sounds like the problem is FileDescriptor.sync(). I will check if I
+can replace this call with a different mechanism, without risking
+corrupt databases. But this will take some time.
+If you don't care too much about the database getting corrupt during
+the import, see
+http://h2database.com/html/performance.html#fast_importRegards,
+Thomas
+--
+You received this message because you are subscribed to the Google Groups "H2 Database" group.
+To post to this group, send email to [hidden email].
+To unsubscribe from this group, send email to [hidden email].
+For more options, visit this group at http://groups.google.com/group/h2-database?hl=en.
+«
+Return to H2 Database
+|
+1 view|%1 views
+Free forum by Nabble
+Edit this page

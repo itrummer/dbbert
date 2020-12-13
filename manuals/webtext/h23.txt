@@ -1,0 +1,123 @@
+H2 Database Performance - the JPA Benchmark
+BenchmarkResultsComparisonJPA Performance Benchmark (JPAB)
+BenchmarkHomeBenchmark FAQTest DescriptionRunning and ResultsDownloadChange LogJPA ProvidersDataNucleusEclipseLinkHibernateObjectDBOpenJPADatabases (DBMS)DB4ODerbyH2HSQLDBMySQLObjectDBPostgreSQLSQLiteJPA & DBMSDataNucleus & Derby(e)DataNucleus & H2(e)DataNucleus & HSQLDB(e)DataNucleus & DB4O(e)DataNucleus & Derby(s)DataNucleus & H2(s)DataNucleus & MySQL(s)DataNucleus & PostgreSQL(s)EclipseLink & Derby(e)EclipseLink & H2(e)EclipseLink & HSQLDB(e)EclipseLink & SQLite(e)EclipseLink & Derby(s)EclipseLink & H2(s)EclipseLink & MySQL(s)EclipseLink & PostgreSQL(s)Hibernate & Derby(e)Hibernate & H2(e)Hibernate & HSQLDB(e)Hibernate & SQLite(e)Hibernate & Derby(s)Hibernate & H2(s)Hibernate & MySQL(s)Hibernate & PostgreSQL(s)OpenJPA & Derby(e)OpenJPA & H2(e)OpenJPA & HSQLDB(e)OpenJPA & Derby(s)OpenJPA & H2(s)OpenJPA & MySQL(s)OpenJPA & PostgreSQL(s)ObjectDB(e)ObjectDB(s)Click to browse the complete benchmark resultsH2 Pure Java Database
+H2 Performance SummaryThe following charts show the performance of H2 (in green) relatively to other JPA/DBMS combinations
+(in gray). Position #1 on the X-Axis (the fastest) is about 100 times faster than position #33 (the slowest).
+In the chart below the Y-Axis represents result score (maximum 100) in logarithmic scale - higher is better:
+Move the cursor over bars - for details. Click a bar - to switch a page.
+In the chart below the Y-Axis represents result score (maximum 100) in linear scale - higher is better:
+Move the cursor over bars - for details. Click a bar - to switch a page.
+The configurations in which H2 has been tested are listed in the following table: Database + JPA ProviderNormalized Score100 - Best,  0 - WorstFinal Position1 - Best,  33 - WorstFailed Tests1EclipseLink with H2 embedded18.43  (out of 33)02Hibernate with H2 embedded11.07  (out of 33)03OpenJPA with H2 embedded9.510  (out of 33)04DataNucleus with H2 embedded7.813  (out of 33)45EclipseLink with H2 server4.521  (out of 33)06Hibernate with H2 server3.423  (out of 33)07OpenJPA with H2 server3.025  (out of 33)08DataNucleus with H2 server2.926  (out of 33)4
+As shown above, the performance and stability are highly dependent on the JPA provider.
+H2 is faster and more stable
+(in both client-server and embedded modes) when used with EclipseLink or Hibernate.
+About H2 Database
+H2 Database is a popular pure Java RDBMS. Its first version was released in 2005.
+H2 is available under a modified version of the Mozilla Public License (MPL) license
+or under the Eclipse Public License (EPL).
+In this benchmark H2 version 1.3.164 (which was released in February 2012) has been tested.
+Both client-server and embedded mode are supported by H2 and were tested in this benchmark.
+Solved Problems and Issues
+The stack traces below demonstrate some exceptions that have been thrown when using H2 database in
+previous runs of this benchmark and have been fixed by upgrading software and setting.
+org.apache.openjpa.persistence.RollbackException: Unique index or primary key violation: "PRIMARY_KEY_2C ON PUBLIC.OPENJPA_SEQUENCES_TABLE(ID)"; SQL statement:
+INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [23001-141] {prepstmnt 28057122 INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [params=(String) DEFAULT, (int) 0]} [code=23001, state=23001]
+at org.apache.openjpa.persistence.EntityManagerImpl.commit(EntityManagerImpl.java:583)
+at org.jpab.Test.persist(Test.java:216)
+at org.jpab.Test.persist(Test.java:199)
+at org.jpab.Runner$PersistAction.run0(Runner.java:528)
+at org.jpab.Runner$TestAction.run(Runner.java:507)
+at java.lang.Thread.run(Thread.java:619)
+Caused by:
+org.apache.openjpa.persistence.EntityExistsException: Unique index or primary key violation: "PRIMARY_KEY_2C ON PUBLIC.OPENJPA_SEQUENCES_TABLE(ID)"; SQL statement:
+INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [23001-141] {prepstmnt 28057122 INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [params=(String) DEFAULT, (int) 0]} [code=23001, state=23001]
+at org.apache.openjpa.jdbc.sql.DBDictionary.narrow(DBDictionary.java:4812)
+at org.apache.openjpa.jdbc.sql.DBDictionary.newStoreException(DBDictionary.java:4787)
+at org.apache.openjpa.jdbc.sql.SQLExceptions.getStore(SQLExceptions.java:136)
+at org.apache.openjpa.jdbc.sql.SQLExceptions.getStore(SQLExceptions.java:110)
+at org.apache.openjpa.jdbc.sql.SQLExceptions.getStore(SQLExceptions.java:62)
+at org.apache.openjpa.jdbc.kernel.AbstractJDBCSeq.next(AbstractJDBCSeq.java:66)
+at org.apache.openjpa.util.ImplHelper.generateValue(ImplHelper.java:160)
+at org.apache.openjpa.util.ImplHelper.generateFieldValue(ImplHelper.java:144)
+at org.apache.openjpa.jdbc.kernel.JDBCStoreManager.assignField(JDBCStoreManager.java:794)
+at org.apache.openjpa.util.ApplicationIds.assign(ApplicationIds.java:487)
+at org.apache.openjpa.util.ApplicationIds.assign(ApplicationIds.java:463)
+at org.apache.openjpa.jdbc.kernel.JDBCStoreManager.assignObjectId(JDBCStoreManager.java:778)
+at org.apache.openjpa.kernel.DelegatingStoreManager.assignObjectId(DelegatingStoreManager.java:135)
+at org.apache.openjpa.kernel.StateManagerImpl.assignObjectId(StateManagerImpl.java:605)
+at org.apache.openjpa.kernel.StateManagerImpl.preFlush(StateManagerImpl.java:2952)
+at org.apache.openjpa.kernel.PNewState.beforeFlush(PNewState.java:40)
+at org.apache.openjpa.kernel.StateManagerImpl.beforeFlush(StateManagerImpl.java:1047)
+at org.apache.openjpa.kernel.BrokerImpl.flush(BrokerImpl.java:2077)
+at org.apache.openjpa.kernel.BrokerImpl.flushSafe(BrokerImpl.java:2037)
+at org.apache.openjpa.kernel.BrokerImpl.beforeCompletion(BrokerImpl.java:1955)
+at org.apache.openjpa.kernel.LocalManagedRuntime.commit(LocalManagedRuntime.java:81)
+at org.apache.openjpa.kernel.BrokerImpl.commit(BrokerImpl.java:1479)
+at org.apache.openjpa.kernel.DelegatingBroker.commit(DelegatingBroker.java:925)
+at org.apache.openjpa.persistence.EntityManagerImpl.commit(EntityManagerImpl.java:559)
+... 5 more
+Caused by: org.apache.openjpa.lib.jdbc.ReportingSQLException: Unique index or primary key violation: "PRIMARY_KEY_2C ON PUBLIC.OPENJPA_SEQUENCES_TABLE(ID)"; SQL statement:
+INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [23001-141] {prepstmnt 28057122 INSERT INTO OPENJPA_SEQUENCES_TABLE (ID, SEQUENCE_VALUE) VALUES (?, ?) [params=(String) DEFAULT, (int) 0]} [code=23001, state=23001]
+at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.wrap(LoggingConnectionDecorator.java:257)
+at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.wrap(LoggingConnectionDecorator.java:233)
+at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.access$1000(LoggingConnectionDecorator.java:70)
+at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator$LoggingConnection$LoggingPreparedStatement.executeUpdate(LoggingConnectionDecorator.java:1079)
+at org.apache.openjpa.lib.jdbc.DelegatingPreparedStatement.executeUpdate(DelegatingPreparedStatement.java:285)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq.executeUpdate(TableJDBCSeq.java:816)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq.insertSequence(TableJDBCSeq.java:501)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq.access$100(TableJDBCSeq.java:74)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq$AllocateSequenceRunnable.run(TableJDBCSeq.java:902)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq.allocateSequence(TableJDBCSeq.java:454)
+at org.apache.openjpa.jdbc.kernel.TableJDBCSeq.nextInternal(TableJDBCSeq.java:305)
+at org.apache.openjpa.jdbc.kernel.AbstractJDBCSeq.next(AbstractJDBCSeq.java:60)
+... 23 more
+org.apache.openjpa.persistence.ArgumentException: Failed to execute query "SELECT o FROM Person o WHERE o.lastName LIKE :pattern". Check the query syntax for correctness. See nested exception for details.
+at org.apache.openjpa.kernel.QueryImpl.execute(QueryImpl.java:870)
+at org.apache.openjpa.kernel.QueryImpl.execute(QueryImpl.java:792)
+at org.apache.openjpa.kernel.DelegatingQuery.execute(DelegatingQuery.java:542)
+at org.apache.openjpa.persistence.QueryImpl.execute(QueryImpl.java:288)
+at org.apache.openjpa.persistence.QueryImpl.getResultList(QueryImpl.java:302)
+at org.jpab.Test.query(Test.java:314)
+at org.jpab.Runner$QueryAction.run0(Runner.java:552)
+at org.jpab.Runner$TestAction.run(Runner.java:507)
+at java.lang.Thread.run(Thread.java:619)
+Caused by: java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Integer
+at org.apache.openjpa.jdbc.kernel.PreparedSQLStoreQuery$PreparedSQLExecutor.toParameterArray(PreparedSQLStoreQuery.java:157)
+at org.apache.openjpa.kernel.QueryImpl.execute(QueryImpl.java:855)
+... 8 more
+javax.persistence.RollbackException: Exception [EclipseLink-4002] (Eclipse Persistence Services - 2.1.1.v20100817-r8050): org.eclipse.persistence.exceptions.DatabaseException
+Internal Exception: org.h2.jdbc.JdbcBatchUpdateException: Referential integrity constraint violation: "FK_NODE_CHILD1_ID: PUBLIC.NODE FOREIGN KEY(CHILD1_ID) REFERENCES PUBLIC.NODE(ID)"; SQL statement:
+DELETE FROM NODE WHERE (ID = ?) [23003-147]
+Error Code: 23003
+at org.eclipse.persistence.internal.jpa.transaction.EntityTransactionImpl.commitInternal(EntityTransactionImpl.java:102)
+at org.eclipse.persistence.internal.jpa.transaction.EntityTransactionImpl.commit(EntityTransactionImpl.java:63)
+at org.jpab.Test.doAction(Test.java:272)
+at org.jpab.Runner$RemoveAction.run0(Runner.java:578)
+at org.jpab.Runner$TestAction.run(Runner.java:508)
+at java.lang.Thread.run(Thread.java:619)
+Caused by: Exception [EclipseLink-4002] (Eclipse Persistence Services - 2.1.1.v20100817-r8050): org.eclipse.persistence.exceptions.DatabaseException
+Internal Exception: org.h2.jdbc.JdbcBatchUpdateException: Referential integrity constraint violation: "FK_NODE_CHILD1_ID: PUBLIC.NODE FOREIGN KEY(CHILD1_ID) REFERENCES PUBLIC.NODE(ID)"; SQL statement:
+DELETE FROM NODE WHERE (ID = ?) [23003-147]
+Error Code: 23003
+at org.eclipse.persistence.exceptions.DatabaseException.sqlException(DatabaseException.java:324)
+at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeJDK12BatchStatement(DatabaseAccessor.java:830)
+at org.eclipse.persistence.internal.databaseaccess.ParameterizedSQLBatchWritingMechanism.executeBatchedStatements(ParameterizedSQLBatchWritingMechanism.java:139)
+at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.writesCompleted(DatabaseAccessor.java:1632)
+at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.commitTransaction(DatabaseAccessor.java:399)
+at org.eclipse.persistence.internal.sessions.AbstractSession.basicCommitTransaction(AbstractSession.java:504)
+at org.eclipse.persistence.sessions.server.ClientSession.basicCommitTransaction(ClientSession.java:155)
+at org.eclipse.persistence.internal.sessions.AbstractSession.commitTransaction(AbstractSession.java:686)
+at org.eclipse.persistence.internal.sessions.UnitOfWorkImpl.commitTransaction(UnitOfWorkImpl.java:1581)
+at org.eclipse.persistence.internal.sessions.RepeatableWriteUnitOfWork.commitTransaction(RepeatableWriteUnitOfWork.java:559)
+at org.eclipse.persistence.internal.sessions.UnitOfWorkImpl.commitTransactionAfterWriteChanges(UnitOfWorkImpl.java:1604)
+at org.eclipse.persistence.internal.sessions.RepeatableWriteUnitOfWork.commitRootUnitOfWork(RepeatableWriteUnitOfWork.java:207)
+at org.eclipse.persistence.internal.sessions.UnitOfWorkImpl.commitAndResume(UnitOfWorkImpl.java:1148)
+at org.eclipse.persistence.internal.jpa.transaction.EntityTransactionImpl.commitInternal(EntityTransactionImpl.java:84)
+... 5 more
+Caused by: org.h2.jdbc.JdbcBatchUpdateException: Referential integrity constraint violation: "FK_NODE_CHILD1_ID: PUBLIC.NODE FOREIGN KEY(CHILD1_ID) REFERENCES PUBLIC.NODE(ID)"; SQL statement:
+DELETE FROM NODE WHERE (ID = ?) [23003-147]
+at org.h2.jdbc.JdbcPreparedStatement.executeBatch(JdbcPreparedStatement.java:1105)
+at org.eclipse.persistence.internal.databaseaccess.DatabasePlatform.executeBatch(DatabasePlatform.java:1964)
+at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeJDK12BatchStatement(DatabaseAccessor.java:817)
+... 17 more
+JPA Performance Benchmark - Copyright © 2010, 2011, 2012 ObjectDB Software Ltd. - All rights reserved.The benchmark program is released as open source under the GPL license.

@@ -1,0 +1,339 @@
+Performance issues using H2 DB in embedded mode with heavy load of data in database - Stack Overflow
+Stack Overflow
+About
+Products
+For Teams
+Stack Overflow
+Public questions & answers
+Stack Overflow for Teams
+Where developers & technologists share private knowledge with coworkers
+Jobs
+Programming & related technical career opportunities
+Talent
+Recruit tech talent & build your employer brand
+Advertising
+Reach developers & technologists worldwide
+About the company
+Loading…
+Log in
+Sign up
+current community
+Stack Overflow
+help
+chat
+Meta Stack Overflow
+your communities
+Sign up or log in to customize your list.
+more stack exchange communities
+company blog
+By using our site, you acknowledge that you have read and understand our Cookie Policy, Privacy Policy, and our Terms of Service.
+Home
+Public
+Stack Overflow
+Tags
+Users
+Find a Job
+Jobs
+Companies
+Teams
+What’s this?
+Free 30 Day Trial
+Teams
+Q&A for Work
+Stack Overflow for Teams is a private, secure spot for you and
+your coworkers to find and share information.
+Learn more
+Performance issues using H2 DB in embedded mode with heavy load of data in database
+Ask Question
+Asked
+8 years, 8 months ago
+Active
+4 years, 11 months ago
+Viewed
+16k times
+8
+8
+I am working a java application using H2 Database in embedded mode.
+My Application consumes 150mb of heap memory.
+Problem:
+Steps
+When I load H2 database with 2 mb of data, database access is fast and heap memory size 160mb.
+But When I load H2 database with 30 mb of data(h2 db file size =30 mb). Then accessing the database from my application is very slow. the reason being my application heap size is hugely grown to 300mb of size hence degraded performance. I confirmed using JConsole.
+So my understanding is since H2 database is developed using java and since I am using H2 database in embedded mode, the heap size of H2 Database is added to my application which is breaking the application.
+The problem is as H2 database size is grown, the performance of my application is degraded.
+How to resolve the issue?
+I have given the connection as
+rurl = "jdbc:h2:file:/" + getDBPath() + dbname + ";CACHE_SIZE=" + (1024 * 1024) + ";PAGE_SIZE=512";
+to increase the cache of H2.
+h2 database-performance
+share
+|
+improve this question
+|
+follow
+|
+edited Dec 28 '15 at 17:03
+Nat
+3,4311818 silver badges2121 bronze badges
+asked Mar 21 '12 at 5:06
+Harish AlwalaHarish Alwala
+13411 gold badge11 silver badge99 bronze badges
+The cache size of an persistent, embedded H2 database is 16 MB by default. Do you use an in-memory database or a higher cache setting? Are you sure performance degrades because of heap memory usage (because this is very uncommon), and did check where the performance problem is (for example jps -l / jstack -l <pid>)?
+– Thomas Mueller
+Mar 21 '12 at 18:03
+You have used non-default cache size and page size - what are the reason to not use the default settings?
+– Thomas Mueller
+Mar 22 '12 at 5:59
+Did you find a solution for this? I'm experiencing the same problem. Small database is fine, if I insert lots of data into one table all the queries start to take much longer.
+– Gust
+Jan 26 '17 at 17:32
+add a comment
+|
+1 Answer
+1
+Active
+Oldest
+Votes
+9
+In most cases, performance problems are not actually related to the cache size or page size. To analyze performance problems, see the H2 documentation, specially:
+Database Performance Tuning
+Using the Built-In Profiler
+Application Profiling
+Database Profiling
+Statement Execution Plans
+How Data is Stored and How Indexes Work
+If you set the cache size manually to 1024 * 1024, then H2 will use 1 GB heap memory. This setting should only be use if you have a lot more than 1 GB of physical memory available to the JVM (using java -Xmx2048m or similar). Otherwise, I suggest to use the default settings (16 MB cache size) instead.
+Using a smaller page size than the default might decrease performance. This depends on the hard disk, and possibly on the access pattern. However, there is no list of rules when to use a non-default page size - the only way to find out is to try different settings.
+share
+|
+improve this answer
+|
+follow
+|
+answered Mar 22 '12 at 5:58
+Thomas MuellerThomas Mueller
+43.7k1212 gold badges9696 silver badges120120 bronze badges
+add a comment
+|
+Your Answer
+Thanks for contributing an answer to Stack Overflow!Please be sure to answer the question. Provide details and share your research!But avoid …Asking for help, clarification, or responding to other answers.Making statements based on opinion; back them up with references or personal experience.To learn more, see our tips on writing great answers.
+Draft saved
+Draft discarded
+Sign up or log in
+Sign up using Google
+Sign up using Facebook
+Sign up using Email and Password
+Submit
+Post as a guest
+Name
+Email
+Required, but never shown
+Post as a guest
+Name
+Email
+Required, but never shown
+Post Your Answer
+Discard
+By clicking “Post Your Answer”, you agree to our terms of service, privacy policy and cookie policy
+Not the answer you're looking for? Browse other questions tagged h2 database-performance
+or ask your own question.
+The Overflow Blog
+The semantic future of the web
+Podcast 294: Cleaning up build systems and gathering computer history
+Featured on Meta
+New Feature: Table Support
+Linked
+2
+Increase performance of query using h2 jar when importing from csv
+Related
+314
+How big can a MySQL database get before performance starts to degrade
+2
+H2 (embedded) Database in Java - StackOverflowError
+5
+H2 DB in Memory Clean the RAM
+3
+Continuous Increase in H2 db size after dropping and loading same data repeatedly
+1
+H2 Server consume 1G memory to load a 250m file based database?
+2
+h2 index corruption? embedded database loaded with runscript has “invisible” rows
+2
+H2 Query performance when joining large table
+5
+Is H2 database suitable as embedded database with large tables?
+1
+Neo4j-ogm: Decreasing write/mapping performance
+0
+How can you export a MySQL database, representing binary data with X'val' rather than 0xval hex notation?
+Hot Network Questions
+Why is it impossible to measure position and momentum at the same time with arbitrary precision?
+What spell permits the caster to take on the alignment of a nearby person or object?
+Minimum current level to trip a GFCI
+Advice on teaching abstract algebra and logic to high-school students
+How to prevent guerrilla warfare from existing
+Windows 10 - Which services and Windows features and so on are unnecesary and can be safely disabled?
+In parliamentary democracy, how do Ministers compensate for their potential lack of relevant experience to run their own ministry?
+Don't one-time recovery codes for 2FA introduce a backdoor?
+How would I connect multiple ground wires in this case (replacing ceiling pendant lights)?
+Can we calculate mean of absolute value of a random variable analytically?
+Weird result of fitting a 2D Gauss to data
+Was there an anomaly during SN8's ascent which later led to the crash?
+MOSFET blowing when soft starting a motor
+What important tools does a small tailoring outfit need?
+On the grand staff, does the crescendo apply to the right hand or left hand?
+Why don’t you capture more territory in Go?
+Use Magic Device with Robe of Stars
+How many treble keys should I have for accordion?
+Is it safe to disable IPv6 on my Debian server?
+Why would a company prevent their employees from selling their pre-IPO equity?
+Follow a linked list
+Making A Geosynchronous Orbit Impossible
+I was bitten by a kitten not even a month old, what should I do?
+Knees touching rib cage when riding in the drops
+more hot questions
+Question feed
+Subscribe to RSS
+Question feed
+To subscribe to this RSS feed, copy and paste this URL into your RSS reader.
+Stack Overflow
+Questions
+Jobs
+Developer Jobs Directory
+Salary Calculator
+Help
+Mobile
+Products
+Teams
+Talent
+Advertising
+Enterprise
+Company
+About
+Press
+Work Here
+Legal
+Privacy Policy
+Contact Us
+Stack Exchange Network
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Stack Overflow
+Server Fault
+Super User
+Web Applications
+Ask Ubuntu
+Webmasters
+Game Development
+TeX - LaTeX
+Software Engineering
+Unix & Linux
+Ask Different (Apple)
+WordPress Development
+Geographic Information Systems
+Electrical Engineering
+Android Enthusiasts
+Information Security
+Database Administrators
+Drupal Answers
+SharePoint
+User Experience
+Mathematica
+Salesforce
+ExpressionEngine® Answers
+Stack Overflow em Português
+Blender
+Network Engineering
+Cryptography
+Code Review
+Magento
+Software Recommendations
+Signal Processing
+Emacs
+Raspberry Pi
+Stack Overflow на русском
+Code Golf
+Stack Overflow en español
+Ethereum
+Data Science
+Arduino
+Bitcoin
+Software Quality Assurance & Testing
+Sound Design
+Windows Phone
+more (28)
+Photography
+Science Fiction & Fantasy
+Graphic Design
+Movies & TV
+Music: Practice & Theory
+Worldbuilding
+Video Production
+Seasoned Advice (cooking)
+Home Improvement
+Personal Finance & Money
+Academia
+Law
+Physical Fitness
+Gardening & Landscaping
+Parenting
+more (10)
+English Language & Usage
+Skeptics
+Mi Yodeya (Judaism)
+Travel
+Christianity
+English Language Learners
+Japanese Language
+Chinese Language
+French Language
+German Language
+Biblical Hermeneutics
+History
+Spanish Language
+Islam
+Русский язык
+Russian Language
+Arqade (gaming)
+Bicycles
+Role-playing Games
+Anime & Manga
+Puzzling
+Motor Vehicle Maintenance & Repair
+Board & Card Games
+Bricks
+Homebrewing
+Martial Arts
+The Great Outdoors
+Poker
+Chess
+Sports
+more (16)
+MathOverflow
+Mathematics
+Cross Validated (stats)
+Theoretical Computer Science
+Physics
+Chemistry
+Biology
+Computer Science
+Philosophy
+Linguistics
+Psychology & Neuroscience
+Computational Science
+more (10)
+Meta Stack Exchange
+Stack Apps
+API
+Data
+Blog
+Facebook
+Twitter
+LinkedIn
+Instagram
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa.
+rev 2020.12.10.38158
+Stack Overflow works best with JavaScript enabled

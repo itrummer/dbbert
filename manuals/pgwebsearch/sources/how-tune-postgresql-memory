@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+  <html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# " class="bg-dark">
+  <head>
+    <meta charset="utf-8" />
+<meta property="og:site_name" content="EDB" />
+<link rel="canonical" href="https://www.enterprisedb.com/postgres-tutorials/how-tune-postgresql-memory" />
+<meta name="description" content="This article looks at parameters that can be used to help manage memory in PostgreSQL. Recommended settings for each parameter are also provided." />
+<meta property="og:url" content="https://www.enterprisedb.com/postgres-tutorials/how-tune-postgresql-memory" />
+<meta property="og:title" content="How to tune PostgreSQL for memory | EDB" />
+<meta property="og:description" content="This article looks at parameters that can be used to help manage memory in PostgreSQL. Recommended settings for each parameter are also provided." />
+<meta property="og:image" content="https://www.enterprisedb.com/sites/default/files/edb-og-default-image.jpg" />
+<meta name="Generator" content="Drupal 8 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<style>div#sliding-popup, div#sliding-popup .eu-cookie-withdraw-banner, .eu-cookie-withdraw-tab {background: #e4eef5} div#sliding-popup.eu-cookie-withdraw-wrapper { background: transparent; } #sliding-popup h1, #sliding-popup h2, #sliding-popup h3, #sliding-popup p, #sliding-popup label, #sliding-popup div, .eu-cookie-compliance-more-button, .eu-cookie-compliance-secondary-button, .eu-cookie-withdraw-tab { color: #3f596a;} .eu-cookie-withdraw-tab { border-color: #3f596a;}</style>
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<link href="https://www.enterprisedb.com/postgres-tutorials/how-tune-postgresql-memory" rel="alternate" hreflang="en" />
+<link rel="shortcut icon" href="/themes/custom/edb_bootstrap_sass/favicon.ico" type="image/svg+xml" />
+<link rel="revision" href="https://www.enterprisedb.com/postgres-tutorials/how-tune-postgresql-memory" />
+<script src="/sites/default/files/google_tag/primary/google_tag/primary/google_tag.script.js?qkzcxa" defer></script>
+
+    <title>How to tune PostgreSQL for memory | EDB</title>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_vg3ijXIxHnAVa9E3pHOJ7JscE6cehmDOMKm_k2jztHY.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_0FgmeKkcLxPiboXHCmYx_SowvGkQGNnux8rgr-rh0jo.css" />
+
+    
+<!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
+
+  </head>
+  <body class="layout-no-sidebars page-node-1258118 path-node node--type-tutorials- no-focus-outline bg-white">
+    <a href="#main-content" class="visually-hidden focusable skip-link">
+      Skip to main content
+    </a>
+    <noscript aria-hidden="true"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5W8M67" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    <!-- <div id="page-wrapper"> -->
+<!--  <div id="page"> -->
+      <header id="header" class="header" role="banner" aria-label="Site header">
+                      <nav class="navbar shadow-sm py-3 navbar-light bg-light navbar-expand-lg" id="navbar-main" data-toggle="affix">
+                    <div class="container">
+                              <a href="/" title="Home" rel="home" class="navbar-brand">
+              <img src="/themes/custom/edb_bootstrap_sass/edb-logo-disc-dark-2.svg" alt="Home" class="site-logo img-fluid d-inline-block align-center" />
+            <span class="ml-2 d-none d-md-inline"></span>
+    </a>
+    
+
+                          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#CollapsingNavbar" aria-controls="CollapsingNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="hamburger top-slice"></span>
+                <span class="hamburger mid-slice"></span>
+                <span class="hamburger bottom-slice"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-between" id="CollapsingNavbar">
+                  <nav role="navigation" aria-labelledby="block-edb-bootstrap-sass-barriomainmenu-menu" id="block-edb-bootstrap-sass-barriomainmenu" class="block block-menu navigation menu--barrio-main-menu">
+            
+  <h2 class="sr-only" id="block-edb-bootstrap-sass-barriomainmenu-menu">Barrio main menu</h2>
+  
+
+        
+  
+    
+                            <ul class="menu menu-level-0 navbar-nav mr-auto dropdown">
+          <li class="nav-item position-relative">
+        <span class="dropdown-toggle nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-toggle="dropdown" data-domtype="sub-menu-label h5 col-lg">Why EDB?</span>
+                    
+    
+                      <ul class="menu menu-level-1 dropdown-menu shadow mt-0 px-3 pt-3">
+          <li class="nav-item">
+        <a href="/why-edb/get-the-most-out-of-postgresql-open-source-database" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-svg="energy.svg-main-menu-green.green-26-26" title="The EDB Manifesto" data-drupal-link-system-path="node/1258283">EDB Supercharges PostgreSQL</a>
+                          <hr>
+              </li>
+          <li class="nav-item">
+        <span id="" data-toggle="" data-domtype="sub-menu-wrapper" data-svg="" target="">wrapper</span>
+                    
+    
+                      <ul class="menu menu-level-2 pl-0">
+          <li class="nav-item">
+        <span class="nav-item d-inline-block text-nowrap font-weight-bolder lh-12 ml-4" data-domtype="sub-menu-label ">Use Cases</span>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <a href="/why-edb/oracle-migration-to-postgres-and-move-from-oracle" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="connect.svg-main-menu-green.green-26-26" title="Leave Oracle for PostgreSQL" data-drupal-link-system-path="node/1258315">Oracle Migration</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-hybrid-multi-cloud-public-and-private-on-premise-or-multi-datacenter" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="cloud-db.svg-main-menu-green.green-nyn2nx1-26-26" title="PostgreSQL on-premises and cloud" data-drupal-link-system-path="node/1258317">Hybrid Cloud</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-high-availability-deploy-and-manage-ha-cluster" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="high-availability.svg-main-menu-green.green-nyn2-26-26" target="" title="Business continuity at scale" data-drupal-link-system-path="node/1258318">High Availability</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item">
+        <span id="" class="nav-item d-inline-block text-nowrap font-weight-bolder lh-12 ml-4" data-toggle="" data-domtype="sub-menu-label" data-svg="" target="">Solutions for</span>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-helping-it-professionals-succeed-and-support" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="laptop-config.svg-main-menu-green.green-26-26" target="" title="Operational efficiency with PostgreSQL" data-drupal-link-system-path="node/1258319">IT Professionals</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-database-architects-data-structure-design-managers" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="network2.svg-main-menu-green.green-26-26" target="" title="Replatforming for business continuity" data-drupal-link-system-path="node/1258329">Database Architects</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-database-software-developers-and-application-developers" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="developer.svg-main-menu-green.green-nyn1nx2-26-26" target="" title="PostgreSQL just works" data-drupal-link-system-path="node/1258322">Developers</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/why-edb/postgresql-database-admins-administrators-managers-dba-dbas" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mb-3" data-toggle="" data-domtype="sub-menu-link" data-svg="database-admin.svg-main-menu-green.green-nx3-24-24" target="" title="Beyond performance and reliability" data-drupal-link-system-path="node/1258323">Database Admins</a>
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item position-relative">
+        <span class="dropdown-toggle nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-toggle="dropdown" data-domtype="sub-menu-label h5 col-lg">Products</span>
+                    
+    
+                      <ul class="menu menu-level-1 dropdown-menu shadow mt-0 px-3 pt-3">
+          <li class="nav-item">
+        <a href="/products/edb-postgres-database-product-overview-features-specifications" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="" data-svg="network.svg-main-menu-blue.blue-26-26" target="" title="Integrated, supported PostgreSQL products" data-drupal-link-system-path="node/1258313">Products Overview</a>
+                          <hr>
+              </li>
+          <li class="nav-item">
+        <span data-domtype="sub-menu-wrapper-vertical">wrapper</span>
+                    
+    
+                      <ul class="menu menu-level-2 pl-0">
+          <li class="nav-item">
+        <span class="nav-item d-inline-block text-nowrap font-weight-bolder lh-12 ml-4 row-children" data-domtype="sub-menu-label ">Databases</span>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <a href="/products/edb-postgres-advanced-server-secure-ha-oracle-compatible" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-epas.svg-main-menu-blue.blue-28-28" target="" title="Enterprise-ready, Oracle-compatible PostgreSQL" data-drupal-link-system-path="node/1258284">EDB Postgres Advanced Server</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/products/postgresql-open-source-database-advantages-why-choose" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="postgresql.svg-main-menu-blue.blue-ny1-26-26" title="PostgreSQL, supported by EDB" data-drupal-link-system-path="node/1258297">PostgreSQL</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item">
+        <span class="nudge-li2" data-domtype="sub-menu-wrapper">wrapper</span>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <span class="nav-item d-inline-block text-nowrap font-weight-bolder lh-12 ml-4 mt-4" data-domtype="sub-menu-label h6 sub-menu-wrapper">Tools</span>
+                    
+    
+                      <ul class="menu menu-level-4 pl-0">
+          <li class="nav-item">
+        <a href="/products/postgresql-enterprise-manager-best-gui-tools-database-management" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-pem.svg-main-menu-blue.blue-28-28" target="" title="PostgreSQL GUI for enterprises" data-drupal-link-system-path="node/1258298">Postgres Enterprise Manager</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/products/postgresql-database-auto-backup-recovery-restore-script-tools" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-bart.svg-main-menu-blue.blue-28-28" target="" title="Disaster recovery for PostgreSQL" data-drupal-link-system-path="node/1258299">Backup and Recovery Tool</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/products/postgresql-automatic-failover-manager-cluster-high-availability" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-efm.svg-main-menu-blue.blue-28-28" target="" title="High availability for PostgreSQL" data-drupal-link-system-path="node/1258300">Failover Manager</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/products/postgresql-community-tools-for-management-development-gui" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mb-3" data-toggle="" data-domtype="sub-menu-link" data-svg="tools.svg-main-menu-blue.blue-23-23" target="" title="PostgreSQL community projects" data-drupal-link-system-path="node/1258330">Open Source Projects</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item">
+        <a href="/products/free-oracle-postgres-migration-tool" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mt-5" data-domtype="sub-menu-link" data-svg="edb-migration-portal.svg-main-menu-blue.blue-28-28" title="Browser-based schema migration tool" data-drupal-link-system-path="node/1258302">Migration Portal</a>
+                    
+    
+                      <ul class="menu menu-level-4 pl-0">
+          <li class="nav-item">
+        <a href="/products/oracle-to-postgresql-migration-toolkit-move-from" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-migration-toolkit.svg-main-menu-blue.blue-28-28" target="" title="Command-line data migration tool" data-drupal-link-system-path="node/1258303">Migration Toolkit</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/products/postgresql-replication-server-single-or-multi-master-mode" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="edb-replication.svg-main-menu-blue.blue-28-28" target="" title="Read/write geographically distributed PostgreSQL" data-drupal-link-system-path="node/1258304">Replication Server</a>
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item position-relative">
+        <span class="dropdown-toggle nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-toggle="dropdown" data-domtype="sub-menu-label h5 col-lg">Services</span>
+                    
+    
+                      <ul class="menu menu-level-1 dropdown-menu shadow mt-0 px-3 pt-3">
+          <li class="nav-item">
+        <a href="/services/postgresql-database-professional-services-and-support" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="learning.svg-main-menu-indigo.indigo-nyn1nx2-26-26" title="Decades of deployment experience" data-drupal-link-system-path="node/1258314">Services Overview</a>
+                          <hr>
+              </li>
+          <li class="nav-item">
+        <a href="/training/free-postgres-training" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="brain-circuit.svg-main-menu-indigo.indigo-22-22" title="Learn PostgreSQL from EDB’s experts" data-drupal-link-system-path="node/1258292">Training</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/services/postgresql-getting-started-deployment-design-solution-assesment-migration" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="rocket.svg-main-menu-indigo.indigo-22-22" target="" title="PostgreSQL deployment, design, migration" data-drupal-link-system-path="node/1258285">Getting Started</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/services/postgresql-optimization-improve-query-performance-tuning-tips" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="improve.svg-main-menu-indigo.indigo-nxn1nyn1-22-22" title="Best practices for growth" data-drupal-link-system-path="node/1258305">PostgreSQL Optimization</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/services/enterprise-strategy-postgresql-strategic-transformation-security-design" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="knight.svg-main-menu-indigo.indigo-26-26" target="" title="Use-case driven PostgreSQL architectures" data-drupal-link-system-path="node/1258306">Enterprise Strategy</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/services/postgresql-custom-services-need-subject-matter-expert-help-support" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mb-3" data-toggle="" data-domtype="sub-menu-link" data-svg="idea-sharing.svg-main-menu-indigo.indigo-26-26" target="" title="Embedded PostgreSQL experts" data-drupal-link-system-path="node/1258307">Custom Services</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item position-relative">
+        <span class="dropdown-toggle nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-toggle="dropdown" data-domtype="sub-menu-label h5">Support</span>
+                    
+    
+                      <ul class="menu menu-level-1 dropdown-menu shadow mt-0 px-3 pt-3">
+          <li class="nav-item">
+        <a href="/support-portal" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="support-portal.svg-main-menu-cyan.cyan-26-26" title="Knowledge base, online help" data-drupal-link-system-path="support-portal">Customer Support Portal</a>
+                          <hr>
+              </li>
+          <li class="nav-item">
+        <a href="/support/postgresql-support-overview-get-the-most-out-of-postgresql" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="support.svg-main-menu-cyan.cyan-26-26" target="" title="Support for Postgres everywhere" data-drupal-link-system-path="node/1258286">Support Overview</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/support/postgresql-technical-support-24x7x365-enterprise-level-database-support-help" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="postgres-support.svg-main-menu-cyan.cyan-28-28" target="" title="Live PostgreSQL support, 24x7" data-drupal-link-system-path="node/1258308">PostgreSQL Technical Support</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/support/postgresql-remote-dba-service-for-on-premises-databases-support-24x7-help" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="remote-dba.svg-main-menu-cyan.cyan-26-26" target="" title="Support for PostgreSQL on-premises" data-drupal-link-system-path="node/1258309">Remote DBA Service</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/support/postgresql-cloud-dba-service-for-databases-hosted-by-cloud-providers-24x7-help" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="cloud-dba.svg-main-menu-cyan.cyan-nyn2-26-26" target="" title="Support for cloud PostgreSQL" data-drupal-link-system-path="node/1258310">Cloud DBA Service</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/support/postgresql-technical-account-management-service-subject-matter-experts-to-assist" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mb-3" data-toggle="" data-domtype="sub-menu-link" data-svg="businesswoman.svg-main-menu-cyan.cyan-nyn1-26-26" target="" title="Ongoing guidance for PostgreSQL" data-drupal-link-system-path="node/1258311">Technical Account Management</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item position-relative">
+        <span class="dropdown-toggle nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-toggle="dropdown" data-domtype="sub-menu-label h5 col-lg">Resources</span>
+                    
+    
+                      <ul class="menu menu-level-1 dropdown-menu shadow mt-0 px-3 pt-3">
+          <li class="nav-item">
+        <a href="/edb-docs" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="docs.svg-main-menu-orange.orange-nyn1-22-22" title="Documentation for EDB products">Docs</a>
+                          <hr>
+              </li>
+          <li class="nav-item">
+        <span id="" class="no-submenu-labels" data-toggle="" data-domtype="sub-menu-wrapper" data-svg="" target="">wrapper</span>
+                    
+    
+                      <ul class="menu menu-level-2 pl-0">
+          <li class="nav-item">
+        <a href="/blog" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="stack.svg-main-menu-orange.orange-26-26" title="Industry news and thought leadership" data-drupal-link-system-path="blog">Blog</a>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <a href="/webinars" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="webinar.svg-main-menu-orange.orange-24-24" target="" title="Upcoming and on-demand webinars" data-drupal-link-system-path="webinars">Webinars</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/postgres-tutorials" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 py-2" data-domtype="sub-menu-link" data-svg="tutorial.svg-main-menu-orange.orange-24-24" title="Hands on with PostgreSQL" data-drupal-link-system-path="postgres-tutorials">PostgreSQL Tutorials</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/training/free-postgres-training" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 py-2 mb-3" data-domtype="sub-menu-link" data-svg="brain-circuit.svg-main-menu-orange.orange-24-24" title="Learn PostgreSQL from EDB’s experts" data-drupal-link-system-path="node/1258292">Training</a>
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item">
+        <a href="/partners" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2" data-domtype="sub-menu-link" data-svg="partner.svg-main-menu-orange.orange-24-24" title="EDB&#039;s global business partners" data-drupal-link-system-path="node/1258470">Partners</a>
+                    
+    
+                      <ul class="menu menu-level-3 pl-0">
+          <li class="nav-item">
+        <a href="/white-papers" id="" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 py-2" data-toggle="" data-domtype="sub-menu-link" data-svg="file.svg-main-menu-orange.orange-nyn1nx2-24-24" target="" title="PostgreSQL research and analysis" data-drupal-link-system-path="white-papers">White Papers</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/case-studies" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 py-2" data-domtype="sub-menu-link" data-svg="case-study.svg-main-menu-orange.orange-24-24" title="EDB customer success stories" data-drupal-link-system-path="case-studies">Customer Stories</a>
+                      </li>
+          <li class="nav-item">
+        <a href="/product-compatibility" class="call-svg svg-target inner-title text-innerwrap d-flex align-items-center rounded dropdown-item py-2 mb-3" data-domtype="sub-menu-link" data-svg="convert.svg-main-menu-orange.orange-24-24" title="Supported versions and operating systems" data-drupal-link-system-path="node/206602">Product Compatibility</a>
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+        </ul>
+  
+                      </li>
+          <li class="nav-item position-relative">
+        <a href="/postgres-plans-pricing-subscriptions-for-services-and-support" class="nav-link text-nowrap font-weight-bolder px-xl-3 px-lg-2" data-domtype="sub-menu-link top-o-list" data-drupal-link-system-path="node/1258312">Plans</a>
+                      </li>
+        </ul>
+  
+
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-edb-bootstrap-sass-barrioutilitymenu-menu" id="block-edb-bootstrap-sass-barrioutilitymenu" class="block block-menu navigation menu--barrio-utility-menu">
+            
+  <h2 class="sr-only" id="block-edb-bootstrap-sass-barrioutilitymenu-menu">Barrio utility menu</h2>
+  
+
+        
+              <ul data-region="primary_menu" block="block-edb-bootstrap-sass-barrioutilitymenu" class="clearfix nav navbar-nav">
+                    <li class="nav-item">
+                <a href="/contact" id="" class="nav-link nav-link text-nowrap font-weight-bolder small px-xl-3 px-lg-2 nav-link--contact" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258278">Contact</a>
+              </li>
+                <li class="nav-item">
+                <a href="/welcome" id="" class="nav-link nav-link text-nowrap font-weight-bolder small px-xl-3 px-lg-2 nav-link--welcome" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1256117">Dashboard</a>
+              </li>
+                <li class="nav-item">
+                <a href="/user/login" id="" class="nav-link nav-link text-nowrap font-weight-bolder small px-xl-3 px-lg-2 nav-link--user-login" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="user/login">Sign In</a>
+              </li>
+                <li class="nav-item">
+                <a href="/software-downloads-postgres" class="nav-link nav-link text-nowrap smaller mx-xl-3 mx-lg-2 py-1 text-orange-btn btn btn-outline-orange  rounded hover-white nav-link--software-downloads-postgres" data-drupal-link-system-path="node/1257368">Downloads</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+<nav role="navigation" aria-labelledby="block-barriomobilemenu-menu" id="block-barriomobilemenu" class="block block-menu navigation menu--barrio-mobile-menu">
+            
+  <h2 class="sr-only" id="block-barriomobilemenu-menu">Barrio Mobile Menu</h2>
+  
+
+        
+                <ul class="clearfix px-0 menu pb-5">
+                    <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-0 mb-2 h3 nav-link-" data-toggle="dropdown" data-domtype="" data-svg="" target="">Why EDB?</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/why-edb/get-the-most-out-of-postgresql-open-source-database" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-get-the-most-out-of-postgresql-open-source-database" data-svg="energy.svg-mobile-menu.green-20-20" title="The EDB Manifesto" data-drupal-link-system-path="node/1258283">EDB Supercharges PostgreSQL</a>
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-3 mb-2 font-weight-bolder text-black-50 text-uppercase small nav-link-" data-toggle="" data-domtype="sub-menu-label col-lg" data-svg="" target="">Use Cases</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/why-edb/oracle-migration-to-postgres-and-move-from-oracle" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-oracle-migration-to-postgres-and-move-from-oracle" data-domtype="sub-menu-link" data-svg="connect.svg-mobile-menu.green-20-20" title="Leave Oracle for PostgreSQL" data-drupal-link-system-path="node/1258315">Oracle Migration</a>
+              </li>
+                <li class="nav-item">
+                <a href="/why-edb/postgresql-hybrid-multi-cloud-public-and-private-on-premise-or-multi-datacenter" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-postgresql-hybrid-multi-cloud-public-and-private-on-premise-or-multi-datacenter" data-domtype="sub-menu-link" data-svg="cloud-db.svg-mobile-menu.green-20-20" title="PostgreSQL on-premises and cloud" data-drupal-link-system-path="node/1258317">Hybrid Cloud</a>
+              </li>
+                <li class="nav-item">
+                <a href="/why-edb/postgresql-high-availability-deploy-and-manage-ha-cluster" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-postgresql-high-availability-deploy-and-manage-ha-cluster" data-domtype="sub-menu-link" data-svg="high-availability.svg-mobile-menu.green-20-20" title="Business continuity at scale" data-drupal-link-system-path="node/1258318">High Availability</a>
+              </li>
+            </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-3 mb-2 font-weight-bolder text-black-50 text-uppercase small nav-link-" data-toggle="" data-domtype="sub-menu-label" data-svg="" target="">Solutions for</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/why-edb/postgresql-helping-it-professionals-succeed-and-support" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-postgresql-helping-it-professionals-succeed-and-support" data-domtype="sub-menu-link" data-svg="laptop-config.svg-mobile-menu.green-20-20" title="Operational efficiency with PostgreSQL" data-drupal-link-system-path="node/1258319">IT Professionals</a>
+              </li>
+                <li class="nav-item">
+                <a href="/why-edb/postgresql-database-architects-data-structure-design-managers" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-postgresql-database-architects-data-structure-design-managers" data-domtype="sub-menu-link" data-svg="network2.svg-mobile-menu.green-20-20" title="Replatforming for business continuity" data-drupal-link-system-path="node/1258329">Database Architects</a>
+              </li>
+                <li class="nav-item">
+                <a href="/why-edb/postgresql-database-software-developers-and-application-developers" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--why-edb-postgresql-database-software-developers-and-application-developers" data-domtype="sub-menu-link" data-svg="developer.svg-mobile-menu.green-20-20" title="PostgreSQL just works" data-drupal-link-system-path="node/1258322">Developers</a>
+              </li>
+                <li class="nav-item">
+                <a href="/why-edb/postgresql-database-admins-administrators-managers-dba-dbas" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 mb-3 nav-link--why-edb-postgresql-database-admins-administrators-managers-dba-dbas" data-domtype="sub-menu-link" data-svg="database-admin.svg-mobile-menu.green-20-20" title="Beyond performance and reliability" data-drupal-link-system-path="node/1258323">Database Admins</a>
+              </li>
+            </ul>
+  
+              </li>
+            <hr>
+        </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-0 mb-2 h3 nav-link-" data-toggle="dropdown" data-domtype="" data-svg="" target="">Products</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/products/edb-postgres-database-product-overview-features-specifications" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-edb-postgres-database-product-overview-features-specifications" data-svg="network.svg-mobile-menu.blue-20-20" title="Integrated, supported PostgreSQL products" data-drupal-link-system-path="node/1258313">Products Overview</a>
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-3 mb-2 font-weight-bolder text-black-50 text-uppercase small nav-link-" data-toggle="" data-domtype="sub-menu-label col-lg" data-svg="" target="">Databases</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/products/edb-postgres-advanced-server-secure-ha-oracle-compatible" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-edb-postgres-advanced-server-secure-ha-oracle-compatible" data-domtype="sub-menu-link" data-svg="edb-epas.svg-mobile-menu.blue-20-20" title="Enterprise-ready, Oracle-compatible PostgreSQL" data-drupal-link-system-path="node/1258284">EDB Postgres Advanced Server</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-open-source-database-advantages-why-choose" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-open-source-database-advantages-why-choose" data-domtype="sub-menu-link" data-svg="postgresql.svg-mobile-menu.blue-20-20" title="PostgreSQL, supported by EDB" data-drupal-link-system-path="node/1258297">PostgreSQL</a>
+              </li>
+                <li class="nav-item">
+                <span id="" class="d-inline-block mt-3 mb-2 font-weight-bolder text-black-50 text-uppercase small nav-link-" data-toggle="" data-domtype="sub-menu-label" data-svg="" target="">Tools</span>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-enterprise-manager-best-gui-tools-database-management" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-enterprise-manager-best-gui-tools-database-management" data-domtype="sub-menu-link" data-svg="edb-pem.svg-mobile-menu.blue-20-20" title="PostgreSQL GUI for enterprises" data-drupal-link-system-path="node/1258298">Postgres Enterprise Manager</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-database-auto-backup-recovery-restore-script-tools" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-database-auto-backup-recovery-restore-script-tools" data-domtype="sub-menu-link" data-svg="edb-bart.svg-mobile-menu.blue-20-20" title="Disaster recovery for PostgreSQL" data-drupal-link-system-path="node/1258299">Backup and Recovery Tool</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-automatic-failover-manager-cluster-high-availability" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-automatic-failover-manager-cluster-high-availability" data-domtype="sub-menu-link" data-svg="edb-efm.svg-mobile-menu.blue-20-20" title="High availability for PostgreSQL" data-drupal-link-system-path="node/1258300">Failover Manager</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-community-tools-for-management-development-gui" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-community-tools-for-management-development-gui" data-domtype="sub-menu-link" data-svg="tools.svg-mobile-menu.blue-20-20" title="PostgreSQL community projects" data-drupal-link-system-path="node/1258330">Open Source Projects</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/oracle-to-postgresql-migration-toolkit-move-from" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-oracle-to-postgresql-migration-toolkit-move-from" data-domtype="sub-menu-link" data-svg="edb-migration-portal.svg-mobile-menu.blue-20-20" title="Browser-based schema migration tool" data-drupal-link-system-path="node/1258303">Migration Portal</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/oracle-to-postgresql-migration-toolkit-move-from" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-oracle-to-postgresql-migration-toolkit-move-from" data-domtype="sub-menu-link" data-svg="edb-migration-toolkit.svg-mobile-menu.blue-20-20" title="Command-line data migration tool" data-drupal-link-system-path="node/1258303">Migration Toolkit</a>
+              </li>
+                <li class="nav-item">
+                <a href="/products/postgresql-replication-server-single-or-multi-master-mode" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--products-postgresql-replication-server-single-or-multi-master-mode" data-domtype="sub-menu-link" data-svg="edb-replication.svg-mobile-menu.blue-20-20" title="Read/write geographically distributed PostgreSQL" data-drupal-link-system-path="node/1258304">Replication Server</a>
+              </li>
+            </ul>
+  
+              </li>
+            <hr>
+        </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-0 mb-2 h3 nav-link-" data-toggle="dropdown" data-domtype="" data-svg="" target="">Services</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/services" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--services" data-domtype="sub-menu-link" data-svg="learning.svg-mobile-menu.indigo-20-20" title="Decades of deployment experience">Services Overview</a>
+              </li>
+                <li class="nav-item">
+                <a href="/training/free-postgres-training" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--training-free-postgres-training" data-domtype="sub-menu-link" data-svg="brain-circuit.svg-mobile-menu.indigo-20-20" title="Learn PostgreSQL from EDB’s experts" data-drupal-link-system-path="node/1258292">Training</a>
+              </li>
+                <li class="nav-item">
+                <a href="/services/postgresql-getting-started-deployment-design-solution-assesment-migration" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--services-postgresql-getting-started-deployment-design-solution-assesment-migration" data-domtype="sub-menu-link" data-svg="rocket.svg-mobile-menu.indigo-20-20" title="PostgreSQL deployment, design, migration" data-drupal-link-system-path="node/1258285">Getting Started</a>
+              </li>
+                <li class="nav-item">
+                <a href="/services/postgresql-optimization-improve-query-performance-tuning-tips" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--services-postgresql-optimization-improve-query-performance-tuning-tips" data-domtype="sub-menu-link" data-svg="improve.svg-mobile-menu.indigo-20-20" title="Best practices for growth" data-drupal-link-system-path="node/1258305">Postgres Optimization</a>
+              </li>
+                <li class="nav-item">
+                <a href="/services/enterprise-strategy-postgresql-strategic-transformation-security-design" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--services-enterprise-strategy-postgresql-strategic-transformation-security-design" data-domtype="sub-menu-link" data-svg="knight.svg-mobile-menu.indigo-20-20" title="Use-case driven PostgreSQL architectures" data-drupal-link-system-path="node/1258306">Enterprise Strategy</a>
+              </li>
+                <li class="nav-item">
+                <a href="/services/postgresql-custom-services-need-subject-matter-expert-help-support" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 mb-3 nav-link--services-postgresql-custom-services-need-subject-matter-expert-help-support" data-domtype="sub-menu-link" data-svg="idea-sharing.svg-mobile-menu.indigo-20-20" title="Embedded PostgreSQL experts" data-drupal-link-system-path="node/1258307">Custom Services</a>
+              </li>
+            <hr>
+        </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-0 mb-2 h3 nav-link-" data-toggle="dropdown" data-domtype="" data-svg="" target="">Support</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/support/postgresql-support-overview-get-the-most-out-of-postgresql" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--support-postgresql-support-overview-get-the-most-out-of-postgresql" data-domtype="sub-menu-link" data-svg="support.svg-mobile-menu.cyan-20-20" title="Support for Postgres everywhere" data-drupal-link-system-path="node/1258286">Support Overview</a>
+              </li>
+                <li class="nav-item">
+                <a href="/support/postgresql-technical-support-24x7x365-enterprise-level-database-support-help" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--support-postgresql-technical-support-24x7x365-enterprise-level-database-support-help" data-domtype="sub-menu-link" data-svg="postgres-support.svg-mobile-menu.cyan-20-20" title="Live PostgreSQL support, 24x7" data-drupal-link-system-path="node/1258308">PostgreSQL Technical Support</a>
+              </li>
+                <li class="nav-item">
+                <a href="/support/postgresql-remote-dba-service-for-on-premises-databases-support-24x7-help" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--support-postgresql-remote-dba-service-for-on-premises-databases-support-24x7-help" data-domtype="sub-menu-link" data-svg="remote-dba.svg-mobile-menu.cyan-20-20" title="Support for PostgreSQL on-premises" data-drupal-link-system-path="node/1258309">Remote DBA Service</a>
+              </li>
+                <li class="nav-item">
+                <a href="/support/postgresql-cloud-dba-service-for-databases-hosted-by-cloud-providers-24x7-help" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--support-postgresql-cloud-dba-service-for-databases-hosted-by-cloud-providers-24x7-help" data-domtype="sub-menu-link" data-svg="cloud-dba.svg-mobile-menu.cyan-20-20" title="Support for cloud PostgreSQL" data-drupal-link-system-path="node/1258310">Cloud DBA Service</a>
+              </li>
+                <li class="nav-item">
+                <a href="/support/postgresql-technical-account-management-service-subject-matter-experts-to-assist" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 mb-3 nav-link--support-postgresql-technical-account-management-service-subject-matter-experts-to-assist" data-domtype="sub-menu-link" data-svg="businesswoman.svg-mobile-menu.cyan-20-20" title="Ongoing guidance for PostgreSQL" data-drupal-link-system-path="node/1258311">Technical Account Management</a>
+              </li>
+            <hr>
+        </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <span id="" class="d-inline-block mt-0 mb-2 h3 nav-link-" data-toggle="dropdown" data-domtype="" data-svg="" target="">Resources</span>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/edb-docs" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 py-2 nav-link--edb-docs" data-domtype="sub-menu-link" data-svg="docs.svg-mobile-menu.orange-20-20" title="Documentation for EDB products">Docs</a>
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <a href="/blog" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--blog" data-domtype="sub-menu-link" data-svg="stack.svg-mobile-menu.orange-20-20" title="Industry news and thought leadership" data-drupal-link-system-path="blog">Blog</a>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/webinars" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--webinars" data-domtype="sub-menu-link" data-svg="webinar.svg-mobile-menu.orange-20-20" title="Upcoming and on-demand webinars" data-drupal-link-system-path="webinars">Webinars</a>
+              </li>
+                <li class="nav-item">
+                <a href="/postgres-tutorials" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 py-2 nav-link--postgres-tutorials" data-domtype="sub-menu-link" data-svg="tutorial.svg-mobile-menu.orange-20-20" title="Hands on with PostgreSQL" data-drupal-link-system-path="postgres-tutorials">Postgres Tutorials</a>
+              </li>
+                <li class="nav-item">
+                <a href="/training/free-postgres-training" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--training-free-postgres-training" data-domtype="sub-menu-link" data-svg="brain-circuit.svg-mobile-menu.orange-20-20" title="Learn PostgreSQL from EDB’s experts" data-drupal-link-system-path="node/1258292">Training</a>
+              </li>
+            </ul>
+  
+              </li>
+                <li class="nav-item menu-item--expanded">
+                <a href="/partners" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 nav-link--partners" data-domtype="sub-menu-link" data-svg="partner.svg-mobile-menu.orange-20-20" title="EDB&#039;s global business partners" data-drupal-link-system-path="node/1258470">Partners</a>
+                                  <ul data-region="primary_menu" block="block-barriomobilemenu" class="clearfix px-0 menu"">
+                    <li class="nav-item">
+                <a href="/white-papers" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 py-2 nav-link--white-papers" data-domtype="sub-menu-link" data-svg="file.svg-mobile-menu.orange-20-20" title="PostgreSQL research and analysis" data-drupal-link-system-path="white-papers">White Papers</a>
+              </li>
+                <li class="nav-item">
+                <a href="/case-studies" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 py-2 nav-link--case-studies" data-domtype="sub-menu-link" data-svg="case-study.svg-mobile-menu.orange-20-20" title="EDB customer success stories" data-drupal-link-system-path="case-studies">Customer Stories</a>
+              </li>
+                <li class="nav-item">
+                <a href="/product-compatibility" class="d-inline-block text-dark call-svg svg-target text-innerwrap d-flex align-items-center rounded px-4 py-1 mb-3 nav-link--product-compatibility" data-domtype="sub-menu-link" data-svg="convert.svg-mobile-menu.orange-20-20" title="Supported versions and operating systems" data-drupal-link-system-path="node/206602">Product Compatibility</a>
+              </li>
+            </ul>
+  
+              </li>
+            <hr>
+        </ul>
+  
+              </li>
+                <li class="nav-item">
+                <a href="/" class="d-inline-block align-items-center rounded text-dark nav-link--" data-domtype="sub-menu-link top-o-list" data-drupal-link-system-path="&lt;front&gt;">Plans</a>
+              </li>
+                <li class="nav-item">
+                <a href="/software-downloads-postgres" class="d-inline-block align-items-center rounded text-dark nav-link--software-downloads-postgres" data-drupal-link-system-path="node/1257368">Downloads</a>
+              </li>
+                <li class="nav-item">
+                <a href="/contact" class="d-inline-block align-items-center rounded text-dark nav-link--contact" data-drupal-link-system-path="node/1258278">Contact</a>
+              </li>
+                <li class="nav-item">
+                <a href="/user/login" class="d-inline-block align-items-center rounded text-dark logoff-display nav-link--user-login" data-drupal-link-system-path="user/login">Sign In</a>
+              </li>
+                <li class="nav-item">
+                <a href="/welcome" class="d-inline-block align-items-center rounded text-dark login-display nav-link--welcome" data-drupal-link-system-path="node/1256117">Dashboard</a>
+              </li>
+            </ul>
+  
+
+
+  </nav>
+
+
+                	          </div>
+                                            </div>
+                  </nav>
+          </header>
+          <div class="highlighted container">
+          <div class="container text-center my-0">
+            <div id="block-edbheadertitle" class="block block-edb-misc block-edb-misc-header-title">
+  
+    
+      <div class="content">
+        <h3 class="h1 mt-5 balance-text">
+        <a class="text-dark" href="/postgres-tutorials">
+            PostgreSQL Tutorials
+        </a>
+    </h3>
+    <p class="ml-0 mb-3">
+        <a class="d-block py-1 align-middle small text-dark" href="/postgres-tutorials">
+            <svg title="arrow-left" class="fill-black mt-n1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="12" height="12" viewBox="0 0 24 24" style="fill:#000000;"><path d="M 10 4.9296875 L 2.9296875 12 L 10 19.070312 L 11.5 17.570312 L 6.9296875 13 L 21 13 L 21 11 L 6.9296875 11 L 11.5 6.4296875 L 10 4.9296875 z"></path></svg>
+            Back
+        </a>
+    </p>
+
+    </div>
+  </div>
+
+
+          </div>
+      </div>
+    
+    <div class="container my-5">
+              <div class="row">
+          
+          <div class="col-md-9 col-sm-12 mx-auto">
+              <main class="main-content col" id="content" role="main">
+                <!-- <section class="section"> -->
+                  <a id="main-content" tabindex="-1"></a>
+                    <div id="block-mixpanel" class="block block-block-content block-block-contentc65300e0-65b0-4924-b01e-864c5bfe687c">
+  
+    
+      <div class="content">
+      
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><script>(function(c,a){if(!a.__SV){var b=window;try{var d,m,j,k=b.location,f=k.hash;d=function(a,b){return(m=a.match(RegExp(b+"=([^&]*)")))?m[1]:null};f&&d(f,"state")&&(j=JSON.parse(decodeURIComponent(d(f,"state"))),"mpeditor"===j.action&&(b.sessionStorage.setItem("_mpcehash",f),history.replaceState(j.desiredHash||"",c.title,k.pathname+k.search)))}catch(n){}var l,h;window.mixpanel=a;a._i=[];a.init=function(b,d,g){function c(b,i){var a=i.split(".");2==a.length&&(b=b[a[0]],i=a[1]);b[i]=function(){b.push([i].concat(Array.prototype.slice.call(arguments,
+0)))}}var e=a;"undefined"!==typeof g?e=a[g]=[]:g="mixpanel";e.people=e.people||[];e.toString=function(b){var a="mixpanel";"mixpanel"!==g&&(a+="."+g);b||(a+=" (stub)");return a};e.people.toString=function(){return e.toString(1)+".people (stub)"};l="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+for(h=0;h<l.length;h++)c(e,l[h]);var f="set set_once union unset remove delete".split(" ");e.get_group=function(){function a(c){b[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));e.push([d,call2])}}for(var b={},d=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<f.length;c++)a(f[c]);return b};a._i.push([b,d,g])};a.__SV=1.2;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?
+MIXPANEL_CUSTOM_LIB_URL:"file:"===c.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d)}})(document,window.mixpanel||[]);
+mixpanel.init("b928890cc98c61a33c2986f080685d91", {batch_requests: true})</script></div>
+      
+    </div>
+  </div>
+<div data-drupal-messages-fallback class="hidden"></div>
+<div id="block-edb-bootstrap-sass-page-title" class="block block-core block-page-title-block">
+  
+    
+      <div class="content">
+      
+  <h1 class="h2 text-center balance-text"><span class="field field--name-title field--type-string field--label-hidden">How to tune PostgreSQL for memory</span>
+</h1>
+
+
+    </div>
+  </div>
+<div id="block-edb-bootstrap-sass-content" class="block block-system block-system-main-block">
+  
+    
+      <div class="content">
+      
+
+<article data-history-node-id="1258118" role="article" about="/postgres-tutorials/how-tune-postgresql-memory" class="node node--type-tutorials- node--view-mode-full clearfix">
+    <div class="node__content clearfix">
+      <div class="layout layout--onecol edb-relative">
+    <p class="text-center">
+        
+    
+        
+                <span class="badge badge-secondary">Tuning</span>
+        
+    
+    
+              <p class="text-center">
+            
+            </p>
+<p class="text-center">
+
+
+        
+                <span class="field field--name-title field--type-string field--label-hidden">Tushar Ahuja</span>
+
+            
+            
+              <span class="team-member-title">Sr. QA Manager</span>
+      
+      
+    
+    
+        <span class="team-member-post-date">
+            Apr 6, 2020
+      </span>
+      </p>
+  <div class="block block-layout-builder block-field-blocknodetutorials-body">
+  
+    
+      <div class="content">
+      
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><style type="text/css">
+<!--/*--><![CDATA[/* ><!--*/
+.summary{
+background:#f3f7f9; padding:20px;
+}
+
+/*--><!]]>*/
+</style><div class="summary">
+<p>This article looks at parameters that can be used to help manage memory in PostgreSQL. Recommended settings for each parameter are also provided.</p>
+<p>1. Shared_buffers (integer)</p>
+<p>2. Work_mem (integer)</p>
+<p>3. Maintenance_work_mem (integer)</p>
+<p>4. Effective_cache_size (integer)</p>
+</div>
+<p> </p>
+<p>In this post, we are going to look at some of the important <span style="font-family:Courier New,Courier,monospace;">GUC parameters</span> recommended for memory management in PostgreSQL, which is helpful for improving the performance of your database server. All of these parameters reside under the <span style="font-family:Courier New,Courier,monospace;">postgresql.conf</span> file (inside $PDATA directory), which manages the configurations of the database server. </p>
+<p> </p>
+<h2>shared_buffers (integer)</h2>
+<p>The <span style="font-family:Courier New,Courier,monospace;">shared_buffers</span> parameter determines how much memory is dedicated to the server for caching data. </p>
+<p>The default value for this parameter, which is set in <span style="font-family:Courier New,Courier,monospace;">postgresql.conf</span>, is:</p>
+<pre>
+<code class="language-sql">#shared_buffers = 128MB</code></pre><p> </p>
+<p>The value should be set to 15% to 25% of the machine’s total RAM. For example: if your machine’s RAM size is 32 GB, then the recommended value for <span style="font-family:Courier New,Courier,monospace;">shared_buffers</span> is 8 GB. Please note that the database server needs to be restarted after this change.</p>
+<p> </p>
+<h2>work_mem (integer)</h2>
+<p>The <span style="font-family:Courier New,Courier,monospace;">work_mem</span> parameter basically provides the amount of memory to be used by internal sort operations and hash tables before writing to temporary disk files. Sort operations are used for order by, distinct, and merge join operations. Hash tables are used in hash joins and hash based aggregation.</p>
+<p>The default value for this parameter, which is set in <span style="font-family:Courier New,Courier,monospace;">postgresql.conf</span>, is:</p>
+<pre>
+<code class="language-sql">#work_mem = 4MB</code></pre><p> </p>
+<p>Setting the correct value of <span style="font-family:Courier New,Courier,monospace;">work_mem</span> parameter can result in less disk-swapping, and therefore far quicker queries. </p>
+<p>We can use the formula below to calculate the optimal <span style="font-family:Courier New,Courier,monospace;">work_mem </span>value for the database server:</p>
+<pre>
+<code class="language-sql">Total RAM * 0.25 / max_connections</code></pre><p> </p>
+<p>The <span style="font-family:Courier New,Courier,monospace;">max_connections</span> parameter is one of the <span style="font-family:Courier New,Courier,monospace;">GUC parameters</span> to specify the maximum number of concurrent connections to the database server. By default it is set to 100 connections. </p>
+<p>We can also directly assign <span style="font-family:Courier New,Courier,monospace;">work_mem</span> to a role: </p>
+<pre>
+<code>postgres=# alter user test set work_mem='4GB';
+
+ALTER ROLE</code></pre><p> </p>
+<h2>maintenance_work_mem (integer)</h2>
+<p>The <span style="font-family:Courier New,Courier,monospace;">maintenance_work_mem</span> parameter basically provides the maximum amount of memory to be used by maintenance operations like <span style="font-family:Courier New,Courier,monospace;">vacuum</span>, <span style="font-family:Courier New,Courier,monospace;">create index</span>, and <span style="font-family:Courier New,Courier,monospace;">alter table add foreign key</span> operations. </p>
+<p>The default value for this parameter, which is set in <span style="font-family:Courier New,Courier,monospace;">postgresql.conf</span>, is:</p>
+<pre>
+<code class="language-sql">#maintenance_work_mem = 64MB</code></pre><p> </p>
+<p>It’s recommended to set this value higher than <span style="font-family:Courier New,Courier,monospace;">work_mem</span>; this can improve performance for vacuuming. In general it should be: </p>
+<pre>
+<code class="language-sql">Total RAM * 0.05</code></pre><p> </p>
+<h2>effective_cache_size (integer)</h2>
+<p>The <span style="font-family:Courier New,Courier,monospace;">effective_cache_size</span> parameter estimates how much memory is available for disk caching by the operating system and within the database itself. The PostgreSQL query planner decides whether it’s fixed in RAM or not. Index scans are most likely to be used against higher values; otherwise, sequential scans will be used if the value is low. Recommendations are to set <span style="font-family:Courier New,Courier,monospace;">Effective_cache_size</span> at 50% of the machine’s total RAM.</p>
+<p>For more details and other parameters, please refer to the PostgreSQL documentation: <a href="https://www.postgresql.org/docs/12/runtime-config-resource.html">https://www.postgresql.org/docs/12/runtime-config-resource.html</a>.</p>
+<p> </p>
+<p>Hope it helps! </p>
+</div>
+      
+    </div>
+  </div>
+  
+    
+              
+            
+
+<div class="card mb-3 mt-5">
+  <div class="row no-gutters">
+            <div class="col-md-2">
+          
+      </div><!--/.col-->
+      <div class="col-md-10">
+          <div class="card-body">
+              <h3 class="card-title edb-relative">
+                  <span class="author-name-long">Tushar Ahuja</span><span class="author-title-long">Sr. QA Manager</span>
+              </h3>
+              <p class="card-text">
+                  
+              </p>
+          </div><!--/.card-body-->
+      </div><!--/.col-md-10-->
+  </div>
+</div><!--/.card mb-3 mt-5-->
+
+      
+  
+    </p>
+  </div>
+
+  </div>
+</article>
+
+    </div>
+  </div>
+<div id="block-mixpaneltrack" class="block block-block-content block-block-content0fe0c59c-c20b-4c79-9cc5-49a3a47b5124">
+  
+    
+      <div class="content">
+      
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><script>
+/*
+ * Mixpanel event calls
+ */
+
+// function executes if user wants to opt out of tracking
+function optOut() {
+  mixpanel.opt_out_tracking();
+}
+// function executes if user wants to opt into tracking
+function optIn() {
+  mixpanel.opt_in_tracking();
+}
+
+// function executes when user loads home page
+function viewHome() {
+  // Send a "viewHome" event to Mixpanel
+  // with test property object
+  
+  mixpanel.track(
+    "viewHome",
+    {"tracktype": "view home page"}
+  );
+}
+// function executes when user loads login page
+function viewLogin() {
+  // Send a "viewLogin" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewLogin",
+    {"tracktype": "view login page"}
+  );
+}
+// function executes when user logins successfully
+function viewWelcome() {
+  // Send a "viewLogin" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewWelcome",
+    {"tracktype": "view viewWelcome page"}
+  );
+}
+// function executes when user loads registration page
+function viewRegistration() {
+  // Send a "viewRegistration" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewRegistration",
+    {"tracktype": "view registration page"}
+  );
+}
+// function executes when user loads registration page
+function viewThankYou() {
+  // Send a "viewRegistration" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewThankYou",
+    {"tracktype": "view thank you for signing page"}
+  );
+}
+// function executes when user loads downloads page
+function viewDownloads() {
+  // Send a "viewDownloads" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewDownloads",
+    {"tracktype": "view downloads page"}
+  );
+}
+// function executes when user loads any other page
+function viewSite() {
+  // Send a "viewSite" event to Mixpanel
+  // with test property object
+  mixpanel.track(
+    "viewSite",
+    {"tracktype": "view any page"}
+  );
+}
+
+// by default the user has opted in.
+var mixpanelNonConsent = mixpanel.has_opted_out_tracking();
+if (!mixpanelNonConsent) {
+  //TODO place event triggers in here.
+}
+
+/*
+ * Event Triggers
+ */
+// page views
+document.addEventListener('DOMContentLoaded', function(e) {
+
+  var pageUrl = window.location.href;
+  pageUrl = '/' + pageUrl.replace(/^(?:\/\/|[^/]+)*\//, '');
+
+  switch(pageUrl) {
+    case '/':
+      viewHome();
+      break;
+    case '/user/login':
+      viewLogin();
+      break;
+    case '/welcome':
+      viewWelcome();
+      break;
+    case '/user/register':
+      viewRegistration();
+      break;
+    case '/thank-you-creating-account':
+      viewThankYou();
+      break;
+    case '/software-downloads-postgres':
+      viewDownloads();
+      break;
+    default:
+      viewSite();
+
+  }
+});
+
+</script></div>
+      
+    </div>
+  </div>
+
+
+                <!-- </section> --><!-- .section -->
+              </main>
+                                  </div>
+        </div>
+          </div>
+                  <div class="featured-bottom text-center bg-primary d-flex justify-content-center">
+              <section class="region region-featured-bottom-first">
+    <div id="block-contactusfooter" class="block block-block-content block-block-content4bae1b83-e6d2-4b1e-827b-28874122f479">
+  
+    
+      <div class="content">
+      
+            <div class="clearfix text-formatted field field--name-body field--type-text-with-summary field--label-hidden field__item"><div class="text-center lead bg-primary text-light py-4 mx-3">Ready to take the next step with PostgreSQL? <a class="btn btn-outline-light ml-3" href="/contact">Contact Us</a></div>
+</div>
+      
+    </div>
+  </div>
+
+  </section>
+
+        </div>
+              <footer class="py-5 bg-dark text-white-50 small text-sm-left text-center">
+              <div class="container">
+                      <div class="site-footer__top clearfix row">
+                <section class="row region region-footer-first">
+    <nav role="navigation" aria-labelledby="block-barriomainmenu-menu" id="block-barriomainmenu" class="block block-menu navigation menu--barrio-main-menu">
+            
+  <h2 class="sr-only" id="block-barriomainmenu-menu">Barrio main menu</h2>
+  
+
+        
+
+<div class="row">
+    <div class="item-div">
+                                                                                    </div>
+                                            <div class="col-lg">
+                                                                      <h5 class="mt-4">Why EDB?</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                                                                                                                                                              <h6 class="mt-4">Use Cases</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/why-edb/oracle-migration-to-postgres-and-move-from-oracle">Oracle Migration</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/why-edb/postgresql-hybrid-multi-cloud-public-and-private-on-premise-or-multi-datacenter">Hybrid Cloud</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/why-edb/postgresql-high-availability-deploy-and-manage-ha-cluster">High Availability</a>
+                </li>
+                                                
+                                        </ul>
+                                                                                              <h6 class="mt-4">Solutions for</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/why-edb/postgresql-helping-it-professionals-succeed-and-support">IT Professionals</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/why-edb/postgresql-database-architects-data-structure-design-managers">Database Architects</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/why-edb/postgresql-database-software-developers-and-application-developers">Developers</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/why-edb/postgresql-database-admins-administrators-managers-dba-dbas">Database Admins</a>
+                </li>
+                                                
+                                        </ul>
+                        
+                                    
+                                        </ul>
+                                                                                </div>
+                                            <div class="col-lg">
+                                                                      <h5 class="mt-4">Products</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                                                                                                                                                              <h6 class="mt-4">Databases</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/products/edb-postgres-advanced-server-secure-ha-oracle-compatible">EDB Postgres Advanced Server</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/products/postgresql-open-source-database-advantages-why-choose">PostgreSQL</a>
+                </li>
+                                                
+                                        </ul>
+                                                                                                                                                                  <h6 class="mt-4">Tools</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/products/postgresql-enterprise-manager-best-gui-tools-database-management">Postgres Enterprise Manager</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/products/postgresql-database-auto-backup-recovery-restore-script-tools">Backup and Recovery Tool</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/products/postgresql-automatic-failover-manager-cluster-high-availability">Failover Manager</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/products/postgresql-community-tools-for-management-development-gui">Open Source Projects</a>
+                </li>
+                                                
+                                        </ul>
+                                                                                <li class="my-2">
+                                    <a href="/products/free-oracle-postgres-migration-tool">Migration Portal</a>
+                </li>
+                                                                                                                    <li class="my-2">
+                                    <a href="/products/oracle-to-postgresql-migration-toolkit-move-from">Migration Toolkit</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/products/postgresql-replication-server-single-or-multi-master-mode">Replication Server</a>
+                </li>
+                                                
+                                    
+                                    
+                                    
+                                        </ul>
+                                                                                </div>
+                                            <div class="col-lg">
+                                                                      <h5 class="mt-4">Services</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/services/postgresql-database-professional-services-and-support">Services Overview</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/training/free-postgres-training">Training</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/services/postgresql-getting-started-deployment-design-solution-assesment-migration">Getting Started</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/services/postgresql-optimization-improve-query-performance-tuning-tips">PostgreSQL Optimization</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/services/enterprise-strategy-postgresql-strategic-transformation-security-design">Enterprise Strategy</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/services/postgresql-custom-services-need-subject-matter-expert-help-support">Custom Services</a>
+                </li>
+                                                
+                                        </ul>
+                                                                                              <h5 class="mt-4">Support</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/support-portal">Customer Support Portal</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/support/postgresql-support-overview-get-the-most-out-of-postgresql">Support Overview</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/support/postgresql-technical-support-24x7x365-enterprise-level-database-support-help">PostgreSQL Technical Support</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/support/postgresql-remote-dba-service-for-on-premises-databases-support-24x7-help">Remote DBA Service</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/support/postgresql-cloud-dba-service-for-databases-hosted-by-cloud-providers-24x7-help">Cloud DBA Service</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/support/postgresql-technical-account-management-service-subject-matter-experts-to-assist">Technical Account Management</a>
+                </li>
+                                                
+                                        </ul>
+                                                                                </div>
+                                            <div class="col-lg">
+                                                                      <h5 class="mt-4">Resources</h6>
+                                <ul class="list-unstyled">
+
+                                                                                                                    <li class="my-2">
+                                    <a href="/edb-docs">Docs</a>
+                </li>
+                                                                                                                                                                            <li class="my-2">
+                                    <a href="/blog">Blog</a>
+                </li>
+                                                                                                                    <li class="my-2">
+                                    <a href="/webinars">Webinars</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/postgres-tutorials">PostgreSQL Tutorials</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/training/free-postgres-training">Training</a>
+                </li>
+                                                
+                                                                                            <li class="my-2">
+                                    <a href="/partners">Partners</a>
+                </li>
+                                                                                                                    <li class="my-2">
+                                    <a href="/white-papers">White Papers</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/case-studies">Customer Stories</a>
+                </li>
+                                                                                                        <li class="my-2">
+                                    <a href="/product-compatibility">Product Compatibility</a>
+                </li>
+                                                
+                                    
+                                    
+                                        </ul>
+                                                                                <li class="my-2 top-o-list">
+                                    <a href="/postgres-plans-pricing-subscriptions-for-services-and-support">Plans</a>
+                </li>
+                                                
+    </div>
+    <div class="col-lg mr-n5">
+        
+                                            <h5 class="mt-4">Company</h6>
+                <ul class="list-unstyled">
+                                                                                    <li class="my-2">
+                    <a href="/about" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258296">About EDB</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/postgresql-community-participation" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258328">PostgreSQL Contributions</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/careers" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258294">Careers</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/events" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="events">Events</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/press-releases" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="press-releases">Press Releases</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/media-coverage" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="media-coverage">Media Coverage</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="/customers" id="" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258336">Customers</a>
+                </li>
+                                                
+                                        </ul>
+                        
+
+
+        
+                                            <h5 class="mt-4">Follow Us</h6>
+                <ul class="list-unstyled">
+                                                                                    <li class="my-2">
+                    <a href="https://twitter.com/EDBPostgres" id="" data-toggle="" data-domtype="" data-svg="" target="">Twitter</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="https://www.linkedin.com/company/enterprisedb" id="" data-toggle="" data-domtype="" data-svg="" target="">LinkedIn</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="https://www.facebook.com/EDBpostgres">Facebook</a>
+                </li>
+                                                                        <li class="my-2">
+                    <a href="https://www.youtube.com/user/EnterpriseDB" id="" data-toggle="" data-domtype="" data-svg="" target="">YouTube</a>
+                </li>
+                                                
+                                        </ul>
+                        
+
+
+    </div>
+</div>
+
+  </nav>
+
+  </section>
+
+                <section class="row region region-footer-second">
+    <nav role="navigation" aria-labelledby="block-barriofootersecondarymenu-menu" id="block-barriofootersecondarymenu" class="block block-menu navigation menu--footer-secondary-menu">
+            
+  <h2 class="sr-only" id="block-barriofootersecondarymenu-menu">Barrio Footer Secondary Menu</h2>
+  
+
+        
+<div class="text-center my-3 text-muted">                                <span>© 2020 EDB</span>
+                            <span class="secondary-footer-spacer text-muted"></span>
+                                                        <a href="/gdpr" id="" class="text-muted mx-2" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/1258280">GDPR</a>
+                            <span class="secondary-footer-spacer text-muted"></span>
+                                                        <a href="/privacy-policy" id="" class="text-muted mx-2" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/4378">Privacy Policy</a>
+                            <span class="secondary-footer-spacer text-muted"></span>
+                                                        <a href="/terms-use" id="" class="text-muted mx-2" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/4590">Terms of Use</a>
+                            <span class="secondary-footer-spacer text-muted"></span>
+                                                        <a href="/trademarks" id="" class="text-muted mx-2" data-toggle="" data-domtype="" data-svg="" target="" data-drupal-link-system-path="node/172111">Trademarks</a>
+                                                </div>
+
+
+  </nav>
+<div id="block-edbgtranslate" class="block block-edb-misc block-edb-gtranslate-block">
+  
+    
+      <div class="content">
+      
+<div class="gtranslate text-center my-3 text-muted">
+<script type="text/javascript">
+/* <![CDATA[ */
+eval(unescape("eval%28function%28p%2Ca%2Cc%2Ck%2Ce%2Cr%29%7Be%3Dfunction%28c%29%7Breturn%28c%3Ca%3F%27%27%3Ae%28parseInt%28c/a%29%29%29+%28%28c%3Dc%25a%29%3E35%3FString.fromCharCode%28c+29%29%3Ac.toString%2836%29%29%7D%3Bif%28%21%27%27.replace%28/%5E/%2CString%29%29%7Bwhile%28c--%29r%5Be%28c%29%5D%3Dk%5Bc%5D%7C%7Ce%28c%29%3Bk%3D%5Bfunction%28e%29%7Breturn%20r%5Be%5D%7D%5D%3Be%3Dfunction%28%29%7Breturn%27%5C%5Cw+%27%7D%3Bc%3D1%7D%3Bwhile%28c--%29if%28k%5Bc%5D%29p%3Dp.replace%28new%20RegExp%28%27%5C%5Cb%27+e%28c%29+%27%5C%5Cb%27%2C%27g%27%29%2Ck%5Bc%5D%29%3Breturn%20p%7D%28%276%207%28a%2Cb%29%7Bn%7B4%282.9%29%7B3%20c%3D2.9%28%22o%22%29%3Bc.p%28b%2Cf%2Cf%29%3Ba.q%28c%29%7Dg%7B3%20c%3D2.r%28%29%3Ba.s%28%5C%27t%5C%27+b%2Cc%29%7D%7Du%28e%29%7B%7D%7D6%20h%28a%29%7B4%28a.8%29a%3Da.8%3B4%28a%3D%3D%5C%27%5C%27%29v%3B3%20b%3Da.w%28%5C%27%7C%5C%27%29%5B1%5D%3B3%20c%3B3%20d%3D2.x%28%5C%27y%5C%27%29%3Bz%283%20i%3D0%3Bi%3Cd.5%3Bi++%294%28d%5Bi%5D.A%3D%3D%5C%27B-C-D%5C%27%29c%3Dd%5Bi%5D%3B4%282.j%28%5C%27k%5C%27%29%3D%3DE%7C%7C2.j%28%5C%27k%5C%27%29.l.5%3D%3D0%7C%7Cc.5%3D%3D0%7C%7Cc.l.5%3D%3D0%29%7BF%286%28%29%7Bh%28a%29%7D%2CG%29%7Dg%7Bc.8%3Db%3B7%28c%2C%5C%27m%5C%27%29%3B7%28c%2C%5C%27m%5C%27%29%7D%7D%27%2C43%2C43%2C%27%7C%7Cdocument%7Cvar%7Cif%7Clength%7Cfunction%7CGTranslateFireEvent%7Cvalue%7CcreateEvent%7C%7C%7C%7C%7C%7Ctrue%7Celse%7CdoGTranslate%7C%7CgetElementById%7Cgoogle_translate_element2%7CinnerHTML%7Cchange%7Ctry%7CHTMLEvents%7CinitEvent%7CdispatchEvent%7CcreateEventObject%7CfireEvent%7Con%7Ccatch%7Creturn%7Csplit%7CgetElementsByTagName%7Cselect%7Cfor%7CclassName%7Cgoog%7Cte%7Ccombo%7Cnull%7CsetTimeout%7C500%27.split%28%27%7C%27%29%2C0%2C%7B%7D%29%29"))
+/* ]]> */
+</script><style type="text/css">
+<!--
+#goog-gt-tt {display:none !important;}
+
+.goog-te-banner-frame {display:none !important;}
+
+.goog-te-menu-value:hover {text-decoration:none !important;}
+
+body {top:0 !important;}
+
+#google_translate_element2 {display:none!important;}
+-->
+</style><div id="google_translate_element2"></div>
+<script type="text/javascript">function googleTranslateElementInit2() {new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element2');}</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script><style type="text/css">
+<!--
+a.gtflag {background-image:url('/modules/contrib/gtranslate/gtranslate-files/16a.png');}
+a.gtflag:hover {background-image:url('/modules/contrib/gtranslate/gtranslate-files/16.png');}
+-->
+</style><a href="javascript:doGTranslate('en|en'); jQuery('#language_dropdown').val('en|en');" title="English" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-0px -0px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="English" /></a> <a href="javascript:doGTranslate('en|nl'); jQuery('#language_dropdown').val('en|nl');" title="Dutch" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-0px -100px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="Dutch" /></a> <a href="javascript:doGTranslate('en|fr'); jQuery('#language_dropdown').val('en|fr');" title="French" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-200px -100px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="French" /></a> <a href="javascript:doGTranslate('en|de'); jQuery('#language_dropdown').val('en|de');" title="German" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-300px -100px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="German" /></a> <a href="javascript:doGTranslate('en|ja'); jQuery('#language_dropdown').val('en|ja');" title="Japanese" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-700px -100px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="Japanese" /></a> <a href="javascript:doGTranslate('en|ko'); jQuery('#language_dropdown').val('en|ko');" title="Korean" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-0px -200px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="Korean" /></a> <a href="javascript:doGTranslate('en|pt'); jQuery('#language_dropdown').val('en|pt');" title="Portuguese" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-300px -200px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="Portuguese" /></a> <a href="javascript:doGTranslate('en|es'); jQuery('#language_dropdown').val('en|es');" title="Spanish" class="gtflag" style="font-size:16px;padding:1px 0;background-repeat:no-repeat;background-position:-600px -200px;"><img src="/modules/contrib/gtranslate/gtranslate-files/blank.png" height="16" width="16" style="border:0;vertical-align:top;" alt="Spanish" /></a> <br><select id="language_dropdown" onchange="doGTranslate(jQuery(this).val());"><option value="">Select Language</option><option value="en|en" style="font-weight:bold;background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -0px;padding-left:18px;">English (EN)</option><option value="en|nl" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -128px;padding-left:18px;">Dutch</option><option value="en|fr" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -160px;padding-left:18px;">French</option><option value="en|de" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -176px;padding-left:18px;">German</option><option value="en|ja" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -240px;padding-left:18px;">Japanese</option><option value="en|ko" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -256px;padding-left:18px;">Korean</option><option value="en|pt" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -304px;padding-left:18px;">Portuguese</option><option value="en|es" style="background:url('/modules/contrib/gtranslate/gtranslate-files/16l.png') no-repeat scroll 0 -352px;padding-left:18px;">Spanish</option></select><div class="mt-2">This automated translation should not be considered exact and only used to approximate the original English language content.<br /> EDB does not guarantee the accuracy, reliability, or timeliness of any information translated.</div>
+</div>
+    </div>
+  </div>
+
+  </section>
+
+            </div>
+                  </div>
+          </footer>
+  <!--  </div"> --><!-- #page -->
+<!-- </div> --><!-- #page-wrapper -->
+
+  </div>
+
+    
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"node\/1258118","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"edb_marketo_rest":{"munchkinSettings":{"track":true,"key":"069-ALB-339","library":"\/\/munchkin.marketo.net\/munchkin.js","initParams":[]}},"data":{"extlink":{"extTarget":true,"extTargetNoOverride":false,"extNofollow":false,"extNoreferrer":false,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","mailtoClass":"0","mailtoLabel":"(link sends email)","extUseFontAwesome":false,"extIconPlacement":"append","extFaLinkClasses":"fa fa-external-link","extFaMailtoClasses":"fa fa-envelope-o","whitelistedDomains":null}},"eu_cookie_compliance":{"popup_enabled":true,"popup_agreed_enabled":false,"popup_hide_agreed":false,"popup_clicking_confirmation":true,"popup_scrolling_confirmation":false,"popup_html_info":"\u003Cdiv class=\u0022eu-cookie-compliance-banner eu-cookie-compliance-banner-info eu-cookie-compliance-banner--default\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n    \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022\u003E\n      \u003Cdiv class=\u0022balance-text text-center\u0022\u003EWe use cookies on this site to improve performance and enhance your user experience. By browsing this site, you are giving your consent for us to set cookies. For more information, see our \u003Ca class=\u0022alert-link\u0022 href=\u0022privacy-policy\u0022 target=\u0022_blank\u0022\u003EPrivacy Policy\u003C\/a\u003E.\u003C\/div\u003E\n\n          \u003C\/div\u003E\n\n    \n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n      \u003Cbutton type=\u0022button\u0022 class=\u0022agree-button eu-cookie-compliance-default-button\u0022\u003EOkay, got it!\u003C\/button\u003E\n          \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","use_mobile_message":false,"mobile_popup_html_info":"\u003Cdiv class=\u0022eu-cookie-compliance-banner eu-cookie-compliance-banner-info eu-cookie-compliance-banner--default\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n    \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022\u003E\n      \n          \u003C\/div\u003E\n\n    \n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n      \u003Cbutton type=\u0022button\u0022 class=\u0022agree-button eu-cookie-compliance-default-button\u0022\u003EOkay, got it!\u003C\/button\u003E\n          \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","mobile_breakpoint":768,"popup_html_agreed":false,"popup_use_bare_css":false,"popup_height":"auto","popup_width":"100%","popup_delay":1000,"popup_link":"\/privacy-policy","popup_link_new_window":true,"popup_position":false,"fixed_top_position":true,"popup_language":"en","store_consent":false,"better_support_for_screen_readers":false,"cookie_name":"","reload_page":false,"domain":"","domain_all_sites":false,"popup_eu_only_js":false,"cookie_lifetime":100,"cookie_session":0,"disagree_do_not_show_popup":false,"method":"default","whitelisted_cookies":"","withdraw_markup":"\u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-tab\u0022\u003EPrivacy settings\u003C\/button\u003E\n\u003Cdiv class=\u0022eu-cookie-withdraw-banner\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n    \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022\u003E\n      \u003Ch2\u003EWe use cookies on this site to enhance your user experience\u003C\/h2\u003E\n\u003Cp\u003EYou have given your consent for us to set cookies.\u003C\/p\u003E\n\n    \u003C\/div\u003E\n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n      \u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-button\u0022\u003EWithdraw consent\u003C\/button\u003E\n    \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","withdraw_enabled":false,"withdraw_button_on_info_popup":false,"cookie_categories":[],"enable_save_preferences_button":true,"fix_first_cookie_category":true,"select_all_categories_by_default":false},"user":{"uid":0,"permissionsHash":"824c759371affe464b99bc2404bc0bb8d2da9db08b4a17e412bcf944c11255b8"}}</script>
+<script src="/sites/default/files/js/js_miDdQYfwbcjYkB72KaHyxQCAmxM0N4C7JUSKKCN5DsQ.js"></script>
+
+  </body>
+</html>

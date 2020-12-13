@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en" class="svg no-js">
+<head>
+    <meta charset="utf-8" />
+    <!--[if IE ]>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="Language" content="en">
+
+    <title>MySQL :: MySQL 8.0 Reference Manual :: 8 Optimization</title>
+    <link rel="stylesheet" media="all" href="https://labs.mysql.com/common/css/main-20201123.min.css" />
+            <link rel="stylesheet" media="all" href="https://labs.mysql.com/common/css/docs-20201123.min.css" />
+    
+    
+    <link rel="stylesheet" media="print" href="https://labs.mysql.com/common/css/print-20201123.min.css" />
+
+    
+    
+    
+    
+            <link rel="contents" href="index.html" title="MySQL 8.0 Reference Manual" />
+<link rel="start" href="index.html" title="MySQL 8.0 Reference Manual" />
+<link rel="prev" href="myisam-maintenance-schedule.html" title="7.6.5 Setting Up a MyISAM Table Maintenance Schedule" />
+<link rel="next" href="optimize-overview.html?ff=nopfpls" title="8.1 Optimization Overview" />
+
+    
+    <link rel="shortcut icon" href="https://labs.mysql.com/common/themes/sakila/favicon.ico" />
+    <script async="async" type="text/javascript" src='https://consent.truste.com/notice?domain=oracle.com&c=teconsent&js=bb&noticeType=bb&text=true&cdn=1&pcookie&gtm=1' crossorigin></script>
+    <script src="https://www.oracle.com/assets/truste-oraclelib.js"></script>
+    <script>(function(H){ H.className=H.className.replace(/\bno-js\b/,'js') })(document.documentElement)</script>
+    <script src="https://labs.mysql.com/common/js/site-20200928.min.js"></script>
+
+    
+    
+    <!--[if lt IE 9]>
+        <script src="https://labs.mysql.com/common/js/polyfills/html5shiv-printshiv-3.7.2.min.js"></script>
+        <script src="https://labs.mysql.com/common/js/polyfills/respond-1.4.2.min.js"></script>
+    <![endif]-->
+        <!--[if IE 9]>
+        <style>#docs-sidebar-toc { box-sizing: content-box; }</style>
+    <![endif]-->
+    </head>
+
+<body class="no-sidebar full-page dev">
+<div class="page-wrapper">
+    <header>
+
+                        <a href="https://dev.mysql.com/" aria-label="Home" title="MySQL" id="l1-home-link"></a>
+        
+        <div id="l1-nav-container">
+            <div id="l1-line1">
+                <div id="l1-auth-links">
+                    <a href="https://www.mysql.com/about/contact/"><b>Contact MySQL</b></a>
+                    <span id="l1-contact-separator">&nbsp;|&nbsp;</span>
+                    <span id="l1-contact-separator-br"><br /></span>
+                                             <a href="https://dev.mysql.com/auth/login/?dest=https%3A%2F%2Fdev.mysql.com%2Fdoc%2Frefman%2F8.0%2Fen%2Foptimization.html">Login</a> &nbsp;|&nbsp;
+                         <a href="https://dev.mysql.com/auth/register/">Register</a>
+                                    </div>
+                <div id="l1-lhs">
+                    <div id="l1-slogan">
+                        The world's most popular open source database
+                    </div>
+                    <div id="l1-search-box">
+                        <form id="l1-search-form" method="get" action="https://www.oracle.com/search/results">
+                        <input type="hidden" name="cat" value="mysql" />
+                        <input type="hidden" name="Ntk" value="SI-ALL5" />
+                        <input id="l1-search-input" type="search" class="icon-search" placeholder="Search" aria-label="Search" name="Ntt" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="l1-line2">
+                <div class="social-icons">
+                    <a aria-label="Join us on Facebook" title="Join us on Facebook" href="http://www.facebook.com/mysql"><span class="icon-facebook"></span></a>
+                    <a aria-label="Follow us on Twitter" title="Follow us on Twitter" href="https://twitter.com/mysql"><span class="icon-twitter"></span></a>
+                    <a aria-label="Follow us on LinkedIn" title="Follow us on LinkedIn" href="https://www.linkedin.com/company/mysql"><span class="icon-linkedin"></span></a>
+                    <a aria-label="Visit our YouTube channel" title="Visit our YouTube channel" href="http://www.youtube.com/mysqlchannel"><span class="icon-youtube"></span></a>
+                </div>
+                <ul id="l1-nav">
+                    <li>
+                        <a href="https://www.mysql.com/"><!-- <span class="icon-sakila"></span>  -->MySQL.com</a>
+                    </li><li>
+                        <a href="https://www.mysql.com/downloads/"><!-- <span class="icon-download-thin"></span>  -->Downloads</a>
+                    </li><li class="active">
+                        <a href="/doc/"><!-- <span class="icon-books"></span>  -->Documentation</a>
+                    </li><li>
+                        <a href="/"><!-- <span class="icon-code"></span>  -->Developer Zone</a>
+                    </li>                </ul>
+            </div>
+        </div>
+        <div id="sub-header">
+            <div id="l2-nav-container">
+                <div id="l2-nav-toggle">
+                    <span class="icon-three-bars"></span>
+                </div>
+                                                                                        <a class="button nav-button-3" href="/"><span class="icon-code"></span> Developer Zone</a>
+                                                                                                                                    <a class="button nav-button-2" href="https://www.mysql.com/downloads/"><span class="icon-download-thin"></span> Downloads</a>
+                                                                                                <a class="button nav-button-1" href="https://www.mysql.com/"><span class="icon-sakila"></span> MySQL.com</a>
+                                                                        <div id="l2-search-toggle">
+                    <span class="icon-search"></span>
+                </div>
+                <div id="l2-site-icon">
+                                                                                                                                                                                                    <span class="icon-books"></span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                <div id="l1-section-title">
+                    <span id="l1-section-label">
+                        <a href="/doc/">Documentation</a>
+                    </span>
+                </div>
+                <nav>
+                    
+
+<ul id="l2-nav">
+            	<li class="active"><a class="active " href="/doc/refman/en/">MySQL Server</a>
+    			</li>
+	        	<li class=""><a  href="/doc/index-enterprise.html">MySQL Enterprise</a>
+    			</li>
+	        	<li class=""><a  href="/doc/workbench/en/">Workbench</a>
+    			</li>
+	        	<li class=""><a  href="/doc/mysql-shell/en/mysql-innodb-cluster.html">InnoDB Cluster</a>
+    			</li>
+	        	<li class=""><a  href="/doc/index-cluster.html">MySQL NDB Cluster</a>
+    			</li>
+	        	<li class=""><a  href="/doc/index-connectors.html">Connectors</a>
+    			</li>
+	        	<li class=" last"><a  href="/doc/index-other.html">More</a>
+    			</li>
+	                        <li class="other-section"><a href="https://www.mysql.com/">MySQL.com</a></li>
+                            <li class="other-section"><a href="https://www.mysql.com/downloads/">Downloads</a></li>
+                                        <li class="other-section"><a href="/">Developer Zone</a></li>
+            </ul>
+                </nav>
+            </div>
+            <div id="l3-search-container"></div>
+            <div id="top-orange"><span id="section-nav">Section Menu: &nbsp; </span></div>
+        </div>
+    </header>
+        <div id="page">
+                        <div role="main" id="main">
+
+            
+                
+            
+<div>
+    <div id="docs-sidebar-toc" class="">
+    <div id="docs-toc-inner">
+        <div class="docs-sidebar-header" id="docs-nav-header">
+            <a class="docs-show-hide-nav" id="docs-hide-nav" href="" title="Hide Sidebar" aria-label="Hide Sidebar"><span class="icon-arrow-small-left"></span></a>
+            <div class="docs-nav-links">
+                                    
+    <a href="myisam-maintenance-schedule.html"
+        aria-label="Previous" title="Previous: Setting Up a MyISAM Table Maintenance Schedule"><span
+        class="icon-chevron-left"></span></a>
+<a href="index.html" aria-label="Start" title="Start"><span class="icon-book-open"></span></a>
+    <a href="index.html" aria-label="Up" title="Up"><span class="icon-chevron-up"></span></a>
+    <a href="optimize-overview.html" aria-label="Next"
+        title="Next: Optimization Overview"><span
+        class="icon-chevron-right"></span></a>
+                            </div>
+        </div>
+                    
+<div id="docs-sidebar-search-container">
+    <div id="docs-sidebar-search-box">
+        <form method="get" action="/doc/search/">
+            <input type="hidden" name="d" id="d" value="201" />
+            <input type="hidden" name="p" id="p" value="1" />
+            <input type="text" name="q" id="q" title="Search this Manual"
+                value="Search this Manual"
+                style="color: #bbb;"
+                onfocus="if(this.value == 'Search this Manual') {this.value='';this.style.color='#555';}"
+                onblur="if(this.value == '') {this.value='Search this Manual';this.style.color='#bbb';}" />
+
+            <button class="docs-sidebar-search-btn" aria-label="Search" title="Search" type="submit">
+                <span class="icon-search"></span>
+            </button>
+        </form>
+    </div>
+</div>
+                <div class="docs-sidebar-nav">
+            <a class="docs-icon-home" href="/doc/"><span class="icon-home"></span>Documentation Home</a><hr />
+            <div class="docs-sidebar-mtitle">MySQL 8.0 Reference Manual</div>
+            <nav class="doctoc" id="doc-201">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="preface.html">Preface and Legal Notices</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="introduction.html">General Information</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="installing.html">Installing and Upgrading MySQL</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="tutorial.html">Tutorial</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="programs.html">MySQL Programs</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="server-administration.html">MySQL Server Administration</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="security.html">Security</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="backup-and-recovery.html">Backup and Recovery</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-down"></span></a></div><div class="docs-sidebar-nav-link current"><a href="optimization.html">Optimization</a></div></div>                        <div class="docs-submenu">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimize-overview.html">Optimization Overview</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="statement-optimization.html">Optimizing SQL Statements</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="select-optimization.html">Optimizing SELECT Statements</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="where-optimization.html">WHERE Clause Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="range-optimization.html">Range Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-merge-optimization.html">Index Merge Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="hash-joins.html">Hash Join Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="engine-condition-pushdown-optimization.html">Engine Condition Pushdown Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-condition-pushdown-optimization.html">Index Condition Pushdown Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="nested-loop-joins.html">Nested-Loop Join Algorithms</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="nested-join-optimization.html">Nested Join Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="outer-join-optimization.html">Outer Join Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="outer-join-simplification.html">Outer Join Simplification</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mrr-optimization.html">Multi-Range Read Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="bnl-bka-optimization.html">Block Nested-Loop and Batched Key Access Joins</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="condition-filtering.html">Condition Filtering</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="constant-folding-optimization.html">Constant-Folding Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="is-null-optimization.html">IS NULL Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="order-by-optimization.html">ORDER BY Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="group-by-optimization.html">GROUP BY Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="distinct-optimization.html">DISTINCT Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="limit-optimization.html">LIMIT Query Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="function-optimization.html">Function Call Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="window-function-optimization.html">Window Function Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="row-constructor-optimization.html">Row Constructor Expression Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="table-scan-avoidance.html">Avoiding Full Table Scans</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="subquery-optimization.html">Optimizing Subqueries, Derived Tables, View References, and Common Table
+        Expressions</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="semijoins.html">Optimizing IN and EXISTS Subquery Predicates with Semijoin
+          Transformations</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="subquery-materialization.html">Optimizing Subqueries with Materialization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="subquery-optimization-with-exists.html">Optimizing Subqueries with the EXISTS Strategy</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="derived-table-optimization.html">Optimizing Derived Tables, View References, and Common Table Expressions
+with Merging or Materialization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="derived-condition-pushdown-optimization.html">Derived Condition Pushdown Optimization</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="information-schema-optimization.html">Optimizing INFORMATION_SCHEMA Queries</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="performance-schema-optimization.html">Optimizing Performance Schema Queries</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="data-change-optimization.html">Optimizing Data Change Statements</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="insert-optimization.html">Optimizing INSERT Statements</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="update-optimization.html">Optimizing UPDATE Statements</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="delete-optimization.html">Optimizing DELETE Statements</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="permission-optimization.html">Optimizing Database Privileges</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="miscellaneous-optimization-tips.html">Other Optimization Tips</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimization-indexes.html">Optimization and Indexes</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mysql-indexes.html">How MySQL Uses Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="primary-key-optimization.html">Primary Key Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="spatial-index-optimization.html">SPATIAL Index Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="foreign-key-optimization.html">Foreign Key Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="column-indexes.html">Column Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="multiple-column-indexes.html">Multiple-Column Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="verifying-index-usage.html">Verifying Index Usage</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-statistics.html">InnoDB and MyISAM Index Statistics Collection</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-btree-hash.html">Comparison of B-Tree and Hash Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-extensions.html">Use of Index Extensions</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="generated-column-index-optimizations.html">Optimizer Use of Generated Column Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="invisible-indexes.html">Invisible Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="descending-indexes.html">Descending Indexes</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="timestamp-lookups.html">Indexed Lookups from TIMESTAMP Columns</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimizing-database-structure.html">Optimizing Database Structure</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="data-size.html">Optimizing Data Size</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimize-data-types.html">Optimizing MySQL Data Types</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimize-numeric.html">Optimizing for Numeric Data</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimize-character.html">Optimizing for Character and String Types</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimize-blob.html">Optimizing for BLOB Types</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimize-multi-tables.html">Optimizing for Many Tables</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="table-cache.html">How MySQL Opens and Closes Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="creating-many-tables.html">Disadvantages of Creating Many Tables in the Same Database</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="internal-temporary-tables.html">Internal Temporary Table Use in MySQL</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="database-count-limit.html">Limits on Number of Databases and Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="table-size-limit.html">Limits on Table Size</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="column-count-limit.html">Limits on Table Column Count and Row Size</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb.html">Optimizing for InnoDB Tables</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-storage-layout.html">Optimizing Storage Layout for InnoDB Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-transaction-management.html">Optimizing InnoDB Transaction Management</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="innodb-performance-ro-txn.html">Optimizing InnoDB Read-Only Transactions</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-logging.html">Optimizing InnoDB Redo Logging</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-bulk-data-loading.html">Bulk Data Loading for InnoDB Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-queries.html">Optimizing InnoDB Queries</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-ddl-operations.html">Optimizing InnoDB DDL Operations</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-diskio.html">Optimizing InnoDB Disk I/O</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-configuration-variables.html">Optimizing InnoDB Configuration Variables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-innodb-many-tables.html">Optimizing InnoDB for Systems with Many Tables</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimizing-myisam.html">Optimizing for MyISAM Tables</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-queries-myisam.html">Optimizing MyISAM Queries</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-myisam-bulk-data-loading.html">Bulk Data Loading for MyISAM Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="repair-table-optimization.html">Optimizing REPAIR TABLE Statements</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizing-memory-tables.html">Optimizing for MEMORY Tables</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="execution-plan-information.html">Understanding the Query Execution Plan</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="using-explain.html">Optimizing Queries with EXPLAIN</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="explain-output.html">EXPLAIN Output Format</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="explain-extended.html">Extended EXPLAIN Output Format</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="explain-for-connection.html">Obtaining Execution Plan Information for a Named Connection</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="estimating-performance.html">Estimating Query Performance</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="controlling-optimizer.html">Controlling the Query Optimizer</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="controlling-query-plan-evaluation.html">Controlling Query Plan Evaluation</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="switchable-optimizations.html">Switchable Optimizations</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizer-hints.html">Optimizer Hints</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-hints.html">Index Hints</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="cost-model.html">The Optimizer Cost Model</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="optimizer-statistics.html">Optimizer Statistics</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="buffering-caching.html">Buffering and Caching</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="innodb-buffer-pool-optimization.html">InnoDB Buffer Pool Optimization</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="myisam-key-cache.html">The MyISAM Key Cache</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="shared-key-cache.html">Shared Key Cache Access</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="multiple-key-caches.html">Multiple Key Caches</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="midpoint-insertion.html">Midpoint Insertion Strategy</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="index-preloading.html">Index Preloading</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="key-cache-block-size.html">Key Cache Block Size</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="key-cache-restructuring.html">Restructuring a Key Cache</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="statement-caching.html">Caching of Prepared Statements and Stored Programs</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="locking-issues.html">Optimizing Locking Operations</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="internal-locking.html">Internal Locking Methods</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="table-locking.html">Table Locking Issues</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="concurrent-inserts.html">Concurrent Inserts</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="metadata-locking.html">Metadata Locking</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="external-locking.html">External Locking</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimizing-server.html">Optimizing the MySQL Server</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="disk-issues.html">Optimizing Disk I/O</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="symbolic-links.html">Using Symbolic Links</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="symbolic-links-to-databases.html">Using Symbolic Links for Databases on Unix</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="symbolic-links-to-tables.html">Using Symbolic Links for MyISAM Tables on Unix</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="windows-symbolic-links.html">Using Symbolic Links for Databases on Windows</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimizing-memory.html">Optimizing Memory Use</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="memory-use.html">How MySQL Uses Memory</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="large-page-support.html">Enabling Large Page Support</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="optimize-benchmarking.html">Measuring Performance (Benchmarking)</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="select-benchmarking.html">Measuring the Speed of Expressions and Functions</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="custom-benchmarks.html">Using Your Own Benchmarks</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="monitoring-performance-schema.html">Measuring Performance with performance_schema</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable  loaded" aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="thread-information.html">Examining Server Thread (Process) Information</a></div></div>                        <div class="docs-submenu hidden">
+                                    
+    <ul>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="processlist-access.html">Accessing the Process List</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="thread-commands.html">Thread Command Values</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="general-thread-states.html">General Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="source-thread-states.html">Replication Source Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="replica-io-thread-states.html">Replication I/O Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="replica-sql-thread-states.html">Replication SQL Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="replica-connection-thread-states.html">Replication Connection Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mysql-cluster-thread-states.html">NDB Cluster Thread States</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="event-scheduler-thread-states.html">Event Scheduler Thread States</a></div></div>                    </li>
+        </ul>
+                            </div>
+                    </li>
+        </ul>
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="language-structure.html">Language Structure</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="charset.html">Character Sets, Collations, Unicode</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="data-types.html">Data Types</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="functions.html">Functions and Operators</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="sql-statements.html">SQL Statements</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="data-dictionary.html">MySQL Data Dictionary</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="innodb-storage-engine.html">The InnoDB Storage Engine</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="storage-engines.html">Alternative Storage Engines</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="replication.html">Replication</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="group-replication.html">Group Replication</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mysql-shell-userguide.html">MySQL Shell</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="document-store.html">Using MySQL as a Document Store</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mysql-innodb-cluster-introduction.html">InnoDB Cluster</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="mysql-innodb-replicaset-introduction.html">InnoDB ReplicaSet</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="mysql-cluster.html">MySQL NDB Cluster 8.0</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="partitioning.html">Partitioning</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="stored-objects.html">Stored Objects</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="information-schema.html">INFORMATION_SCHEMA Tables</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="performance-schema.html">MySQL Performance Schema</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="sys-schema.html">MySQL sys Schema</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="connectors-apis.html">Connectors and APIs</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="mysql-enterprise.html">MySQL Enterprise Edition</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="workbench.html">MySQL Workbench</a></div></div>                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="mysql-oci-marketplace.html">MySQL on the OCI Marketplace</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="faqs.html">MySQL 8.0 Frequently Asked Questions</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="error-handling.html">Error Messages and Common Problems</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><a class="expandable " aria-label="Subnav" href=""><span class="icon-chevron-right"></span></a></div><div class="docs-sidebar-nav-link"><a href="indexes.html">Indexes</a></div></div>                        <div class="docs-submenu hidden">
+                            </div>
+                    </li>
+            <li>
+            <div><div class="docs-sidebar-nav-icon"><span class="icon-dot"></span></div><div class="docs-sidebar-nav-link"><a href="glossary.html">MySQL Glossary</a></div></div>                    </li>
+        </ul>
+                            </nav>
+        </div>
+
+        
+<a class="docs-sidebar-section" href=""><span class="icon-related"></span>
+    <span class="text">Related Documentation</span></a>
+<div class="docs-sidebar-accordian open">
+    <div class="text">
+        <a href="/doc/relnotes/mysql/8.0/en/">MySQL 8.0 Release Notes</a><br />
+        <a href="/doc/dev/mysql-server/latest/">MySQL 8.0 Source Code Documentation</a><br />
+        </div>
+</div>
+
+    <a class="docs-sidebar-section" href=""><span class="icon-download-thin"></span>
+        <span class="text">
+            Download
+                            this Manual
+                    </span>
+    </a>
+    <div class="docs-sidebar-accordian open">
+        <div class="text">
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.pdf">PDF (US Ltr)</a>
+            - 40.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.a4.pdf">PDF (A4)</a>
+            - 40.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-ref-manual-8.0-en-pdf-1-20201212.noarch.rpm">PDF (RPM)</a>
+            - 39.8Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.html-chapter.tar.gz">HTML Download (TGZ)</a>
+            - 10.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.html-chapter.zip">HTML Download (Zip)</a>
+            - 10.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-ref-manual-8.0-en-html-chapter-1-20201212.noarch.rpm">HTML Download (RPM)</a>
+            - 9.1Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.man-gpl.tar.gz">Man Pages (TGZ)</a>
+            - 244.2Kb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.man-gpl.zip">Man Pages (Zip)</a>
+            - 349.2Kb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-8.0.info.gz">Info (Gzip)</a>
+            - 3.9Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-8.0.info.zip">Info (Zip)</a>
+            - 3.9Mb<br />
+                    </div>
+    </div>
+
+<a class="docs-sidebar-section" href=""><span class="icon-book"></span>
+    <span class="text">Excerpts from this Manual</span></a>
+<div class="docs-sidebar-accordian">
+    <div class="text">
+                <a href="/doc/mysql-backup-excerpt/8.0/en/">MySQL Backup and Recovery</a><br />
+                <a href="/doc/mysql-g11n-excerpt/8.0/en/">MySQL Globalization</a><br />
+                <a href="/doc/mysql-infoschema-excerpt/8.0/en/">MySQL Information Schema</a><br />
+                <a href="/doc/mysql-installation-excerpt/8.0/en/">MySQL Installation Guide</a><br />
+                <a href="/doc/mysql-security-excerpt/8.0/en/">Security in MySQL</a><br />
+                <a href="/doc/mysql-startstop-excerpt/8.0/en/">Starting and Stopping MySQL</a><br />
+                <a href="/doc/mysql-linuxunix-excerpt/8.0/en/">MySQL and Linux/Unix</a><br />
+                <a href="/doc/mysql-windows-excerpt/8.0/en/">MySQL and Windows</a><br />
+                <a href="/doc/mysql-osx-excerpt/8.0/en/">MySQL and OS X</a><br />
+                <a href="/doc/mysql-solaris-excerpt/8.0/en/">MySQL and Solaris</a><br />
+                <a href="/doc/mysql-sourcebuild-excerpt/8.0/en/">Building MySQL from Source</a><br />
+                <a href="/doc/mysql-reslimits-excerpt/8.0/en/">MySQL Restrictions and Limitations</a><br />
+                <a href="/doc/mysql-partitioning-excerpt/8.0/en/">MySQL Partitioning</a><br />
+                <a href="/doc/mysql-secure-deployment-guide/8.0/en/">MySQL Secure Deployment Guide</a><br />
+                <a href="/doc/mysql-tutorial-excerpt/8.0/en/">MySQL Tutorial</a><br />
+                <a href="/doc/mysql-perfschema-excerpt/8.0/en/">MySQL Performance Schema</a><br />
+                <a href="/doc/mysql-replication-excerpt/8.0/en/">MySQL Replication</a><br />
+                <a href="/doc/mysql-repo-excerpt/8.0/en/">Using the MySQL Yum Repository</a><br />
+                <a href="/doc/mysql-cluster-excerpt/8.0/en/">MySQL NDB Cluster 8.0</a><br />
+            </div>
+</div>
+
+        <br /><span id="wkr"><br /></span>
+    </div>
+    </div>
+
+    <div id="docs-main" class="has-toc">
+    <div id="docs-main-inner">
+
+                <div class="right" id="docs-version-nav">
+            <a href="" id="docs-version-nav-toggle">version 8.0
+            <span class="icon-chevron-down"></span></a>
+            <div id="docs-version-list">
+                                                                                            <a                         href="/doc/refman/5.7/en/optimization.html">
+                        5.7
+                                            </a><br />
+                                                                            <a                         href="/doc/refman/5.6/en/optimization.html">
+                        5.6
+                                            </a><br />
+                                                                        <div id="docs-version-nav-lang">
+                                                                                                                                                    <a                                     href="/doc/refman/5.6/ja/optimization.html">
+                                    5.6&nbsp;
+                                                                            Japanese
+                                                                    </a><br />
+                                                                                            </div>
+                            </div>
+        </div>
+        
+        <div id="docs-show-nav" class="left hidden" style="margin-right: 15px;">
+            <a class="docs-show-hide-nav" href="" aria-label="Show Sidebar"
+                title="Show Sidebar"><span class="icon-arrow-small-right"></span></a>
+        </div>
+
+                        <div id="docs-breadcrumbs">
+            <a href="/doc/refman/8.0/en/">MySQL 8.0 Reference Manual</a> &nbsp;/&nbsp;
+                                                                                Optimization
+                                    </div>
+        
+        <div id="docs-body">
+        
+<div class="chapter">
+<div class="titlepage">
+<div>
+<div>
+<h1 class="title"><a name="optimization"></a>Chapter 8 Optimization</h1>
+
+</div>
+
+</div>
+
+</div>
+<div class="toc">
+<p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="optimize-overview.html">8.1 Optimization Overview</a></span></dt><dt><span class="section"><a href="statement-optimization.html">8.2 Optimizing SQL Statements</a></span></dt><dd><dl><dt><span class="section"><a href="select-optimization.html">8.2.1 Optimizing SELECT Statements</a></span></dt><dt><span class="section"><a href="subquery-optimization.html">8.2.2 Optimizing Subqueries, Derived Tables, View References, and Common Table
+Expressions</a></span></dt><dt><span class="section"><a href="information-schema-optimization.html">8.2.3 Optimizing INFORMATION_SCHEMA Queries</a></span></dt><dt><span class="section"><a href="performance-schema-optimization.html">8.2.4 Optimizing Performance Schema Queries</a></span></dt><dt><span class="section"><a href="data-change-optimization.html">8.2.5 Optimizing Data Change Statements</a></span></dt><dt><span class="section"><a href="permission-optimization.html">8.2.6 Optimizing Database Privileges</a></span></dt><dt><span class="section"><a href="miscellaneous-optimization-tips.html">8.2.7 Other Optimization Tips</a></span></dt></dl></dd><dt><span class="section"><a href="optimization-indexes.html">8.3 Optimization and Indexes</a></span></dt><dd><dl><dt><span class="section"><a href="mysql-indexes.html">8.3.1 How MySQL Uses Indexes</a></span></dt><dt><span class="section"><a href="primary-key-optimization.html">8.3.2 Primary Key Optimization</a></span></dt><dt><span class="section"><a href="spatial-index-optimization.html">8.3.3 SPATIAL Index Optimization</a></span></dt><dt><span class="section"><a href="foreign-key-optimization.html">8.3.4 Foreign Key Optimization</a></span></dt><dt><span class="section"><a href="column-indexes.html">8.3.5 Column Indexes</a></span></dt><dt><span class="section"><a href="multiple-column-indexes.html">8.3.6 Multiple-Column Indexes</a></span></dt><dt><span class="section"><a href="verifying-index-usage.html">8.3.7 Verifying Index Usage</a></span></dt><dt><span class="section"><a href="index-statistics.html">8.3.8 InnoDB and MyISAM Index Statistics Collection</a></span></dt><dt><span class="section"><a href="index-btree-hash.html">8.3.9 Comparison of B-Tree and Hash Indexes</a></span></dt><dt><span class="section"><a href="index-extensions.html">8.3.10 Use of Index Extensions</a></span></dt><dt><span class="section"><a href="generated-column-index-optimizations.html">8.3.11 Optimizer Use of Generated Column Indexes</a></span></dt><dt><span class="section"><a href="invisible-indexes.html">8.3.12 Invisible Indexes</a></span></dt><dt><span class="section"><a href="descending-indexes.html">8.3.13 Descending Indexes</a></span></dt><dt><span class="section"><a href="timestamp-lookups.html">8.3.14 Indexed Lookups from TIMESTAMP Columns</a></span></dt></dl></dd><dt><span class="section"><a href="optimizing-database-structure.html">8.4 Optimizing Database Structure</a></span></dt><dd><dl><dt><span class="section"><a href="data-size.html">8.4.1 Optimizing Data Size</a></span></dt><dt><span class="section"><a href="optimize-data-types.html">8.4.2 Optimizing MySQL Data Types</a></span></dt><dt><span class="section"><a href="optimize-multi-tables.html">8.4.3 Optimizing for Many Tables</a></span></dt><dt><span class="section"><a href="internal-temporary-tables.html">8.4.4 Internal Temporary Table Use in MySQL</a></span></dt><dt><span class="section"><a href="database-count-limit.html">8.4.5 Limits on Number of Databases and Tables</a></span></dt><dt><span class="section"><a href="table-size-limit.html">8.4.6 Limits on Table Size</a></span></dt><dt><span class="section"><a href="column-count-limit.html">8.4.7 Limits on Table Column Count and Row Size</a></span></dt></dl></dd><dt><span class="section"><a href="optimizing-innodb.html">8.5 Optimizing for InnoDB Tables</a></span></dt><dd><dl><dt><span class="section"><a href="optimizing-innodb-storage-layout.html">8.5.1 Optimizing Storage Layout for InnoDB Tables</a></span></dt><dt><span class="section"><a href="optimizing-innodb-transaction-management.html">8.5.2 Optimizing InnoDB Transaction Management</a></span></dt><dt><span class="section"><a href="innodb-performance-ro-txn.html">8.5.3 Optimizing InnoDB Read-Only Transactions</a></span></dt><dt><span class="section"><a href="optimizing-innodb-logging.html">8.5.4 Optimizing InnoDB Redo Logging</a></span></dt><dt><span class="section"><a href="optimizing-innodb-bulk-data-loading.html">8.5.5 Bulk Data Loading for InnoDB Tables</a></span></dt><dt><span class="section"><a href="optimizing-innodb-queries.html">8.5.6 Optimizing InnoDB Queries</a></span></dt><dt><span class="section"><a href="optimizing-innodb-ddl-operations.html">8.5.7 Optimizing InnoDB DDL Operations</a></span></dt><dt><span class="section"><a href="optimizing-innodb-diskio.html">8.5.8 Optimizing InnoDB Disk I/O</a></span></dt><dt><span class="section"><a href="optimizing-innodb-configuration-variables.html">8.5.9 Optimizing InnoDB Configuration Variables</a></span></dt><dt><span class="section"><a href="optimizing-innodb-many-tables.html">8.5.10 Optimizing InnoDB for Systems with Many Tables</a></span></dt></dl></dd><dt><span class="section"><a href="optimizing-myisam.html">8.6 Optimizing for MyISAM Tables</a></span></dt><dd><dl><dt><span class="section"><a href="optimizing-queries-myisam.html">8.6.1 Optimizing MyISAM Queries</a></span></dt><dt><span class="section"><a href="optimizing-myisam-bulk-data-loading.html">8.6.2 Bulk Data Loading for MyISAM Tables</a></span></dt><dt><span class="section"><a href="repair-table-optimization.html">8.6.3 Optimizing REPAIR TABLE Statements</a></span></dt></dl></dd><dt><span class="section"><a href="optimizing-memory-tables.html">8.7 Optimizing for MEMORY Tables</a></span></dt><dt><span class="section"><a href="execution-plan-information.html">8.8 Understanding the Query Execution Plan</a></span></dt><dd><dl><dt><span class="section"><a href="using-explain.html">8.8.1 Optimizing Queries with EXPLAIN</a></span></dt><dt><span class="section"><a href="explain-output.html">8.8.2 EXPLAIN Output Format</a></span></dt><dt><span class="section"><a href="explain-extended.html">8.8.3 Extended EXPLAIN Output Format</a></span></dt><dt><span class="section"><a href="explain-for-connection.html">8.8.4 Obtaining Execution Plan Information for a Named Connection</a></span></dt><dt><span class="section"><a href="estimating-performance.html">8.8.5 Estimating Query Performance</a></span></dt></dl></dd><dt><span class="section"><a href="controlling-optimizer.html">8.9 Controlling the Query Optimizer</a></span></dt><dd><dl><dt><span class="section"><a href="controlling-query-plan-evaluation.html">8.9.1 Controlling Query Plan Evaluation</a></span></dt><dt><span class="section"><a href="switchable-optimizations.html">8.9.2 Switchable Optimizations</a></span></dt><dt><span class="section"><a href="optimizer-hints.html">8.9.3 Optimizer Hints</a></span></dt><dt><span class="section"><a href="index-hints.html">8.9.4 Index Hints</a></span></dt><dt><span class="section"><a href="cost-model.html">8.9.5 The Optimizer Cost Model</a></span></dt><dt><span class="section"><a href="optimizer-statistics.html">8.9.6 Optimizer Statistics</a></span></dt></dl></dd><dt><span class="section"><a href="buffering-caching.html">8.10 Buffering and Caching</a></span></dt><dd><dl><dt><span class="section"><a href="innodb-buffer-pool-optimization.html">8.10.1 InnoDB Buffer Pool Optimization</a></span></dt><dt><span class="section"><a href="myisam-key-cache.html">8.10.2 The MyISAM Key Cache</a></span></dt><dt><span class="section"><a href="statement-caching.html">8.10.3 Caching of Prepared Statements and Stored Programs</a></span></dt></dl></dd><dt><span class="section"><a href="locking-issues.html">8.11 Optimizing Locking Operations</a></span></dt><dd><dl><dt><span class="section"><a href="internal-locking.html">8.11.1 Internal Locking Methods</a></span></dt><dt><span class="section"><a href="table-locking.html">8.11.2 Table Locking Issues</a></span></dt><dt><span class="section"><a href="concurrent-inserts.html">8.11.3 Concurrent Inserts</a></span></dt><dt><span class="section"><a href="metadata-locking.html">8.11.4 Metadata Locking</a></span></dt><dt><span class="section"><a href="external-locking.html">8.11.5 External Locking</a></span></dt></dl></dd><dt><span class="section"><a href="optimizing-server.html">8.12 Optimizing the MySQL Server</a></span></dt><dd><dl><dt><span class="section"><a href="disk-issues.html">8.12.1 Optimizing Disk I/O</a></span></dt><dt><span class="section"><a href="symbolic-links.html">8.12.2 Using Symbolic Links</a></span></dt><dt><span class="section"><a href="optimizing-memory.html">8.12.3 Optimizing Memory Use</a></span></dt></dl></dd><dt><span class="section"><a href="optimize-benchmarking.html">8.13 Measuring Performance (Benchmarking)</a></span></dt><dd><dl><dt><span class="section"><a href="select-benchmarking.html">8.13.1 Measuring the Speed of Expressions and Functions</a></span></dt><dt><span class="section"><a href="custom-benchmarks.html">8.13.2 Using Your Own Benchmarks</a></span></dt><dt><span class="section"><a href="monitoring-performance-schema.html">8.13.3 Measuring Performance with performance_schema</a></span></dt></dl></dd><dt><span class="section"><a href="thread-information.html">8.14 Examining Server Thread (Process) Information</a></span></dt><dd><dl><dt><span class="section"><a href="processlist-access.html">8.14.1 Accessing the Process List</a></span></dt><dt><span class="section"><a href="thread-commands.html">8.14.2 Thread Command Values</a></span></dt><dt><span class="section"><a href="general-thread-states.html">8.14.3 General Thread States</a></span></dt><dt><span class="section"><a href="source-thread-states.html">8.14.4 Replication Source Thread States</a></span></dt><dt><span class="section"><a href="replica-io-thread-states.html">8.14.5 Replication I/O Thread States</a></span></dt><dt><span class="section"><a href="replica-sql-thread-states.html">8.14.6 Replication SQL Thread States</a></span></dt><dt><span class="section"><a href="replica-connection-thread-states.html">8.14.7 Replication Connection Thread States</a></span></dt><dt><span class="section"><a href="mysql-cluster-thread-states.html">8.14.8 NDB Cluster Thread States</a></span></dt><dt><span class="section"><a href="event-scheduler-thread-states.html">8.14.9 Event Scheduler Thread States</a></span></dt></dl></dd></dl>
+</div>
+<a class="indexterm" name="idm46638588000752"></a><a class="indexterm" name="idm46638587999680"></a><a class="indexterm" name="idm46638587998608"></a><p>
+    This chapter explains how to optimize MySQL performance and provides
+    examples. Optimization involves configuring, tuning, and measuring
+    performance, at several levels. Depending on your job role
+    (developer, DBA, or a combination of both), you might optimize at
+    the level of individual SQL statements, entire applications, a
+    single database server, or multiple networked database servers.
+    Sometimes you can be proactive and plan in advance for performance,
+    while other times you might troubleshoot a configuration or code
+    issue after a problem occurs. Optimizing CPU and memory usage can
+    also improve scalability, allowing the database to handle more load
+    without slowing down.
+</p>
+</div><br />
+        </div>
+
+                <div id="docs-in-page-nav-container">
+            <div id="docs-in-page-nav">
+                
+    <a href="myisam-maintenance-schedule.html"
+        aria-label="Previous" title="Previous: Setting Up a MyISAM Table Maintenance Schedule"><span
+        class="icon-chevron-left"></span> PREV</a> &nbsp;
+<a href="index.html" aria-label="Start" title="Start"> HOME</a> &nbsp;
+    <a href="index.html" aria-label="Up" title="Up"> UP</a> &nbsp;
+    <a href="optimize-overview.html" aria-label="Next"
+        title="Next: Optimization Overview">NEXT <span
+        class="icon-chevron-right"></span></a>
+            </div>
+        </div>
+        
+         <div id="docs-body-extra">
+             
+<a class="docs-sidebar-section" href=""><span class="icon-related"></span>
+    <span class="text">Related Documentation</span></a>
+<div class="docs-sidebar-accordian">
+    <div class="text">
+        <a href="/doc/relnotes/mysql/8.0/en/">MySQL 8.0 Release Notes</a><br />
+        <a href="/doc/dev/mysql-server/latest/">MySQL 8.0 Source Code Documentation</a><br />
+        </div>
+</div>
+
+    <a class="docs-sidebar-section" href=""><span class="icon-download-thin"></span>
+        <span class="text">
+            Download
+                            this Manual
+                    </span>
+    </a>
+    <div class="docs-sidebar-accordian">
+        <div class="text">
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.pdf">PDF (US Ltr)</a>
+            - 40.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.a4.pdf">PDF (A4)</a>
+            - 40.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-ref-manual-8.0-en-pdf-1-20201212.noarch.rpm">PDF (RPM)</a>
+            - 39.8Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.html-chapter.tar.gz">HTML Download (TGZ)</a>
+            - 10.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.html-chapter.zip">HTML Download (Zip)</a>
+            - 10.5Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-ref-manual-8.0-en-html-chapter-1-20201212.noarch.rpm">HTML Download (RPM)</a>
+            - 9.1Mb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.man-gpl.tar.gz">Man Pages (TGZ)</a>
+            - 244.2Kb<br />
+                        <a href="https://downloads.mysql.com/docs/refman-8.0-en.man-gpl.zip">Man Pages (Zip)</a>
+            - 349.2Kb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-8.0.info.gz">Info (Gzip)</a>
+            - 3.9Mb<br />
+                        <a href="https://downloads.mysql.com/docs/mysql-8.0.info.zip">Info (Zip)</a>
+            - 3.9Mb<br />
+                    </div>
+    </div>
+
+<a class="docs-sidebar-section" href=""><span class="icon-book"></span>
+    <span class="text">Excerpts from this Manual</span></a>
+<div class="docs-sidebar-accordian">
+    <div class="text">
+                <a href="/doc/mysql-backup-excerpt/8.0/en/">MySQL Backup and Recovery</a><br />
+                <a href="/doc/mysql-g11n-excerpt/8.0/en/">MySQL Globalization</a><br />
+                <a href="/doc/mysql-infoschema-excerpt/8.0/en/">MySQL Information Schema</a><br />
+                <a href="/doc/mysql-installation-excerpt/8.0/en/">MySQL Installation Guide</a><br />
+                <a href="/doc/mysql-security-excerpt/8.0/en/">Security in MySQL</a><br />
+                <a href="/doc/mysql-startstop-excerpt/8.0/en/">Starting and Stopping MySQL</a><br />
+                <a href="/doc/mysql-linuxunix-excerpt/8.0/en/">MySQL and Linux/Unix</a><br />
+                <a href="/doc/mysql-windows-excerpt/8.0/en/">MySQL and Windows</a><br />
+                <a href="/doc/mysql-osx-excerpt/8.0/en/">MySQL and OS X</a><br />
+                <a href="/doc/mysql-solaris-excerpt/8.0/en/">MySQL and Solaris</a><br />
+                <a href="/doc/mysql-sourcebuild-excerpt/8.0/en/">Building MySQL from Source</a><br />
+                <a href="/doc/mysql-reslimits-excerpt/8.0/en/">MySQL Restrictions and Limitations</a><br />
+                <a href="/doc/mysql-partitioning-excerpt/8.0/en/">MySQL Partitioning</a><br />
+                <a href="/doc/mysql-secure-deployment-guide/8.0/en/">MySQL Secure Deployment Guide</a><br />
+                <a href="/doc/mysql-tutorial-excerpt/8.0/en/">MySQL Tutorial</a><br />
+                <a href="/doc/mysql-perfschema-excerpt/8.0/en/">MySQL Performance Schema</a><br />
+                <a href="/doc/mysql-replication-excerpt/8.0/en/">MySQL Replication</a><br />
+                <a href="/doc/mysql-repo-excerpt/8.0/en/">Using the MySQL Yum Repository</a><br />
+                <a href="/doc/mysql-cluster-excerpt/8.0/en/">MySQL NDB Cluster 8.0</a><br />
+            </div>
+</div>
+         </div>
+
+              </div>
+     </div>
+
+</div>
+
+<script>
+$(function() {
+    var doc = new $.doc({ 'mobile': $.browser.mobile, 'docId': 1, 'highlight': true });
+});
+</script>
+    
+
+            
+        </div>
+    </div>
+
+    <footer class="collapsed">
+        <div id="footer-bottom">
+                                    <div id="footer-collapse">
+                <a href="" id="expand-footer"
+                    aria-label="Expand Footer"
+                    title="Expand Footer"><span
+                    class="icon-plus-square"></span></a>
+            </div>
+                        <div class="footer-contact">
+                <div id="footer-contact-icon" style="display: none;">
+                    <span class="icon-call-phone"></span>
+                </div>
+                <div id="footer-contact-numbers" style="display: none;">
+                    <strong>Contact MySQL Sales</strong><br/>
+                    USA/Canada: +1-866-221-0634 &nbsp;
+                    (<a href="https://www.mysql.com/about/contact/phone/">More Countries &raquo;</a>)
+                </div>
+                <div id="footer-contact-copyright" style="display: inline-block;">
+                    <a href="http://www.oracle.com/" aria-label="Oracle" title="Oracle"><span class="oracle-logo"></span></a>
+                    &nbsp; &copy; 2020, Oracle Corporation and/or its affiliates
+                </div>
+            </div>
+            <div class="social-icons">
+                <a aria-label="Join us on Facebook" title="Join us on Facebook" href="http://www.facebook.com/mysql"><span class="icon-facebook-square"></span></a>
+                <a aria-label="Follow us on Twitter" title="Follow us on Twitter" href="https://twitter.com/mysql"><span class="icon-twitter-square"></span></a>
+                <a aria-label="Follow us on LinkedIn" title="Follow us on LinkedIn" href="https://www.linkedin.com/company/mysql"><span class="icon-linkedin-square"></span></a>
+                <a aria-label="Visit our YouTube channel" title="Visit our YouTube channel" href="http://www.youtube.com/mysqlchannel"><span class="icon-youtube-square"></span></a>
+            </div>
+            <br class="clear" />
+        </div>
+        <div id="footer-links">
+
+            <div id="site-footer-links">
+                <div id="footer-nav"></div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/products/">Products</a></li>
+                        <li><a href="https://www.mysql.com/cloud/">MySQL Database Service</a></li>
+                        <li><a href="https://www.mysql.com/products/enterprise/">MySQL Enterprise Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/standard/">MySQL Standard Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/classic/">MySQL Classic Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/cluster/">MySQL Cluster CGE</a></li>
+                        <li><a href="https://www.mysql.com/oem/">MySQL Embedded (OEM/ISV)</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/services/">Services</a></li>
+                        <li><a href="https://www.mysql.com/training/">Training</a></li>
+                        <li><a href="https://www.mysql.com/certification/">Certification</a></li>
+                        <li><a href="https://www.mysql.com/consulting/">Consulting</a></li>
+                        <li><a href="https://www.mysql.com/support/">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/downloads/">Downloads</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/mysql/">MySQL Community Server</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/cluster/">MySQL NDB Cluster</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/shell/">MySQL Shell</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/router/">MySQL Router</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/workbench/">MySQL Workbench</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://dev.mysql.com/doc/">Documentation</a></li>
+                        <li><a href="https://dev.mysql.com/doc/refman/en/">MySQL Reference Manual</a></li>
+                        <li><a href="https://dev.mysql.com/doc/workbench/en/">MySQL Workbench</a></li>
+                        <li><a href="https://dev.mysql.com/doc/index-cluster.html">MySQL NDB Cluster</a></li>
+                        <li><a href="https://dev.mysql.com/doc/index-connectors.html">MySQL Connectors</a></li>
+                        <li><a href="https://dev.mysql.com/doc/#topic">Topic Guides</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/about/">About MySQL</a></li>
+                        <li><a href="https://www.mysql.com/about/contact/">Contact Us</a></li>
+                                                                        <li><a href="https://www.mysql.com/buy-mysql/">How to Buy</a></li>
+                        <li><a href="https://www.mysql.com/partners/">Partners</a></li>
+                        <li><a href="https://www.mysql.com/about/jobs/">Job Opportunities</a></li>
+                        <li><a href="https://www.mysql.com/sitemap.html">Site Map</a></li>
+                    </ul>
+                </div>
+
+                            </div>
+
+            <div id="footer-logo">
+                <a href="http://www.oracle.com/" aria-label="Oracle" title="Oracle"><span class="oracle-logo"></span></a>
+                &nbsp; &copy; 2020, Oracle Corporation and/or its affiliates
+                <div class="footer-legal-links">
+                    <a href="https://www.mysql.com/about/legal/">Legal Policies</a> |
+                    <a href="http://www.oracle.com/us/legal/privacy/index.htm">Your Privacy Rights</a> |
+                    <a href="http://www.oracle.com/us/legal/terms/index.html">Terms of Use</a> |
+                    <a href="http://www.oracle.com/us/legal/third-party-trademarks/index.html">Trademark Policy</a> |
+                    <a href="http://www.oracle.com/technetwork/community/oca-486395.html">Contributor Agreement</a> |
+                    <div id="teconsent"></div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</div>
+
+            <script>
+    if ((oracle.truste.api.getGdprConsentDecision().consentDecision) &&
+            (oracle.truste.api.getGdprConsentDecision().consentDecision.indexOf(0) != -1 ||
+             oracle.truste.api.getGdprConsentDecision().consentDecision.indexOf(2) != -1) )
+    {
+        document.write('<script src="https://labs.mysql.com/common/js/metrics/s_code_remote.js"><\/script>');
+        document.write('<script type="text/javascript" async src="//c.oracleinfinity.io/acs/account/wh3g12c3gg/js/mysql/odc.js?_ora.context=analytics:production"><\/script>');
+    }
+    </script>
+
+        
+    
+</body>
+</html>

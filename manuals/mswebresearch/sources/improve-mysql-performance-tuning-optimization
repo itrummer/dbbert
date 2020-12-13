@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html class="no-touch" lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="https://phoenixnap.com/kb/xmlrpc.php">
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer type="text/javascript">//<![CDATA[
+	var gtm4wp_datalayer_name = "dataLayer";
+	var dataLayer = dataLayer || [];
+//]]>
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+	<!-- This site is optimized with the Yoast SEO Premium plugin v15.4 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>MySQL Performance Tuning: 11 Optimization Tips | PhoenixNAP KB</title><style id="rocket-critical-css">.gdpr-overlay{background:#141618;display:none;height:100%;left:0;opacity:.6;position:fixed;top:0;width:100%;z-index:99999999}.gdpr *{font-family:inherit!important}.gdpr input[type="submit"]{border-radius:2px;border-width:0;box-shadow:none;font-family:inherit!important;font-size:12px!important;font-weight:600!important;letter-spacing:-.3px;line-height:22px;padding:9px 27px 9px 27px;text-shadow:none;text-transform:none}.gdpr-privacy-preferences .gdpr-wrapper{border-radius:2.5px;box-sizing:border-box;display:none;height:100%;left:50%;max-height:700px;max-width:1000px;overflow:hidden;overflow:visible;padding:15px;position:fixed;top:50%;transform:translate(-50%,-50%);width:100%;z-index:999999999;padding:36px}.gdpr-privacy-preferences form{box-shadow:0 50px 50px -30px rgba(0,0,0,.2),0 30px 50px 0 rgba(0,0,0,.15);height:100%;position:relative}.gdpr-privacy-preferences .gdpr-box-title{height:0;position:relative}.gdpr-privacy-preferences .gdpr-box-title h3{display:none}.gdpr-privacy-preferences .gdpr-close{color:#fff;line-height:0;position:absolute;top:50%}body:not(.rtl) .gdpr-privacy-preferences .gdpr-close{right:-27px}.gdpr-privacy-preferences .gdpr-close:before{content:'\e117';font-family:uncodeicon!important;font-size:18px}.gdpr-privacy-preferences footer{background-color:#f7f7f7;border-bottom-left-radius:2px;border-bottom-right-radius:2px;border-top:1px solid #eaeaea;bottom:0;height:96px;left:0;margin-left:0;overflow:hidden;padding:18px 36px;position:absolute;right:0;width:auto}.gdpr-privacy-preferences footer input{margin-top:0}.gdpr-privacy-preferences .gdpr-content{background:#fff;border-bottom-left-radius:2px;border-bottom-right-radius:2px;bottom:0;left:0;overflow:hidden;position:absolute;right:0;top:0}.gdpr-privacy-preferences .gdpr-tab-content{background-color:#fff;bottom:76px;display:block;left:0;overflow:hidden;position:absolute;right:0;top:0}.gdpr-privacy-preferences .gdpr-tab-content header{padding:36px 36px 0}.gdpr-privacy-preferences .gdpr-tab-content h4{color:#303133;font-family:inherit!important;font-size:16px;margin-bottom:18px;margin-top:0}.gdpr-privacy-preferences .gdpr-tab-content>div{max-height:100%;overflow-y:auto}.gdpr-privacy-preferences .gdpr-tab-content .gdpr-active{display:block}.gdpr-privacy-preferences .gdpr-info{color:#72777c;font-size:14px;font-weight:400;padding:0 36px 36px}.gdpr-privacy-preferences .gdpr-info p{color:#72777c;font-size:13px;font-weight:400;margin-bottom:27px;margin-top:0}@media (min-width:480px){.gdpr-privacy-preferences footer{height:76px}.gdpr-privacy-preferences footer input{width:auto!important}}@media (min-width:570px){.gdpr-privacy-preferences .gdpr-content{border-radius:2px}.gdpr-privacy-preferences .gdpr-tab-content{display:block}}html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav{display:block}a{background:transparent}strong{font-weight:700}h1{font-size:2em;margin:.67em 0}img{border:0}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}code{font-family:monospace,monospace;font-size:1em}button,input{color:inherit;font:inherit;margin:0}button{overflow:visible}button{text-transform:none}button,input[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}script{display:none!important}*{box-sizing:border-box}*:before,*:after{box-sizing:border-box}html{overflow-y:scroll;overflow-x:hidden;-webkit-overflow-scrolling:touch;height:100%}@media (max-width:569px){html{margin-top:0}}body{height:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow:initial!important}.box-wrapper{display:table;table-layout:fixed;width:100%;height:100%;overflow:hidden}.box-container{display:table;width:100%;height:100%;table-layout:fixed;position:relative}.main-wrapper{width:100%;height:100%}.hmenu .main-wrapper{display:table-row}@media (max-width:959px){.main-container{padding-top:0px!important}}.sections-container{display:table;table-layout:fixed;width:100%;height:100%}.page-wrapper,.page-body{display:table-row;width:100%;height:100%}.page-body{position:relative}@media (max-width:569px){body.menu-mobile-centered .mobile-hidden:not(.social-icon):not(.menu-social):not(.menu-icons){display:none!important}}@media (min-width:570px) and (max-width:959px){body.menu-mobile-centered .tablet-hidden:not(.social-icon):not(.menu-social){display:none!important}}@media (min-width:960px){.desktop-hidden{display:none!important}}.post-wrapper{margin:auto}input,button{font-family:inherit;font-size:inherit;line-height:inherit}a{outline:0;border:0;text-decoration:none}button{outline:0;border:0}img{max-width:100%;height:auto}hr{margin:27px 0 27px 0;border:0;border-top-width:1px;border-style:solid}.uncode_text_column>*:first-child{margin-top:0}.body-borders>*{position:fixed;z-index:11000}.body-borders .body-border-shadow{box-shadow:0 0 14px 0 rgba(0,0,0,.1)}.body-borders .top-border{top:0;left:0;width:100%}.body-borders .right-border{top:0;right:0;height:100%}.body-borders .left-border{top:0;left:0;height:100%}strong{font-weight:600}h1,h3,h4,.heading-text>p{-webkit-font-smoothing:antialiased}h1{font-size:35px;line-height:1.2;margin:27px 0 0}@media (max-width:339px){h1{font-size:28px}}.h2{font-size:29px;line-height:1.2;margin:27px 0 0}h3,.h3{font-size:24px;line-height:1.2;margin:27px 0 0}h4,.h4{font-size:20px;line-height:1.2;margin:27px 0 0}.h5{font-size:17px;line-height:1.2;margin:27px 0 0}p,li,code{font-size:15px;line-height:1.75;margin:18px 0 0}ul,ol{margin:18px 0 0 0;padding-left:18px}ul,ol{padding:0}ul i{margin-right:18px}ul{list-style:none}ol{margin-left:18px}ul li,ol li{margin-top:0}ul>li>ul,ol>li>ol{margin-left:9px;padding-left:0;margin-top:0}.text-left{text-align:left}.text-capitalize{text-transform:capitalize}.text-bold{font-weight:600}code{font-family:Monaco,monospace;border-radius:2px;font-size:13px;line-height:1.75;margin:18px 0 0}code{padding:4px}.row-inner{display:table-row}@media (max-width:959px){.row-inner{display:table;table-layout:fixed;width:100%}}.row{display:table;table-layout:fixed;width:100%;position:relative}.row .uncol{display:block;overflow:hidden;position:relative}.row .uncoltable{display:table;table-layout:fixed;position:relative;width:100%;height:100%}@media (max-width:959px){.row .uncoltable{padding-top:0!important}}.row .uncell{display:table-cell;position:relative;height:100%;vertical-align:inherit;border:0}.row .uncell.no-block-padding{padding:0 0 0 0}.row .uncont>*{position:relative}.row div[class*=col-lg-].align_center>.uncol>.uncoltable>.uncell>.uncont{text-align:center}.row div[class*=col-lg-].align_left>.uncol>.uncoltable>.uncell>.uncont{text-align:left}@media (max-width:569px){.row div[class*=col-lg-].align_left>.uncol>.uncoltable>.uncell>.uncont .btn,.row div[class*=col-lg-].align_left>.uncol>.uncoltable>.uncell>.uncont .btn-link{transform-origin:left}}.row div[class*=col-lg-].align_left>.uncol>.uncoltable>.uncell>.uncont hr{margin-right:auto;margin-left:0}.row div[class*=col-lg-].pos-center>.uncol>.uncoltable>.uncell>.uncont{margin:0 auto}.row div[class*=col-lg-].pos-top,.row div[class*=col-lg-].pos-top .uncell{vertical-align:top}.row div[class*=col-lg-].pos-middle .uncell,.row div[class*=col-lg-].pos-middle{vertical-align:middle}@media (max-width:959px){.row div[class*=col-lg-]{padding:36px 0 0 0}}.row-background{position:absolute;top:0;bottom:0;left:0;right:0;overflow:hidden;border-radius:inherit;background-clip:padding-box;-webkit-overflow-scrolling:touch}.row-background .background-wrapper{backface-visibility:hidden;position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;border-radius:inherit;background-clip:padding-box}@media (max-width:959px){.mobile-parallax-not-allowed .row-background .background-wrapper{transform:none!important;height:100%!important}}.row-background .background-wrapper .background-inner{border-radius:inherit;position:absolute;top:0;bottom:0;left:0;right:0;background-attachment:scroll}@media (max-width:1499px){.row-background .background-wrapper .background-inner{background-size:cover}}.half-block-padding{padding:18px 18px 18px 18px}.main-container{display:table;table-layout:fixed;width:100%;height:100%}.main-container .row{width:100%;table-layout:fixed}.main-container .row .uncol{overflow:visible}@media (max-width:959px){.main-container .row .uncol{position:relative!important;top:0;left:0;height:100%;width:100%}}@media (max-width:959px){.main-container .row .uncont{max-width:none!important;height:auto!important}}@media (max-width:959px){.main-container .row.row-parent:not(.row-slider):not(.row-header){height:auto!important}}@media (max-width:569px){.main-container .row.row-parent:not(.no-h-padding) .column_parent>.uncol>.uncoltable>.uncell>.uncont:not(.col-custom-width){padding-left:0px!important;padding-right:0px!important}}.main-container .row .column_parent{clear:both}.main-container .row-inner{position:relative;display:table;table-layout:fixed;height:100%;min-width:100%;width:auto}.main-container .row-inner>div{padding:0 0 0 36px}@media (max-width:959px){.main-container .row-inner>div:not([class*=col-md]){padding:36px 0 0 0}.main-container .row-inner>div:first-child:not([class*=col-md]){padding-top:0}}@media (max-width:569px){.main-container .row-inner>div{padding:36px 0 0 0}.main-container .row-inner>div:first-child{padding-top:0}}@media (min-width:960px){.main-container .row-inner{margin-left:-36px}}.main-container .row-container{position:relative;clear:both;border:0}.main-container .row-container .row-parent{padding:36px 36px 36px 36px}.main-container .row-container .row-parent .single-internal-gutter .uncont>*{margin-top:36px}.main-container .row-container .row-parent .uncont>*:first-child,.main-container .row-container .row-parent .uncont>*:first-child:not(.divider-wrapper):not(.edit-account)>*:first-child:not(.isotope-wrapper):not(.justified-wrapper):not(.index-wrapper):not(.edit-account),.main-container .row-container .row-parent .uncont>*:first-child:not(.divider-wrapper):not(.edit-account)>*:first-child>*:first-child,.main-container .row-container .row-parent .uncont>*:first-child:not(.divider-wrapper):not(.edit-account)>*:first-child:not(.isotope-wrapper):not(.justified-wrapper):not(.index-wrapper):not(.edit-account)>*:first-child>*:first-child{margin-top:0px!important}.main-container .row-container .single-top-padding{padding-top:36px}.main-container .row-container .single-bottom-padding{padding-bottom:36px}.main-container .row-container .single-h-padding{padding-left:36px;padding-right:36px}.col-lg-0{padding:27px 36px 27px 36px}.col-lg-2,.col-lg-10,.col-lg-12{padding:36px 36px 36px 36px;display:block;height:auto;width:100%;vertical-align:top;position:relative}@media (min-width:960px){.col-lg-0,.col-lg-2,.col-lg-10,.col-lg-12{display:table-cell;height:100%}.col-lg-12{width:100%}.col-lg-10{width:83.33333333333334%}.col-lg-2{width:16.666666666666664%}.row .uncoltable{min-height:0!important}}.block-bg-overlay{border-radius:inherit;position:absolute;width:100%;height:100%;top:0}@media (min-width:570px) and (max-width:959px){div[class*=vc_custom_]:not(.vc_custom_preserve_tablet){margin-left:0;border-left-width:0!important;border-right-width:0!important}}@media (max-width:569px){div[class*=vc_custom_]:not(.vc_custom_preserve_mobile){margin-left:0;border-left-width:0!important;border-right-width:0!important}}form p{margin:18px 0 0 0;font-weight:600}input{display:block;font-size:14px;line-height:initial;margin:9px 0 0 0;padding:10px 15px 10px 15px;border-style:solid;border-radius:2px;font-weight:400;border:1px solid transparent}input[type="submit"]{display:inline-block;font-size:12px;padding:13px 31px 13px 31px;text-align:center!important;vertical-align:middle;background-image:none;border-radius:2px;outline:none;white-space:nowrap;-webkit-text-stroke:0;width:auto;box-shadow:none;-webkit-font-smoothing:antialiased}input[type="search"]{box-sizing:border-box;-webkit-appearance:none}.menu-smart input[type="search"]{width:100%}.form-fluid{width:100%!important}.btn,.btn-link{display:inline-block;font-size:12px;padding:13px 31px 13px 31px!important;font-style:normal!important;text-align:center;vertical-align:middle;margin-top:1px;margin-bottom:1px;background-image:none;border-style:solid;border-radius:2px;outline:none;white-space:pre-wrap;-webkit-text-stroke:0}@media (max-width:569px){.btn:not(input):not(.checkout-button),.btn-link:not(input):not(.checkout-button){transform:scale(.8);transform-origin:left}.navbar .btn:not(input):not(.checkout-button),.menu-accordion .btn:not(input):not(.checkout-button){transform:none}}.btn-link{border:1px solid transparent;padding:0px!important}.fa-stack{text-align:center;border-width:1px!important}.breadcrumb{padding:0 0 0 0;list-style:none;font-weight:500;line-height:1.2}.breadcrumb>li{display:inline-block;margin-top:0;font-size:13px}.breadcrumb>li+li:not(.paged):before{content:"/\00a0";padding:0 5px}@media (max-width:959px){.breadcrumb{margin-left:auto!important;margin-right:auto!important;text-align:center}}.row-breadcrumb{border-top-width:1px!important;border-bottom-width:1px!important;border-style:solid!important}.row-breadcrumb.row-breadcrumb-light{border-color:#eaeaea;background-color:#f7f7f7}.row-breadcrumb .breadcrumb-title{margin:0;line-height:1.3em}@media (max-width:959px){.row-breadcrumb .breadcrumb-title{margin:auto!important;text-align:center;float:none!important}}.row-breadcrumb.text-left .breadcrumb{margin:0 0 0 0px!important}.row-breadcrumb.text-left .breadcrumb-title{float:right}@media (max-width:959px){.row-breadcrumb .row>*:not(:first-child){margin:9px 0 0 0px!important}}.uncode-single-media{line-height:0}.uncode-single-media .single-wrapper{display:inline-block;width:100%;position:relative}.uncode-single-media .single-wrapper>a{display:inline-block;width:100%}.uncode-single-media .uncode-single-media-wrapper{position:relative;display:inline-block;width:100%;line-height:0}.post-wrapper{display:table;table-layout:fixed;width:100%;height:100%}.post-wrapper .post-body{display:table;table-layout:fixed;width:100%}@media (max-width:569px){.post-content{max-width:100%!important}}.post-content::after{clear:both;content:'';display:block}.post-content>*:first-child,.post-content>.row-container>.row-parent>*:first-child{margin-top:0}.post-content img{max-width:100%}@media (min-width:960px){.sticky-element{height:auto!important}}.boomapps_vcrow{z-index:0}.menu-smart,.menu-smart ul,.menu-smart li{display:block;list-style:none;padding:0;margin:0;line-height:normal}body:not(.rtl) .menu-smart,body:not(.rtl) .menu-smart ul,body:not(.rtl) .menu-smart li{direction:ltr}.menu-container ul.menu-smart a{position:relative;display:block}ul.menu-smart ul{position:absolute;top:-999999px;left:-800px;width:100px}body[class*=hmenu] ul.menu-smart>li{display:inline-block}body[class*=hmenu] ul.menu-smart>li::after{content:'';display:inline}@media (max-width:959px){body[class*=hmenu] ul.menu-smart>li{display:block}}ul.menu-smart ul li,ul.sm-vertical li{float:none}ul.menu-smart a{white-space:nowrap}ul.sm-vertical a{white-space:normal}ul.menu-smart:after{content:"\00a0";display:block;height:0;font:0/0 serif;clear:both;visibility:hidden;overflow:hidden}@media (min-width:960px){ul.menu-smart li *,ul.menu-smart li *:before,ul.menu-smart li *:after{box-sizing:content-box}}@media (min-width:960px){.menu-smart{padding:0 13px 0 13px}}ul.menu-smart{line-height:0}.menu-mini.menu-smart a{padding:4px 9px 4px 9px;font-size:12px}.menu-mini.menu-smart span{font-size:12px}.menu-smart a span{position:relative;background:inherit}.menu-smart ul li,.sm-vertical.menu-smart li{border-left-width:0!important}@media (min-width:960px){.menu-smart>li>a{padding:0 14px 0 14px}.menu-primary .menu-icons.menu-smart>li>a{padding:0 9px 0 9px}}.menu-smart>li:first-child{border-left-width:0!important}.menu-smart i.fa-dropdown{display:inline-block;position:relative;padding:0 0 0 9px;margin:0 0 0 0;margin-right:0;box-sizing:content-box!important;font-size:.8em;text-align:right!important}.menu-smart i.menu-icon{margin-right:6px;line-height:0;position:relative;vertical-align:inherit;top:.05em}.menu-smart .btn{margin-top:0}.menu-smart>li>a>div>div>div.btn{margin:0}.menu-smart>li>a>div>div>div.btn span{top:0!important}@media (max-width:959px){.menu-smart li.menu-item-button a{height:auto!important}}.menu-horizontal .menu-btn-table{display:inline-table;table-layout:fixed;height:0;top:0!important}.menu-horizontal .menu-btn-cell{display:table-cell}@media (max-width:959px){.menu-horizontal{overflow:hidden}}@media (max-width:959px){.menu-btn-table{display:table;table-layout:fixed;height:100%}body.menu-mobile-centered .menu-btn-table{margin:0 auto}}.menu-horizontal{line-height:0}@media (min-width:960px){.menu-horizontal{height:100%;width:100%}}@media (min-width:960px){.menu-horizontal>div{height:100%;display:inline-table}}.menu-horizontal{position:relative}@media (max-width:959px){.menu-horizontal{overflow:hidden}}@media (min-width:960px){.menu-horizontal .menu-smart ul{padding:18px 18px 18px 18px}}.menu-accordion ul.menu-smart{width:100%!important}.menu-accordion ul.menu-smart>li{float:none}.menu-accordion ul.menu-smart>li>a{white-space:normal}.menu-accordion .menu-smart{line-height:normal}.menu-accordion .menu-smart a{padding:9px 36px 9px 36px}.menu-accordion .menu-smart li{border-left:0px!important}@media (min-width:960px){.menu-accordion .menu-smart a{padding:5px 54px 5px 54px}}@media (max-width:959px){ul.menu-smart{width:100%!important}ul.menu-smart ul{display:none;position:static!important;top:auto!important;left:auto!important;margin-left:0!important;margin-top:0!important;width:auto!important;min-width:0!important;max-width:none!important}ul.menu-smart>li{float:none}ul.menu-smart>li>a{white-space:normal}.menu-smart{line-height:normal}.menu-smart a,.menu-smart form.search{padding:9px 36px 9px 36px}.menu-smart li{border-left:0px!important}form input[type="submit"]{width:100%;box-sizing:border-box;margin:0}.menu-smart a{font-weight:500;text-transform:uppercase}}@media (max-width:959px){body.menu-mobile-centered .main-menu-container .menu-horizontal{display:table!important;min-height:100%;text-align:center;width:100%}body.menu-mobile-centered .main-menu-container .menu-horizontal .menu-horizontal-inner{display:table-cell;margin:auto;padding:36px 0 36px 0;vertical-align:middle;width:100%}body.menu-mobile-centered .main-menu-container .menu-horizontal .menu-horizontal-inner ul.menu-smart:not(.menu-smart-social){padding:0!important}body.menu-mobile-centered .main-menu-container .menu-horizontal .menu-horizontal-inner ul.menu-smart li.menu-item>a,body.menu-mobile-centered .main-menu-container .menu-horizontal .menu-horizontal-inner ul.menu-smart li.menu-item-link>a{font-size:4.5vw!important;line-height:1.3!important;padding-top:5px;padding-bottom:5px;text-transform:none!important}body.menu-mobile-centered .menu-smart li:not(.social-icon) .fa{display:none!important}body.menu-mobile-centered .menu-smart li i+span{margin:0!important}body.menu-mobile-centered .menu-smart input[type="search"]{margin-top:0}}@media (max-width:959px) and (max-width:959px){body.menu-mobile-centered .main-menu-container .menu-horizontal .menu-horizontal-inner ul.menu-smart:not(.menu-smart-social) ul{padding-top:9px;padding-bottom:9px}}@media (min-width:960px){.hmenu:not(.hmenu-center-split) .navbar-nav-first:not(.navbar-cta){width:100%}body[class*=" hmenu"].hormenu-position-left:not(.hmenu-center-split):not(.hmenu-position-center):not(.rtl) .navbar-nav-first:not(.navbar-cta)>ul>li:last-child>a{padding-right:0}}@media (max-width:959px){.menu-primary .menu-borders{border-bottom-width:0;border-bottom-style:solid}}@media (min-width:960px){.menu-primary .menu-borders{border-bottom-width:1px;border-top-width:0;border-bottom-style:solid;border-top-style:solid}}.menu-bloginfo{line-height:0;white-space:nowrap;padding:4px 18px 4px 18px}.menu-bloginfo .menu-bloginfo-inner{line-height:1em;font-size:12px}@media (min-width:960px){.menu-no-arrows .menu-smart>li>a i.fa-dropdown{display:none}}@media (max-width:959px){.mobile-secondary-menu{padding-top:0!important}}@media (min-width:960px){.hmenu .menu-horizontal-inner{width:100%}.navbar-topmenu{width:100%}.menu-icons ul{padding:0!important}.menu-icons i:not(.fa-dropdown){margin-right:0;line-height:0;position:relative}body[class*=hmenu] .menu-icons i:not(.fa-dropdown){top:3px;font-size:18px;width:1em}}@media (min-width:960px){header{width:100%;z-index:1000;position:relative}}@media (max-width:959px){.menu-wrapper{position:relative;z-index:1000}}li.menu-item-button{height:100%;vertical-align:top}li.menu-item-button::before,li.menu-item-button::after{content:'';display:block;height:calc(50% - (13px + 0.5em));width:100%}li.menu-item-button>a::before,li.menu-item-button>a::after{display:none!important}li.menu-item-button>a .menu-item>span{background:none!important;white-space:nowrap}.menu-wrapper{display:table-row;width:100%;position:relative;height:1px}@media (max-width:959px){.menu-wrapper.menu-sticky .menu-container{position:fixed}}@media (max-width:959px){.menu-wrapper.menu-sticky .main-menu-container{overflow:scroll}}.row-menu{position:relative;width:100%;height:100%}@media (max-width:959px){.row-menu{max-width:none!important}}.row-menu-inner{width:100%;background-clip:content-box!important;position:relative}@media (min-width:960px){.row-menu-inner{display:table;height:100%}}.row-menu-inner>div:not(.logo-container){padding-top:0;padding-bottom:0}.hmenu .navbar-nav{height:100%}.hmenu .menu-smart{height:100%}.menu-with-logo .menu-smart>li,.menu-with-logo .menu-smart>li>a{height:100%}@media (min-width:960px){.hmenu .menu-primary .menu-smart>li>a{height:100%;line-height:1em}.hmenu .menu-primary .menu-smart>li>a:before{content:"";display:block;height:52%;height:calc(52% - 0.50em)}.hmenu .menu-primary .menu-smart>li>a:after{content:"";display:block;height:50%;height:calc(50% - 0.50em)}}.menu-horizontal-inner{line-height:0}.menu-container{overflow:visible;width:100%}.menu-wrapper.menu-sticky .menu-container{z-index:2000}.menu-container .navbar-brand *{line-height:1em}@media (max-width:959px){.menu-wrapper div[class*=col-lg-]{display:block}}.menu-wrapper div[class*=col-lg-].middle{vertical-align:middle}.navbar-header{position:relative}#main-logo{line-height:0;text-align:center;position:relative;z-index:10;display:inline-block}#main-logo a>*{margin:0;width:auto}#main-logo .navbar-brand img{width:auto;height:100%;display:block;margin:auto}.menu-container{float:none!important;z-index:2}.menu-container:before,.menu-container:after{content:" ";display:table;table-layout:fixed}.menu-container:after{clear:both}.menu-container:before,.menu-container:after{content:" ";display:table;table-layout:fixed}.menu-container:after{clear:both}.logo-container{line-height:1px;vertical-align:top}.logo-container>*{margin:0 auto;line-height:normal}@media (min-width:960px){body.hmenu-position-right .menu-primary-inner{text-align:right}.menu-primary-inner>*{text-align:left}.menu-secondary .col-lg-12{text-align:right}body.hmenu .menu-primary .menu-horizontal .menu-smart>li>a{padding-top:0;padding-bottom:0}body[class*=hmenu-]:not(.hmenu-center-split):not(.hmenu-center-double):not(.hormenu-position-right) .logo-container{padding-left:0px!important}body[class*=hmenu-] .navbar-nav-last{text-align:right}body[class*=hmenu-].hmenu-position-right .menu-borders .navbar-main>ul.menu-smart{padding:0}body[class*=hmenu-]:not(.hormenu-position-right) .menu-borders .navbar-nav+.navbar-nav-last>*:first-child{padding:0 0 0 27px}body[class*=hmenu-]:not(.hormenu-position-right) .menu-borders .navbar-nav:not(.navbar-cta)+.navbar-nav-last>*:first-child{border-left-width:1px;border-left-style:solid}body[class*=hmenu-]:not(.hormenu-position-right) .menu-borders .navbar-nav:not(.navbar-cta)+.navbar-nav-last>*:first-child{margin:0 0 0 36px;padding:0 0 0 36px;float:right}body[class*=hmenu-] .menu-item-button a::before{height:0!important}body[class*=hmenu-] .menu-item-button a::after{height:0}body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last:not(.navbar-cta)>ul>li:first-child>a,body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last:not(.navbar-cta)>ul>li:only-child>a{margin-left:0;padding-left:0px!important}body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last:not(.navbar-cta)>ul>li:first-child>a i,body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last:not(.navbar-cta)>ul>li:only-child>a i{margin-left:0px!important}body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last>ul>li:last-child>a,body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last>ul>li:only-child>a{margin-right:0;padding-right:0px!important}body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last>ul>li:last-child>a i,body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last>ul>li:only-child>a i{margin-right:0px!important}body[class*=hmenu-]:not(.hormenu-position-right) .navbar-nav-last>ul{padding-right:0}body[class*=hmenu-]:not(.hormenu-position-right) .menu-bloginfo{padding-left:0}.main-menu-container .menu-horizontal-inner .fa-angle-right.fa-dropdown{display:none}.navbar-header img{max-width:none}body.hmenu .menu-container .navbar-nav{display:table-cell;white-space:nowrap;vertical-align:top}body:not(.hmenu-center) .menu-absolute{left:0;right:0;z-index:1000;position:absolute}.menu-wrapper .row-menu .row-menu-inner{padding:0 36px 0 36px}}body.menu-mobile-transparent:not(.hmenu-center) .menu-absolute.menu-transparent{left:0;right:0;z-index:1000;position:absolute}@media (max-width:959px){.menu-container{z-index:1000}.menu-container .logo-container{position:relative;padding:27px 36px 27px 36px!important}.main-menu-container{float:left;height:0;overflow:hidden;width:100%}.menu-smart a i.fa-dropdown{float:right;right:7px;top:.3em}.menu-smart a i.fa-dropdown.fa-angle-right{right:8px}.menu-horizontal-inner>div:first-child:not(.navbar-social) .menu-smart{padding:27px 0 0 0px!important}.menu-horizontal-inner>div:last-child .menu-smart{padding:0 0 27px 0px!important}body:not(.hmenu-center-split) .menu-horizontal-inner .navbar-nav:not(:first-child) .menu-smart{padding-top:0}.menu-horizontal-inner .navbar-nav:first-child:not(:only-child) .menu-smart{padding-bottom:0}#main-logo.navbar-header{display:inline-block}}body .menu-button-offcanvas{display:inline-block}body[class*=hmenu-] .menu-wrapper [class*=col-lg-]:not(.logo-container){padding-left:0;padding-right:0}@media (max-width:959px){.menu-hide{position:absolute;z-index:1000}.menu-mobile-animated .menu-sticky .menu-container .menu-smart>li{opacity:0;transform:scale(1.1) translateY(-24px)}}.top-menu{position:relative;z-index:3000}.top-menu li{text-align:left}@media (min-width:960px){.top-menu.top-menu-padding .menu-bloginfo{padding-top:12px;padding-bottom:12px}.top-menu.top-menu-padding .menu-smart>li{padding-top:12px;padding-bottom:12px}.top-menu.top-menu-padding .menu-smart>li>a{padding-top:inherit;padding-bottom:inherit}}.mmb-container{position:absolute;top:50%;right:0}.mobile-menu-button{display:none;line-height:0;transform:translateY(-50%);position:relative;padding:27px 36px 27px 36px}@media screen and (max-width:959px){.mobile-menu-button{display:inline-block;opacity:1!important}}.mobile-menu-button.menu-close-search{transform:none;line-height:20px}.lines,.lines:before,.lines:after{display:inline-block;width:20px;height:2px;border-radius:5px;background-clip:padding-box}.lines{position:relative}.lines:before,.lines:after{position:absolute;left:0;content:'';-webkit-transform-origin:10px center;transform-origin:10px center}.lines:before{top:6px}.lines:after{top:-6px}.lines-button.x2.close .lines:before,.lines-button.x2.close .lines:after{top:0;width:20px}.lines-button.x2 .lines:before,.lines-button.x2 .lines:after{transform-origin:50% 50%}.lines-button.x2.close .lines{background:transparent!important}.lines-button.x2.close .lines:before{transform:rotate3d(0,0,1,45deg)}.lines-button.x2.close .lines:after{transform:rotate3d(0,0,1,-45deg)}.single-gutter .tmb{padding-right:36px}.tmb>.t-inside{background-clip:content-box}.owl-carousel:not(.owl-loaded)>*:not(:first-child){display:none}.el-text{clear:both}.heading-text.el-text>*:first-child{margin-top:0!important;display:inline-block}.heading-text.el-text>*:last-child{margin-bottom:0!important}.el-text>*>span:not(.heading-text-inner){display:block}.el-text+.clear{margin-top:0!important}.header-wrapper{display:table;table-layout:fixed;position:relative;overflow:hidden;width:100%;height:100%}.header-wrapper .heading-text>*:first-child{margin-top:0!important}.header-wrapper .heading-text:not(.heading-bigtext){display:inline-block}.header-wrapper .column_parent{height:100%!important}.header-wrapper:not(.header-only-text):before{background-repeat:no-repeat;position:absolute;top:50%;left:50%;width:38px;height:38px;margin-top:-19px;margin-left:-19px;content:"";z-index:1;opacity:1;animation:spin 2s infinite linear}@media (min-width:960px){#page-header{display:table-row;width:100%}}#page-header .header-wrapper .row-container>.row-background{opacity:0}@media (max-width:959px){#page-header .row .uncol{padding-top:0!important}}.tmb .avatar{border-radius:50%}.tmb>.t-inside{position:relative;display:table;table-layout:fixed;width:100%}.tmb-no-bg.tmb>.t-inside{background:none}.tmb>.t-inside hr{margin-top:18px;margin-bottom:18px}.tmb-round.tmb>.t-inside{border-radius:4px}.tmb .t-entry-text-tc:not(.no-block-padding) .t-entry>*:first-child{margin-top:0px!important}.tmb .t-entry-visual{position:relative;overflow:hidden;text-align:left;background-position:center;background-repeat:no-repeat;background-size:cover;-webkit-font-smoothing:antialiased}.tmb .t-entry-visual img{width:100%;max-width:none;z-index:1;position:relative;display:block}.tmb-img-ratio.tmb .t-entry-visual .t-entry-visual-cont>img{position:absolute;top:0;bottom:0;left:0;right:0;height:100%}.tmb .t-entry-visual img{transform:scale(1,1)}.tmb .t-entry-text{position:relative;-webkit-backface-visibility:hidden;text-align:left}.tmb-content-left.tmb .t-entry-text{text-align:left}.tmb-content-left.tmb .t-entry-text hr{margin-right:auto!important;margin-left:0!important}.tmb .t-entry-text p,.tmb .t-entry-text a{word-wrap:break-word}.tmb .t-entry-text .t-entry-text-tc .t-entry>*:not(hr):last-child{width:100%}:not(.tmb-post).tmb .t-entry>*:not(hr){margin:9px 0 0 0}.tmb .t-entry .t-entry-title{word-break:break-word}.tmb .t-entry p.t-entry-meta span{display:block;font-size:12px;font-weight:600}.tmb .t-entry p.t-entry-meta .small-spacer{width:10px;display:inline-block}.tmb .t-entry p.t-entry-meta span:first-child:not(.tmb-term-evidence){margin:0 0 0 0}.tmb .t-entry p.t-entry-meta span:first-child:not(.tmb-term-evidence) .fa-push-right{margin-left:0}.tmb .t-entry p.t-entry-meta .t-entry-category{display:inline;text-transform:capitalize;display:inline-block}.tmb .t-entry p.t-entry-meta .t-entry-category .cat-comma{display:inline;padding-right:.25em}.tmb .t-entry p.t-entry-readmore .btn{margin:0 0 0 0}.tmb .t-entry-excerpt>p:first-child{margin-top:0}@media (min-width:960px){.overlay{position:fixed;width:100%;height:100%;top:0;left:0;z-index:10000;opacity:0;visibility:hidden}.overlay input{background-color:transparent!important}.overlay .search-container{perspective:1200px}.overlay.overlay-sequential .search-container form{opacity:0;transform:translateY(-40px);animation-timing-function:cubic-bezier(.45,.005,0,1)}.overlay.overlay-search{display:table;table-layout:fixed;height:100%;width:100%;text-align:center}.overlay.overlay-search .mmb-container{top:0;z-index:10001}.overlay.overlay-search .search-container{display:table-cell;vertical-align:middle;width:100%;font-size:28px;font-size:3.5vh}.overlay.overlay-search .search-container .search-container-inner{width:100%;max-width:none}.overlay.overlay-search .search-container .search-container-inner i{margin-top:-.5em;right:1.5em}.overlay.overlay-search .search-container form{display:inline-block;width:100%;max-width:600px;max-width:60vw;padding-top:100px;padding-bottom:100px}.overlay.overlay-search .search-container form .search-container-inner input{display:inline-block;margin:0;width:100%;font-size:28px;font-size:3.5vh;padding:.8em 3em .8em 1.5em}}@media (max-width:959px){.overlay.overlay-search{display:none}}html{position:inherit}.widget-container{margin:54px 0 0 0}.widget-container:first-child{margin-top:0}.widget-container a{font-weight:500}.widget-container .tagcloud{margin:18px 0 0 0}.widget-container .tagcloud a{font-size:11px!important;padding:2px 5px 2px 5px;display:inline-block;border:1px solid;border-radius:4px;margin:0 5px 9px 0;text-transform:uppercase;font-weight:600}.search-container-inner{position:relative}.search-container-inner input{padding-right:36px}.search-container-inner i.fa{position:absolute;right:1.35em;top:50%;margin-top:-9px}footer{width:100%}.footer-scroll-top{z-index:100;display:none;position:fixed;right:22px;bottom:22px}@media (min-width:960px){.footer-scroll-top.footer-scroll-higher{bottom:61px}}.footer-scroll-top:not(.window-scrolled){opacity:0}.footer-scroll-top i{border-radius:2px;width:2em;height:2em;line-height:2em}.author-profile .uncode-avatar-wrapper img{border-radius:0!important;vertical-align:top}img.size-full{width:auto;height:auto}.aligncenter{float:none;margin-left:auto;margin-right:auto;box-sizing:border-box}img.aligncenter{display:block}@font-face{font-display:swap;font-family:'uncodeicon';src:url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.eot);src:url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.eot?#iefix) format('embedded-opentype'),url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.woff2) format('woff2'),url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.woff) format('woff'),url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.ttf) format('truetype'),url(https://phoenixnap.com/kb/wp-content/themes/uncode/library/fonts/uncode-icons.svg#uncodeicon) format('svg');font-weight:400;font-style:normal}.fa{font-family:'uncodeicon'!important;speak:none;font-style:normal;font-weight:400;font-variant:normal;text-transform:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.fa.fa-push-right{margin-right:.3em}@-moz-keyframes spin{0%{-moz-transform:rotate(0deg)}100%{-moz-transform:rotate(359deg)}}@-webkit-keyframes spin{0%{-webkit-transform:rotate(0deg)}100%{-webkit-transform:rotate(359deg)}}@-o-keyframes spin{0%{-o-transform:rotate(0deg)}100%{-o-transform:rotate(359deg)}}@-ms-keyframes spin{0%{-ms-transform:rotate(0deg)}100%{-ms-transform:rotate(359deg)}}@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(359deg)}}.fa-stack{position:relative;display:inline-block;width:2.5em;height:2.5em;line-height:2.5em;vertical-align:middle;border:2px solid silver;-webkit-backface-visibility:hidden;-webkit-box-sizing:initial;-moz-box-sizing:initial;box-sizing:initial;-o-border-radius:2.5em;-moz-border-radius:2.5em;-webkit-border-radius:2.5em;-ms-border-radius:2.5em;border-radius:2.5em}.fa-phone:before{content:"\f095"}.fa-angle-right:before{content:"\f105"}.fa-angle-up:before{content:"\f106"}.fa-angle-down:before{content:"\f107"}.fa-search3:before{content:"\e088"}.fa-archive2:before{content:"\e121"}.style-color-wayh-bg{background-color:#141618}.style-color-rgdb-bg{background-color:#1b1d1f}.style-color-xsdn-bg{background-color:#fff}.text-color-xsdn-color{color:#ffffff!important;fill:#ffffff!important}.style-color-lxmt-bg{background-color:#f7f7f7}.border-color-gyho-color{border-color:#eaeaea!important}.style-color-149208-bg{background-color:#006ca8}.style-accent-bg{background-color:#006ca8}.btn-accent{color:#ffffff!important;background-color:#006ca8!important;border-color:#006ca8!important}.style-light-bg{background-color:#fff}.style-dark-bg{background-color:#141618}.font-762333{font-family:Poppins!important}.fontspace-781688{letter-spacing:-0.02em!important}body,p,li,code{font-size:18px}h1:not([class*="fontsize-"]){font-size:60px}@media (max-width:959px){h1:not([class*="fontsize-"]){font-size:40px}}@media (max-width:569px){h1:not([class*="fontsize-"]){font-size:35px}}@media (max-width:320px){h1:not([class*="fontsize-"]){font-size:28px}}.h2:not([class*="fontsize-"]){font-size:38px}@media (max-width:959px){.h2:not([class*="fontsize-"]){font-size:25.333333333333px}}h3:not([class*="fontsize-"]),.h3:not([class*="fontsize-"]){font-size:24px}h4:not([class*="fontsize-"]),.h4:not([class*="fontsize-"]){font-size:20px}.h5:not([class*="fontsize-"]){font-size:17px}body{font-weight:400;font-family:'SF-Pro-Display',Roboto,Sans-Serif}.style-light{color:#000}.style-dark{color:#fff}.style-dark a{color:#fff}.style-light a{color:#000}body.textual-accent-color .post-content>div p:not(.entry-small):not(.panel-title):not(.t-entry-member-social) a:not(.btn){color:#006ca8!important}h1,h3,h4,.heading-text>p,.tmb .t-entry .t-entry-title{letter-spacing:0em;font-weight:900;font-family:'SF-Pro-Display',Roboto,Sans-Serif}.style-dark h1{color:#fff}.style-light .heading-text>p,.style-light p strong{color:#000}input[type="submit"],.btn:not(.btn-custom-typo),.btn-link:not(.btn-custom-typo){font-weight:600!important;font-family:Poppins!important;letter-spacing:.1em;text-transform:uppercase}input[type="submit"]{border-width:1px}.style-dark input,.style-dark .widget-container .tagcloud a{border-color:rgba(255,255,255,.25)}.style-light hr{border-color:#eaeaea}.style-light code{background-color:#f7f7f7}.style-dark input{background-color:rgba(26,27,28,.5)}.style-dark .widget-container a{color:#fff}.style-light .breadcrumb{color:#999}.style-light .breadcrumb>li a{color:#999}.style-light .btn-default{color:#ffffff!important;background-color:#000000!important;border-color:#000000!important}@media (min-width:960px){.overlay.style-dark-bg{background-color:rgba(20,22,24,.95)!important}}input{box-shadow:inset 0 2px 1px rgba(0,0,0,.025)}.row-breadcrumb.row-breadcrumb-light .breadcrumb-title{color:#999}input,input[type="submit"],.btn,.btn-link,.btn:not(.btn-custom-typo),.btn-link:not(.btn-custom-typo){border-width:1px}.style-light ::-webkit-input-placeholder{color:#323232}.style-light ::-moz-placeholder{color:#323232}.style-light :-ms-input-placeholder{color:#323232}.style-light :-moz-placeholder{color:#323232}.style-dark ::-webkit-input-placeholder{color:#fff}.style-dark ::-moz-placeholder{color:#fff}.style-dark :-ms-input-placeholder{color:#fff}.style-dark :-moz-placeholder{color:#fff}.menu-container ul.menu-smart a:not(.social-menu-link){font-family:Poppins}@media (max-width:959px){.menu-primary ul.menu-smart a{font-family:Poppins;font-weight:600}}.menu-container ul.menu-smart>li>a:not(.social-menu-link),.menu-container:not(.vmenu-container) ul.menu-smart>li>a,.menu-smart>li>a>div>div>div.btn{font-size:12px}@media (min-width:960px){.menu-container ul.menu-smart>li>a:not(.social-menu-link),.menu-container:not(.vmenu-container) ul.menu-smart>li>a,.menu-smart>li>a>div>div>div.btn{font-size:12px}}@media (max-width:959px){.menu-container:not(.isotope-filters) ul.menu-smart a:not(.social-menu-link){font-size:12px!important}}.menu-container ul.menu-smart>li>a:not(.social-menu-link),.menu-container ul.menu-smart li.dropdown>a,.menu-container:not(.vmenu-container) ul.menu-smart>li>a,.menu-smart i.fa-dropdown{font-weight:600;letter-spacing:.05em}@media (max-width:959px){.menu-container ul.menu-smart>li>a:not(.social-menu-link),.menu-container ul.menu-smart li.dropdown>a,.menu-container:not(.vmenu-container) ul.menu-smart>li>a,.menu-smart i.fa-dropdown{font-weight:600}}.menu-light .menu-smart a{color:#fff}.menu-dark .menu-smart a{color:#fff}@media (max-width:959px){.submenu-light .menu-smart a{color:#fff}.submenu-dark .menu-smart a{color:#fff}}@media (max-width:959px){.submenu-light .menu-smart a{color:#fff}.submenu-dark .menu-smart a{color:#fff}}.menu-light .menu-smart,.menu-light .menu-smart li{border-color:rgba(255,255,255,.5)}.menu-dark .menu-smart,.menu-dark .menu-smart li,.submenu-dark .menu-smart ul,.menu-dark .menu-borders,.menu-dark .main-menu-container{border-color:rgba(255,255,255,.15)}.submenu-dark .menu-smart li ul li{border-color:rgba(255,255,255,.15)}@media (max-width:959px){.menu-light .row-menu .row-menu-inner{border-bottom:1px solid rgba(255,255,255,.5)}.submenu-light .menu-smart,.submenu-light .menu-smart li{border-color:rgba(255,255,255,.5)}.menu-dark .row-menu .row-menu-inner{border-bottom:1px solid rgba(255,255,255,.15)}.submenu-dark .menu-smart,.submenu-dark .menu-smart li{border-color:rgba(255,255,255,.15)}.menu-mobile-transparent .menu-transparent:not(.is_stuck):not(.is_mobile_open) .row-menu .row-menu-inner{border-color:transparent!important}}body:not(.menu-force-opacity) .menu-transparent.menu-dark .menu-borders,body:not(.menu-force-opacity) .menu-transparent.menu-dark .menu-smart,body:not(.menu-force-opacity) .menu-transparent.menu-dark .menu-smart>li,body:not(.menu-force-opacity) .menu-transparent.menu-dark .navbar-nav-last>*:first-child{border-color:rgba(255,255,255,.15)}body:not(.menu-force-opacity) .menu-light .navbar-nav-last>*:first-child{border-color:rgba(255,255,255,.5)}body:not(.menu-force-opacity) .menu-dark .navbar-nav-last>*:first-child{border-color:rgba(255,255,255,.15)}.submenu-dark .menu-horizontal .menu-smart ul{background-color:#1b1d1f}@media (max-width:959px){.submenu-light .menu-smart{background-color:#fff}.submenu-dark .menu-smart,.submenu-dark .main-menu-container{background-color:#1b1d1f}}body:not(.menu-overlay):not(.hmenu-center):not(.menu-force-opacity) .menu-wrapper:not(.no-header) .menu-transparent:not(.is_stuck):not(.is_mobile_open).menu-transparent.style-dark-original{opacity:0}body:not(.menu-force-opacity) .menu-wrapper:not(.no-header) .menu-transparent:not(.is_stuck):not(.is_mobile_open).menu-transparent.style-dark-original>*{background:transparent;background-color:rgba(0,108,168,0)}.mobile-menu-button-dark .lines,.mobile-menu-button-dark .lines:before,.mobile-menu-button-dark .lines:after{background:#fff}@media (max-width:959px){[class*="menu-dd-shadow-"].menu-horizontal .menu-smart ul{box-shadow:none!important}}@media (min-width:960px){.menu-shadows{box-shadow:0 4px 10px -10px rgba(0,0,0,.6)}}.tmb-light.tmb .t-entry-visual *{color:#fff}.tmb-light.tmb .t-entry-text .t-entry-title a,.tmb-light.tmb .t-entry-text .t-entry-title,.tmb-light.tmb-content-under.tmb .t-entry p.t-entry-meta span,.tmb-light.tmb-content-under.tmb .t-entry p.t-entry-meta a:not(:hover){color:#000}.tmb-light.tmb .t-entry-text,.tmb-light.tmb .t-entry-text p{color:#000}.tmb-light.tmb .t-entry-text hr{border-color:#eaeaea}.tmb-light.tmb-bordered:not(.tmb-no-bg):not(.tmb-shadowed).tmb>.t-inside{border:1px solid #eaeaea}.menu-dd-shadow-lg.menu-horizontal .menu-smart ul{box-shadow:0 55px 80px -40px rgba(0,0,0,.45)}.tmb-round,.tmb-round>.t-inside{border-radius:4px;background-clip:padding-box}@font-face{font-display:swap;src:url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.eot?45335921);src:url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.eot?45335921#iefix) format("embedded-opentype"),url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.woff2?45335921) format("woff2"),url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.woff?45335921) format("woff"),url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.ttf?45335921) format("truetype"),url(https://phoenixnap.com/kb/wp-content/plugins/fixed-toc/frontend/assets/fonts/icons.svg?45335921#fontello) format("svg");font-family:ftwp-icon}#ftwp-container.ftwp-wrap,#ftwp-container.ftwp-wrap a,#ftwp-container.ftwp-wrap a:link,#ftwp-container.ftwp-wrap a:visited,#ftwp-container.ftwp-wrap button,#ftwp-container.ftwp-wrap header,#ftwp-container.ftwp-wrap li,#ftwp-container.ftwp-wrap li::after,#ftwp-container.ftwp-wrap li::before,#ftwp-container.ftwp-wrap nav,#ftwp-container.ftwp-wrap ol,#ftwp-container.ftwp-wrap span{margin:0;padding:0;line-height:inherit;font:inherit;color:inherit;background:0 0;box-shadow:none;text-shadow:none;text-decoration:none;text-align:inherit;border:none;outline:0;box-sizing:border-box;border-radius:0;clear:none}#ftwp-container.ftwp-wrap li{list-style:none}#ftwp-container.ftwp-wrap li::after,#ftwp-container.ftwp-wrap li::before{display:none}#ftwp-container.ftwp-wrap{font-family:inherit;font-size:12px}#ftwp-container.ftwp-wrap #ftwp-list .ftwp-anchor::before,#ftwp-container.ftwp-wrap .ftwp-icon-expand,#ftwp-container.ftwp-wrap .ftwp-icon-menu{display:inline-block;font-family:ftwp-icon;font-style:normal;font-weight:400;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}#ftwp-container.ftwp-wrap .ftwp-icon-menu::before{content:'\F0C9'}#ftwp-container.ftwp-wrap .ftwp-icon-expand::before{content:'\E801'}#ftwp-container.ftwp-wrap #ftwp-trigger{display:inline-block;width:50px;height:50px;background:rgba(238,238,238,.95);color:#333;font-size:30px;position:relative}#ftwp-container.ftwp-wrap #ftwp-trigger .ftwp-trigger-icon{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}#ftwp-container.ftwp-wrap #ftwp-contents{width:250px;max-width:100%;overflow:hidden;height:auto;max-height:100%}#ftwp-container.ftwp-wrap #ftwp-header{color:#333;background:rgba(238,238,238,.95);padding:10px;font-size:19.2px;line-height:1.1}#ftwp-container.ftwp-wrap #ftwp-header-control{float:left;margin-right:5px}#ftwp-container.ftwp-wrap #ftwp-header-title{font-weight:700;display:block;overflow:hidden}#ftwp-container.ftwp-wrap #ftwp-header-minimize{float:right;margin-left:5px;width:25px;text-align:center;opacity:.5}#ftwp-container.ftwp-wrap #ftwp-header::after{content:'';display:table;clear:both}#ftwp-container.ftwp-wrap #ftwp-list{color:#333;font-size:12px;background:rgba(238,238,238,.95);line-height:1.2;overflow-y:auto;width:100%}#ftwp-container.ftwp-wrap #ftwp-list .ftwp-item{text-indent:0}#ftwp-container.ftwp-wrap #ftwp-list .ftwp-anchor{display:block;padding:5px 10px;z-index:10;overflow:hidden;position:relative}#ftwp-container #ftwp-contents.ftwp-border-thin,#ftwp-container #ftwp-trigger.ftwp-border-thin{border-color:rgba(51,51,51,.95);border-style:solid;border-width:1px}#ftwp-container #ftwp-trigger.ftwp-border-thin{font-size:29.5px}#ftwp-container.ftwp-wrap .ftwp-shape-round{border-radius:7px}#ftwp-container #ftwp-list .ftwp-anchor::before{float:left;font-size:4.8px;line-height:3;margin-right:10px}#ftwp-container #ftwp-list .ftwp-text{display:block;overflow:hidden}#ftwp-container #ftwp-list.ftwp-liststyle-decimal{counter-reset:List}#ftwp-container #ftwp-list.ftwp-liststyle-decimal .ftwp-item{counter-increment:List}#ftwp-container #ftwp-list.ftwp-liststyle-decimal .ftwp-anchor::before{font-size:12px;line-height:1.2;font-family:inherit;content:counters(List,".")}#ftwp-container #ftwp-list.ftwp-list-nest .ftwp-sub .ftwp-anchor::before{margin-left:20px}#ftwp-container #ftwp-list.ftwp-list-nest.ftwp-liststyle-decimal ol{counter-reset:List}#ftwp-container #ftwp-list.ftwp-list-nest.ftwp-colexp-icon .ftwp-anchor{padding-left:32px}#ftwp-container #ftwp-list.ftwp-list-nest.ftwp-colexp .ftwp-has-sub{position:relative}#ftwp-container #ftwp-list.ftwp-list-nest.ftwp-colexp .ftwp-icon-expand{position:absolute;left:0;top:0;padding:5px 10px;box-sizing:content-box;opacity:.5;z-index:20}#ftwp-container #ftwp-list.ftwp-strong-first>.ftwp-item>.ftwp-anchor .ftwp-text{font-weight:700;font-size:13.2px}#ftwp-container #ftwp-list.ftwp-strong-first.ftwp-liststyle-decimal>.ftwp-item>.ftwp-anchor::before{font-size:13.2px;font-weight:700}.ftwp-in-post#ftwp-container-outer{margin-bottom:20px}.ftwp-in-post#ftwp-container-outer,.ftwp-in-post#ftwp-container-outer #ftwp-contents{height:auto;overflow-y:hidden;position:relative;z-index:1}.ftwp-in-post#ftwp-container-outer #ftwp-trigger{position:absolute;top:-9999px;z-index:-10;visibility:hidden}.ftwp-in-post#ftwp-container-outer.ftwp-float-none,.ftwp-in-post#ftwp-container-outer.ftwp-float-none #ftwp-contents{width:100%}#ftwp-container.ftwp-hidden-state{opacity:0;visibility:hidden;z-index:-9999;position:absolute;top:0;left:0}</style>
+	<meta name="description" content="Improve MySQL performance with these tips. Our tuning guide shows you how to identify MySQL performance bottlenecks and optimize your database!" />
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+	<link rel="canonical" href="https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="MySQL Performance Tuning: 11 Optimization Tips | PhoenixNAP KB" />
+	<meta name="twitter:description" content="Improve MySQL performance with these tips. Our tuning guide shows you how to identify MySQL performance bottlenecks and optimize your database!" />
+	<meta name="twitter:image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" />
+	<meta name="twitter:creator" content="@phoenixNAP" />
+	<meta name="twitter:site" content="@phoenixNAP" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Goran Jevtic">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="9 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://phoenixnap.com/kb/#organization","name":"PhoenixNAP","url":"https://phoenixnap.com/kb/","sameAs":["https://www.facebook.com/phoenixnap","https://www.linkedin.com/company/phoenix-nap/","https://www.youtube.com/user/PhoenixNAPdatacenter","https://twitter.com/phoenixNAP"],"logo":{"@type":"ImageObject","@id":"https://phoenixnap.com/kb/#logo","inLanguage":"en-US","url":"https://phoenixnap.com/kb/wp-content/uploads/2018/07/pnap-favicon.png","width":480,"height":480,"caption":"PhoenixNAP"},"image":{"@id":"https://phoenixnap.com/kb/#logo"}},{"@type":"WebSite","@id":"https://phoenixnap.com/kb/#website","url":"https://phoenixnap.com/kb/","name":"Knowledge Base by phoenixNAP","description":"","publisher":{"@id":"https://phoenixnap.com/kb/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://phoenixnap.com/kb/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#primaryimage","inLanguage":"en-US","url":"https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png","width":799,"height":400,"caption":"A guide to improving MySQL database performance."},{"@type":"WebPage","@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#webpage","url":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization","name":"MySQL Performance Tuning: 11 Optimization Tips | PhoenixNAP KB","isPartOf":{"@id":"https://phoenixnap.com/kb/#website"},"primaryImageOfPage":{"@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#primaryimage"},"datePublished":"2020-01-15T18:41:57+00:00","dateModified":"2020-11-26T14:00:30+00:00","description":"Improve MySQL performance with these tips. Our tuning guide shows you how to identify MySQL performance bottlenecks and optimize your database!","inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization"]}]},{"@type":"Article","@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#article","isPartOf":{"@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#webpage"},"author":{"@id":"https://phoenixnap.com/kb/#/schema/person/5006690abb4e33220b71fdef935048d7"},"headline":"How to Improve MySQL Performance With Tuning","datePublished":"2020-01-15T18:41:57+00:00","dateModified":"2020-11-26T14:00:30+00:00","mainEntityOfPage":{"@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#webpage"},"publisher":{"@id":"https://phoenixnap.com/kb/#organization"},"image":{"@id":"https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization#primaryimage"},"articleSection":"SysAdmin,Databases,MySQL","inLanguage":"en-US"},{"@type":"Person","@id":"https://phoenixnap.com/kb/#/schema/person/5006690abb4e33220b71fdef935048d7","name":"Goran Jevtic","image":{"@type":"ImageObject","@id":"https://phoenixnap.com/kb/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/2f5bae344a7c67ff091025747cf14098?s=96&d=mm&r=g","caption":"Goran Jevtic"},"description":"Goran combines his passions for research, writing and technology as a technical writer at phoenixNAP. Working with multiple departments and on a variety of projects, he has developed extraordinary understanding of cloud and virtualization technology trends and best practices."}]}</script>
+	<!-- / Yoast SEO Premium plugin. -->
+
+
+<link rel='dns-prefetch' href='//code.jquery.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Knowledge Base by phoenixNAP &raquo; Feed" href="https://phoenixnap.com/kb/feed" />
+<link rel="alternate" type="application/rss+xml" title="Knowledge Base by phoenixNAP &raquo; Comments Feed" href="https://phoenixnap.com/kb/comments/feed" />
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='preload'   href='https://phoenixnap.com/kb/wp-includes/css/dist/block-library/style.min.css?ver=5.4.2' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/contact-form-7/includes/css/styles-2cb6038ac51dd8f87a0b2bde914ae8b1.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<link rel='preload'   href='//fonts.googleapis.com/css?family=Poppins%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2Cregular%2Citalic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto%3A100%2C100italic%2C300%2C300italic%2Cregular%2Citalic%2C500%2C500italic%2C700%2C700italic%2C900%2C900italic&#038;subset=devanagari%2Clatin%2Clatin-ext%2Cgreek%2Cvietnamese%2Ccyrillic%2Cgreek-ext%2Ccyrillic-ext&#038;ver=2.2.8&#038;display=swap' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/uncode-privacy/assets/css/uncode-privacy-public-347c3862a68ba8d4d5cfefc3181d427a.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/style-fb6f9ee6ec1279037f92b9c4ad927320.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<style id='uncode-style-inline-css' type='text/css'>
+
+@media (max-width: 959px) { .navbar-brand > * { height: 35px !important;}}
+@media (min-width: 960px) { .limit-width { max-width: 1200px; margin: auto;}}
+.menu-primary ul.menu-smart > li > a, .menu-primary ul.menu-smart li.dropdown > a, .menu-primary ul.menu-smart li.mega-menu > a, .vmenu-container ul.menu-smart > li > a, .vmenu-container ul.menu-smart li.dropdown > a { text-transform: uppercase; }
+body.menu-custom-padding .col-lg-0.logo-container, body.menu-custom-padding .col-lg-2.logo-container, body.menu-custom-padding .col-lg-12 .logo-container, body.menu-custom-padding .col-lg-4.logo-container { padding-top: 18px; padding-bottom: 18px; }
+body.menu-custom-padding .col-lg-0.logo-container.shrinked, body.menu-custom-padding .col-lg-2.logo-container.shrinked, body.menu-custom-padding .col-lg-12 .logo-container.shrinked, body.menu-custom-padding .col-lg-4.logo-container.shrinked { padding-top: 9px; padding-bottom: 9px; }
+@media (max-width: 959px) { body.menu-custom-padding .menu-container .logo-container { padding-top: 18px !important; padding-bottom: 18px !important; } }
+</style>
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/uncode-icons-91f7fce714e2f17a00419e7756d33541.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/style-custom-0d8554c76a5177763db0dc074cd82e97.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<style id='uncode-custom-style-inline-css' type='text/css'>
+@font-face {font-family:'Poppins';font-style:normal;font-weight:400;src:local('Poppins Regular'), local('Poppins-Regular'), url(https://fonts.gstatic.com/s/poppins/v5/pxiEyp8kv8JHgFVrJJfedA.woff) format('woff');font-display:swap;}@font-face {font-family:'Poppins';font-style:normal;font-weight:600;src:local('Poppins SemiBold'), local('Poppins-SemiBold'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLEj6Z1xlEw.woff) format('woff');font-display:swap;}@font-face {font-family:'Poppins';font-style:normal;font-weight:700;src:local('Poppins Bold'), local('Poppins-Bold'), url(https://fonts.gstatic.com/s/poppins/v5/pxiByp8kv8JHgFVrLCz7Z1xlEw.woff) format('woff');font-display:swap;}@font-face {font-family:'Roboto';font-style:normal;font-weight:400;src:local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff) format('woff');font-display:swap;}@font-face {font-family:'Roboto';font-style:normal;font-weight:700;src:local('Roboto Bold'), local('Roboto-Bold'), url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfBBc-.woff) format('woff');font-display:swap;}@font-face {font-family:'Roboto';font-style:normal;font-weight:900;src:local('Roboto Black'), local('Roboto-Black'), url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfBBc-.woff) format('woff');font-display:swap;}
+</style>
+<link data-minify="1" rel='preload'   href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/fixed-toc/frontend/assets/css/ftoc.min-782db9e9443f1417dba6b70f4cb6f43d.css' data-rocket-async="style" as="style" onload="this.onload=null;this.rel='stylesheet'" type='text/css' media='all' />
+<style id='fixedtoc-style-inline-css' type='text/css'>
+.ftwp-in-post#ftwp-container-outer { height: auto; } #ftwp-container.ftwp-wrap #ftwp-contents { width: 250px; height: auto; font-size: 12px; } .ftwp-in-post#ftwp-container-outer #ftwp-contents { height: auto; } #ftwp-container.ftwp-wrap #ftwp-trigger { width: 58px; height: 58px; font-size: 34.8px; } #ftwp-container #ftwp-trigger.ftwp-border-thin { font-size: 34.3px; } #ftwp-container.ftwp-wrap #ftwp-header { font-size: 19.2px; font-family: inherit; } #ftwp-container.ftwp-wrap #ftwp-header-title { font-weight: bold; } #ftwp-container.ftwp-wrap #ftwp-list { font-size: 12px; font-family: inherit; } #ftwp-container.ftwp-wrap #ftwp-list .ftwp-anchor::before { font-size: 4.8px; } #ftwp-container #ftwp-list.ftwp-strong-first>.ftwp-item>.ftwp-anchor .ftwp-text { font-size: 13.2px; } #ftwp-container.ftwp-wrap #ftwp-list.ftwp-strong-first>.ftwp-item>.ftwp-anchor::before { font-size: 6px; } #ftwp-container.ftwp-wrap #ftwp-trigger { color: #af2028; background: rgba(255,255,255,0.95); } #ftwp-container.ftwp-wrap #ftwp-trigger { border-color: rgba(227,227,227,0.95); } #ftwp-container.ftwp-wrap #ftwp-contents { border-color: rgba(227,227,227,0.95); } #ftwp-container.ftwp-wrap #ftwp-header { color: #777777; background: rgba(255,255,255,0.95); } #ftwp-container.ftwp-wrap #ftwp-contents:hover #ftwp-header { background: #ffffff; } #ftwp-container.ftwp-wrap #ftwp-list { color: #999999; background: rgba(255,255,255,0.95); } #ftwp-container.ftwp-wrap #ftwp-contents:hover #ftwp-list { background: #ffffff; } #ftwp-container.ftwp-wrap #ftwp-list .ftwp-anchor:hover { color: #555555; } #ftwp-container.ftwp-wrap #ftwp-list .ftwp-anchor:focus, #ftwp-container.ftwp-wrap #ftwp-list .ftwp-active, #ftwp-container.ftwp-wrap #ftwp-list .ftwp-active:hover { color: #555555; } #ftwp-container.ftwp-wrap #ftwp-list .ftwp-text::before { background: rgba(227,227,227,0.95); } .ftwp-heading-target::before { background: rgba(85,85,85,0.95); } #ftwp-container #ftwp-list.ftwp-effect-fade .ftwp-anchor.ftwp-active, #ftwp-container #ftwp-list.ftwp-effect-fade .ftwp-anchor:focus { background: rgba(227,227,227,0.95); }
+</style>
+
+
+
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+var SiteParameters = {"days":"days","hours":"hours","minutes":"minutes","seconds":"seconds","constant_scroll":"on","scroll_speed":"2","parallax_factor":"0.25","loading":"Loading\u2026","slide_name":"slide","slide_footer":"footer","ajax_url":"https:\/\/phoenixnap.com\/kb\/wp-admin\/admin-ajax.php","nonce_adaptive_images":"c5fd7cb54a","enable_debug":"","block_mobile_videos":"","is_frontend_editor":"","mobile_parallax_allowed":"","wireframes_plugin_active":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://phoenixnap.com/kb/wp-content/themes/uncode/library/js/min/init.min.js'></script>
+<!-- OG: 2.8.9 -->
+<link rel="image_src" href="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta itemprop="image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta name="msapplication-TileImage" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta property="og:image:width" content="799" /><meta property="og:image:height" content="400" /><meta property="og:image:alt" content="A guide to improving MySQL database performance." /><meta property="og:image:type" content="image/png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/balance-resources.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/balance-resources.png" /><meta property="og:image:width" content="600" /><meta property="og:image:height" content="385" /><meta property="og:image:alt" content="Balance hardware resources" /><meta property="og:image:type" content="image/png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/top-comand-linux.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/top-comand-linux.png" /><meta property="og:image:width" content="800" /><meta property="og:image:height" content="346" /><meta property="og:image:alt" content="top command output in the terminal" /><meta property="og:image:type" content="image/png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-script.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-script.png" /><meta property="og:image:width" content="800" /><meta property="og:image:height" content="606" /><meta property="og:image:alt" content="The output of the MySQLTuner script in a terminal window." /><meta property="og:image:type" content="image/png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-recommendations.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-recommendations.png" /><meta property="og:image:width" content="800" /><meta property="og:image:height" content="306" /><meta property="og:image:alt" content="The General Recommendations section of the MySQLTuner script." /><meta property="og:image:type" content="image/png" /><meta property="og:image" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-diagram-config.png" /><meta property="og:image:secure_url" content="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-diagram-config.png" /><meta property="og:image:width" content="798" /><meta property="og:image:height" content="443" /><meta property="og:image:alt" content="Diagram for the my.cnf configuration file with four variables." /><meta property="og:image:type" content="image/png" /><meta property="og:description" content="The performance of MySQL databases is an essential factor in the optimal operation of your server. Make sure you are avoiding the common pitfalls concerning MySQL queries and system setup." /><meta property="og:type" content="article" /><meta property="og:locale" content="en_US" /><meta property="og:site_name" content="Knowledge Base by phoenixNAP" /><meta property="og:title" content="How to Improve MySQL Performance With Tuning" /><meta property="og:url" content="https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization" /><meta property="og:updated_time" content="2020-11-26T14:00:30+00:00" /><meta property="article:published_time" content="2020-01-15T18:41:57+00:00" /><meta property="article:modified_time" content="2020-11-26T14:00:30+00:00" /><meta property="article:author" content="https://phoenixnap.com/kb/author/goranjevtic" /><meta property="article:section" content="SysAdmin" /><meta property="article:section" content="MySQL" /><meta property="article:section" content="Databases" /><meta property="twitter:partner" content="ogwp" /><meta property="twitter:card" content="summary_large_image" /><meta property="twitter:title" content="How to Improve MySQL Performance With Tuning" /><meta property="twitter:description" content="The performance of MySQL databases is an essential factor in the optimal operation of your server. Make sure you are avoiding the common pitfalls concerning MySQL queries and system setup." /><meta property="twitter:url" content="https://phoenixnap.com/kb/improve-mysql-performance-tuning-optimization" /><meta property="twitter:image" content="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><meta property="profile:first_name" content="Goran" /><meta property="profile:last_name" content="Jevtic" /><meta property="profile:username" content="Goran Jevtic" /><!-- /OG -->
+<link rel='https://api.w.org/' href='https://phoenixnap.com/kb/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://phoenixnap.com/kb/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://phoenixnap.com/kb/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.4.2" />
+<link rel='shortlink' href='https://phoenixnap.com/kb/?p=88192' />
+<link rel="alternate" type="application/json+oembed" href="https://phoenixnap.com/kb/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fphoenixnap.com%2Fkb%2Fimprove-mysql-performance-tuning-optimization" />
+<link rel="alternate" type="text/xml+oembed" href="https://phoenixnap.com/kb/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fphoenixnap.com%2Fkb%2Fimprove-mysql-performance-tuning-optimization&#038;format=xml" />
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer type="text/javascript">//<![CDATA[
+	var dataLayer_content = {"pagePostType":"post","pagePostType2":"single-post","pageCategory":["sysadmin","databases","mysql"],"pagePostAuthor":"Goran Jevtic"};
+	dataLayer.push( dataLayer_content );//]]>
+</script>
+<script data-cfasync="false">//<![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.'+'js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MLJ5W8M');//]]>
+</script>
+<!-- End Google Tag Manager -->
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><link rel="icon" href="https://phoenixnap.com/kb/wp-content/uploads/2018/07/pnap-favicon-45x45.png" sizes="32x32" />
+<link rel="icon" href="https://phoenixnap.com/kb/wp-content/uploads/2018/07/pnap-favicon-300x300.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://phoenixnap.com/kb/wp-content/uploads/2018/07/pnap-favicon-300x300.png" />
+<meta name="msapplication-TileImage" content="https://phoenixnap.com/kb/wp-content/uploads/2018/07/pnap-favicon-300x300.png" />
+		<style type="text/css" id="wp-custom-css">
+			/***Top Header***/
+.top-menu {
+	background-color: #f7f7f7;
+}
+
+.top-menu.top-menu-padding .menu-smart > li > a {
+	color: #000;
+}
+
+#menu-secondary .top-menu-button.menu-item.menu-item-type-custom.menu-item-object-custom.btn {
+    padding: 4px 8px!important;
+    font-size: 10px;
+	  font-weight: 600;
+    line-height: 15px;
+    border-radius: .2rem;
+	-webkit-box-shadow: 0 2px 2px 0 rgba(52,58,64,.14), 0 3px 1px -2px rgba(52,58,64,.2), 0 1px 5px 0 rgba(52,58,64,.12);
+    box-shadow: 0 2px 2px 0 rgba(52,58,64,.14), 0 3px 1px -2px rgba(52,58,64,.2), 0 1px 5px 0 rgba(52,58,64,.12);
+}
+
+.top-menu-button.menu-item.menu-item-type-custom.menu-item-object-custom.btn span {
+	  font-size: 10px;
+	  font-weight: 600;
+    line-height: 15px;
+}
+
+
+.top-menu-button:hover {
+    background-color: #343a40;
+    border-color: rgba(0,0,0,.87);
+	    -webkit-box-shadow: 0 14px 26px -12px rgba(52,58,64,.42), 0 4px 23px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(52,58,64,.2);
+    box-shadow: 0 14px 26px -12px rgba(52,58,64,.42), 0 4px 23px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(52,58,64,.2);
+}
+
+.top-menu-button:hover span {
+		color: #fff!important;
+}
+
+.navbar-topmenu ul ul {
+	box-sizing: inherit;
+	margin-left: 0!important;
+	min-width: initial!important;
+}
+
+.navbar-topmenu ul ul li a {
+	padding: .325rem .625rem!important;
+    color: #212529!important;
+    font-weight: 400;
+	font-size: 12px!important;
+}
+
+.navbar-topmenu ul ul li a:hover {
+	color: #006ba7!important;
+    background-color: transparent!important;
+}
+
+.navbar-topmenu ul ul li a i.fa {
+	display: none;
+}
+
+.top-menu li.menu-item {
+	vertical-align: middle;
+}
+
+.top-menu li.menu-item a {
+	font-size: 1rem;
+	vertical-align: middle;
+}
+
+.sales a, .support a {
+	display: flex;
+  align-items: center;
+}
+
+.sales a:hover, .support a:hover {
+	text-decoration: underline;
+}
+
+.icon-box-left .icon-box-icon, .icon-box-right .icon-box-icon, .icon-box-left .icon-box-content, .icon-box-right .icon-box-content {
+	vertical-align: middle;
+}
+
+.btn .fa, .btn-link .fa {
+	vertical-align: initial;
+}
+
+/***Category Header***/
+
+
+/***Breadcrumbs***/
+.row-breadcrumb.row-breadcrumb-light {
+	border-color: transparent;
+	background-color: #fff;
+}
+
+.row-breadcrumb.row-breadcrumb-light .breadcrumb-title {
+	display: none;
+}
+
+.main-container .row-container.row-breadcrumb .row-parent {
+    padding-top: 18px;
+	  padding-bottom: 18px;
+}
+
+.single-post .post-content .row-parent {
+    padding: 8px 36px 36px 36px!important;
+}
+
+/***Pagination***/
+.pagination .page-next, .pagination .page-prev {
+	float: none;
+}
+
+.pagination .page-prev i, .pagination .page-next i {
+	position: relative;
+}
+ 
+/***Download Button Post***/ 
+.download-button {
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	background-color:#ffffff;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:table;
+	margin: 0 auto;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:16px 32px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+.download-button:hover {
+	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+	background-color:#f6f6f6;
+}
+.download-button:active {
+	position:relative;
+	top:1px;
+}
+
+/***Feedback Form***/
+.contact-us-btn {
+	text-align: center;
+	display: table;
+  margin: 0 auto;
+}
+
+.cf-wrapper {
+	margin-top: 15px;
+}
+
+.cf-wrapper label {
+	font-weight: 700;
+}
+
+.cf-wrapper span input, .cf-wrapper span textarea {
+	margin-top: 0;
+}
+
+.cf-wrapper.your-name, .cf-wrapper.your-email {
+	display: inline-block;
+	width: 100%;
+}
+
+.cf-wrapper.your-name span.your-name input, .cf-wrapper.your-email span.your-email input, .cf-wrapper.subject span.your-subject input {
+	display: inline;
+	width: 100%;
+}
+
+input[type="submit"].wpcf7-submit {
+	background-color: #006ca8;
+	color: #fff;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 2px 2px 0 rgba(0,107,167,.14), 0 3px 1px -2px rgba(0,107,167,.2), 0 1px 5px 0 rgba(0,107,167,.12);
+    box-shadow: 0 2px 2px 0 rgba(0,107,167,.14), 0 3px 1px -2px rgba(0,107,167,.2), 0 1px 5px 0 rgba(0,107,167,.12);
+	-webkit-transition: background-color .2s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .2s cubic-bezier(.4,0,1,1);
+    transition: background-color .2s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .2s cubic-bezier(.4,0,1,1);
+    transition-property: box-shadow, background-color, -webkit-box-shadow;
+    transition-duration: 0.2s, 0.2s, 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 1, 1);
+    transition-delay: 0s, 0s, 0s;
+    -o-transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1);
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1);
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),-webkit-box-shadow .2s cubic-bezier(.4,0,1,1);
+}
+
+input[type="submit"].wpcf7-submit:hover {
+	webkit-box-shadow: 0 14px 26px -12px rgba(0,107,167,.42), 0 4px 23px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,107,167,.2);
+    box-shadow: 0 14px 26px -12px rgba(0,107,167,.42), 0 4px 23px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,107,167,.2);
+    color: #fff;
+    background-color: #0075b6;
+    text-decoration: none;
+}
+
+
+
+/***Social Sharing***/
+div[class*=sharer-].share-button .social ul li {
+	width: 200px!important;
+	height: 40px!important;
+	color: #fff!important;
+	border-radius: 2px;
+}
+
+.share-button.share-inline .social.top .social-pinterest, .share-button.share-inline .social.top .social-xing {
+	display: none!important;
+}
+
+li.social-facebook {
+	background-color: #3B5998;
+}
+
+li.social-facebook:after {
+    content: "facebook";
+    margin-left: 10px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+li.social-twitter {
+	background-color: #1DCAFF;
+}
+
+li.social-twitter:after {
+    content: "twitter";
+    margin-left: 10px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+li.social-linkedin {
+	background-color: #0072B1;
+}
+
+li.social-linkedin:after {
+    content: "linkedin";
+    margin-left: 10px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+li.social-paper-plane {
+	background-color: #cccccc;
+}
+
+li.social-paper-plane:after {
+    content: "email";
+    margin-left: 10px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.share-button:not(.only-icon) .social ul li[class*=linkedin]:hover,
+.share-button:not(.only-icon) .social ul li[class*=linkedin]:focus {
+  color: #fff;
+}
+.share-button:not(.only-icon) .social ul li[class*=paper-plane]:hover,
+.share-button:not(.only-icon) .social ul li[class*=paper-plane]:focus {
+  color: #fff;
+}
+.share-button.only-icon .social ul li[class*=facebook]:hover:before,
+.share-button.only-icon .social ul li[class*=facebook]:focus:before {
+  color: #fff;
+}
+.share-button.only-icon .social ul li[class*=twitter]:hover:before,
+.share-button.only-icon .social ul li[class*=twitter]:focus:before {
+  color: #fff;
+}
+
+/***Responsive embeds***/
+.embed-container { 
+	position: relative; 
+	padding-bottom: 56.25%; 
+	height: 0; 
+	overflow: hidden; 
+	max-width: 100%; 
+} 
+
+.embed-container iframe, .embed-container object, .embed-container embed { 
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%; 
+}
+
+
+/***Category Archive Filter***/
+.isotope-filters .menu-horizontal ul.menu-smart li a {
+	color: #333;
+	font-weight: 600!important;
+}
+
+.isotope-filters .menu-horizontal ul.menu-smart li a:hover {
+	color: #0D73AC;
+}
+
+.isotope-filters .menu-dark .menu-smart > li a.active {
+	color: #0D73AC;
+}
+
+.half-gutter:not(.owl-carousel-container):not(.justified-wrapper) .tmb > .t-inside {
+    margin-top: 24px;
+}
+
+.style-dark-search {
+    box-shadow: 0px 0px 0px 6px rgba(0, 0, 0, 0.2);
+	border-radius: 2px;
+}
+
+.archive .header-bg:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,108,168,.7);
+}
+
+.box-for-hover:hover > .uncol.style-light {
+    background-color: aliceblue;
+}
+
+/***Site Footer***/
+footer.site-footer .row-container.limit-width.boxed-row {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.site-footer {
+  font-family: 'Roboto',Sans-Serif;
+}
+
+.site-footer .widget_nav_menu {
+    width: 100%;
+    display: table-cell;
+    padding-left: 20px;
+}
+
+.site-footer .row-container .double-top-padding {
+    padding-top: 20px;
+}
+
+.widget-container a {
+  font-weight: 400;
+}
+
+.widget-container a, .widget-container li a {
+	padding: 8px 16px 8px 0;
+}
+
+.widget_recent_entries ul li a {
+	font-size: 14px;
+}
+
+.footer-site-info {
+	color: #fff;
+}
+
+.footer-site-info a {
+	color: #fff;
+}
+
+.footer-social-icons {
+text-align: right;
+}
+
+.footer-social-icons a {
+	color: #fff;
+}
+
+.footer-category-menu ul#menu-categories {
+    column-count: 2;
+}
+
+.widget-container ul li {
+	padding: 0;
+}
+
+.widget-container.widget_nav_menu .menu-item a:before, .widget-container.widget_custom_menu .menu-item a:before {
+	content: "";
+	margin-right: 0;
+}
+
+li.list-inline-item {
+    display: inline-block;
+	color: #fff;
+	margin-right: 20px;
+	font-size: 14px;
+}
+
+li.list-inline-item i {
+	margin-right: 3px;
+}
+
+li.list-inline-item a {
+	color: #fff;
+}
+
+.site-info a {
+	color: #006ca8;
+}
+
+.site-info a:hover {
+	color: #003a5b;
+  text-decoration: underline;
+}
+
+.footer-scroll-top i {
+    width: 3em;
+    height: 3em;
+	line-height: 3em;
+}
+
+@media (min-width: 960px) {
+.top-menu.top-menu-padding .menu-smart > li {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+}
+
+@media (max-width: 1024px) {
+.uncode-vc-social.footer-social-icons {
+    text-align: center;
+}
+
+.uncode_text_column.footer-site-info {
+    text-align: center;
+}
+	
+	.share-button.share-inline .social.top li {
+		margin-right: 20px;
+	}
+	
+div[class*=sharer-].share-button .social ul li {
+    width: 40px!important;
+    height: 40px!important;
+    color: #fff!important;
+	border-radius: 2px;
+}
+	
+li.social-facebook:after, li.social-twitter:after, li.social-linkedin:after, li.social-paper-plane:after {
+	display: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.footer-phoenix-icons {
+		display: none;
+	}
+	
+	.site-info {
+		display: table;
+    margin: 0 auto;
+	}
+	
+	.site-info .limit-width {
+		max-width: unset;
+		padding-left: 0!important;
+	}
+	
+	.site-info .pull-left, .site-info .pull-right {
+		float: none!important;
+	}
+}
+
+@media (max-width: 480px) {
+	.site-info .pull-right {
+		display: table;
+    width: 200px;
+    margin: 0 auto;
+		font-size: 16px;
+	}
+	.site-info .pull-left {
+		 margin-bottom: 20px;
+		 font-size: 16px;
+	}
+}
+
+/***Scrolable table***/
+
+@media (max-width: 767px) {
+	.scrollable-table {
+		overflow-x:scroll;
+	}
+}		</style>
+		<style data-type="vc_shortcodes-custom-css-cb-footer">.vc_custom_1578320105822{border-top-width: 0px !important;border-bottom-width: 1px !important;}</style><style data-type="vc_shortcodes-custom-css-cb-footer">.vc_custom_1574847664676{padding-top: 0px !important;padding-right: 0px !important;padding-bottom: 0px !important;padding-left: 0px !important;}.vc_custom_1574842242990{border-top-width: 0px !important;padding-bottom: 0px !important;}</style><noscript><style> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript><noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript><script>
+/*! loadCSS rel=preload polyfill. [c]2017 Filament Group, Inc. MIT License */
+(function(w){"use strict";if(!w.loadCSS){w.loadCSS=function(){}}
+var rp=loadCSS.relpreload={};rp.support=(function(){var ret;try{ret=w.document.createElement("link").relList.supports("preload")}catch(e){ret=!1}
+return function(){return ret}})();rp.bindMediaToggle=function(link){var finalMedia=link.media||"all";function enableStylesheet(){link.media=finalMedia}
+if(link.addEventListener){link.addEventListener("load",enableStylesheet)}else if(link.attachEvent){link.attachEvent("onload",enableStylesheet)}
+setTimeout(function(){link.rel="stylesheet";link.media="only x"});setTimeout(enableStylesheet,3000)};rp.poly=function(){if(rp.support()){return}
+var links=w.document.getElementsByTagName("link");for(var i=0;i<links.length;i++){var link=links[i];if(link.rel==="preload"&&link.getAttribute("as")==="style"&&!link.getAttribute("data-loadcss")){link.setAttribute("data-loadcss",!0);rp.bindMediaToggle(link)}}};if(!rp.support()){rp.poly();var run=w.setInterval(rp.poly,500);if(w.addEventListener){w.addEventListener("load",function(){rp.poly();w.clearInterval(run)})}else if(w.attachEvent){w.attachEvent("onload",function(){rp.poly();w.clearInterval(run)})}}
+if(typeof exports!=="undefined"){exports.loadCSS=loadCSS}
+else{w.loadCSS=loadCSS}}(typeof global!=="undefined"?global:this))
+</script></head>
+<body class="post-template-default single single-post postid-88192 single-format-standard wp-custom-logo  style-color-rgdb-bg group-blog hormenu-position-left hmenu hmenu-position-right header-full-width main-center-align menu-mobile-animated menu-mobile-transparent menu-custom-padding textual-accent-color menu-mobile-centered mobile-parallax-not-allowed ilb-no-bounce wpb-js-composer js-comp-ver-6.1.0 vc_responsive has-ftoc" data-border="0">
+		<div class="body-borders" data-border="0"><div class="top-border body-border-shadow"></div><div class="right-border body-border-shadow"></div><div class="bottom-border body-border-shadow"></div><div class="left-border body-border-shadow"></div><div class="top-border style-light-bg"></div><div class="right-border style-light-bg"></div><div class="bottom-border style-light-bg"></div><div class="left-border style-light-bg"></div></div>	<div class="box-wrapper">
+		<div class="box-container">
+		<script type="text/javascript">UNCODE.initBox();</script>
+		<div class="menu-wrapper menu-shrink menu-sticky menu-no-arrows">
+													<div class="top-menu mobile-hidden tablet-hidden navbar menu-secondary menu-light submenu-light style-color-xsdn-bg top-menu-padding">
+																		<div class="row-menu">
+																			<div class="row-menu-inner">
+																				<div class="col-lg-0 middle">
+																					<div class="menu-bloginfo">
+																						<div class="menu-bloginfo-inner style-light">
+																							
+																						</div>
+																					</div>
+																				</div>
+																				<div class="col-lg-12 menu-horizontal">
+																					<div class="navbar-topmenu navbar-nav-last"><ul id="menu-secondary" class="menu-smart menu-mini sm"><li id="menu-item-99642" class="menu-item-button"><a title="Support" href="tel:1-855-330-1509"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-99642 menu-btn-container btn"><span>Support</span></div></div></div></a></li>
+<li id="menu-item-99643" class="menu-item-button"><a title="Sales" href="tel:1-877-588-5918"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-99643 menu-btn-container btn"><span>Sales</span></div></div></div></a></li>
+<li id="menu-item-73645" class="menu-item-button"><a title="Login" target="_blank" href="#" data-toggle="dropdown" class="dropdown-toggle" data-type="title"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-73645 menu-btn-container dropdown btn"><span><i class="menu-icon fa fa-caret-down"></i>Login</span></div></div></div></a>
+<ul role="menu" class="drop-menu">
+	<li id="menu-item-99665" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99665"><a title="Bare Metal Cloud" href="http://bmc.phoenixnap.com/">Bare Metal Cloud<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+	<li id="menu-item-99666" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99666"><a title="Channel Partners" href="https://partners.phoenixnap.com/">Channel Partners<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+	<li id="menu-item-99667" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99667"><a title="Billing Portal" href="http://admin.phoenixnap.com/">Billing Portal<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+</ul>
+</li>
+<li id="menu-item-73646" class="menu-item-button"><a title="Partners" target="_blank" href="https://phoenixnap.com/partners"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-73646 menu-btn-container btn"><span>Partners</span></div></div></div></a></li>
+</ul></div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+													<header id="masthead" class="navbar menu-primary menu-dark submenu-dark menu-transparent menu-add-padding style-dark-original menu-absolute menu-animated menu-with-logo">
+														<div class="menu-container menu-hide style-accent-bg menu-borders menu-shadows">
+															<div class="row-menu">
+																<div class="row-menu-inner">
+																	<div id="logo-container-mobile" class="col-lg-0 logo-container middle">
+																		<div id="main-logo" class="navbar-header style-dark">
+																			<a href="https://phoenixnap.com/kb" class="navbar-brand"><div class="logo-customizer"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20200%2044'%3E%3C/svg%3E" alt="Knowledge Base by phoenixNAP" width="200" height="44" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2019/11/phoenixnap-logo-white.png" /><noscript><img src="https://phoenixnap.com/kb/wp-content/uploads/2019/11/phoenixnap-logo-white.png" alt="Knowledge Base by phoenixNAP" width="200" height="44" /></noscript></div></a>
+																		</div>
+																		<div class="mmb-container"><div class="mobile-menu-button 1 mobile-menu-button-dark lines-button x2"><span class="lines"></span></div></div>
+																	</div>
+																	<div class="col-lg-12 main-menu-container middle">
+																		<div class="menu-horizontal menu-dd-shadow-lg">
+																			<div class="menu-horizontal-inner">
+																				<div class="nav navbar-nav navbar-main navbar-nav-first"><ul id="menu-header" class="menu-primary-inner menu-smart sm"><li id="menu-item-73247" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-73247 menu-item-link"><a title="phoenixNAP Home" href="https://phoenixnap.com">phoenixNAP Home<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+<li id="menu-item-73246" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-73246 menu-item-link"><a title="Contact Support" href="https://phoenixnap.com/contact-us">Contact Support<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+<li id="menu-item-73971" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-73971 menu-item-link"><a title="Blog" href="https://phoenixnap.com/blog">Blog<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+</ul></div><div class="nav navbar-nav navbar-nav-last"><ul class="menu-smart sm menu-icons"><li class="menu-item-link search-icon style-dark dropdown"><a href="#" class="trigger-overlay search-icon" data-area="search" data-container="box-container">
+													<i class="fa fa-search3"></i><span class="desktop-hidden"><span>Search</span></span><i class="fa fa-angle-down fa-dropdown desktop-hidden"></i>
+													</a>
+													<ul role="menu" class="drop-menu desktop-hidden">
+														<li>
+															<form class="search" method="get" action="https://phoenixnap.com/kb/">
+																<input type="search" class="search-field no-livesearch" placeholder="Search…" value="" name="s" title="Search for:" />
+															</form>
+														</li>
+													</ul></li></ul></div><div class="desktop-hidden">
+														 							<div class="menu-accordion"><ul id="menu-secondary-1" class="menu-smart sm sm-vertical mobile-secondary-menu"><li class="menu-item-button"><a title="Support" href="tel:1-855-330-1509"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-99642 menu-btn-container btn"><span>Support</span></div></div></div></a></li>
+<li class="menu-item-button"><a title="Sales" href="tel:1-877-588-5918"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-99643 menu-btn-container btn"><span>Sales</span></div></div></div></a></li>
+<li class="menu-item-button"><a title="Login" target="_blank" href="#" data-toggle="dropdown" class="dropdown-toggle" data-type="title"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-73645 menu-btn-container dropdown btn"><span><i class="menu-icon fa fa-caret-down"></i>Login</span></div></div></div></a>
+<ul role="menu" class="drop-menu">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99665"><a title="Bare Metal Cloud" href="http://bmc.phoenixnap.com/">Bare Metal Cloud<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99666"><a title="Channel Partners" href="https://partners.phoenixnap.com/">Channel Partners<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99667"><a title="Billing Portal" href="http://admin.phoenixnap.com/">Billing Portal<i class="fa fa-angle-right fa-dropdown"></i></a></li>
+</ul>
+</li>
+<li class="menu-item-button"><a title="Partners" target="_blank" href="https://phoenixnap.com/partners"><div class="menu-btn-table"><div class="menu-btn-cell"><div class="top-menu-button menu-item menu-item-type-custom menu-item-object-custom menu-item-73646 menu-btn-container btn"><span>Partners</span></div></div></div></a></li>
+</ul></div></div></div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</header>
+												</div>			<script type="text/javascript">UNCODE.fixMenuHeight();</script>
+			<div class="main-wrapper">
+				<div class="main-container">
+					<div class="page-wrapper">
+						<div class="sections-container">
+<div id="page-header"><div class="header-wrapper header-uncode-block">
+									<div data-parent="true" class="vc_row style-color-wayh-bg vc_custom_1578320105822 border-color-gyho-color row-container with-parallax boomapps_vcrow" style="border-style: solid;"><div class="row-background background-element">
+											<div class="background-wrapper">
+												<div data-bg="https://phoenixnap.com/kb/wp-content/uploads/2019/11/databases-kb-cropped.jpg" class="background-inner rocket-lazyload" style="background-repeat: no-repeat;background-position: left top;background-size: cover;"></div>
+												<div class="block-bg-overlay style-color-149208-bg" style="opacity: 0.7;"></div>
+											</div>
+										</div><div class="row single-top-padding single-bottom-padding single-h-padding full-width row-parent row-header" data-height-ratio="8"><div class="wpb_row row-inner"><div class="wpb_column pos-middle pos-center align_center column_parent col-lg-12 boomapps_vccolumn single-internal-gutter"><div class="uncol style-dark font-762333"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h1 class="font-762333 h2 fontspace-781688 text-color-xsdn-color text-capitalize" ><span>How to Improve MySQL Performance With Tuning</span></h1></div><div class="clear"></div></div><div  class="wpb_widgetised_column wpb_content_element">
+		<div class="wpb_wrapper">
+			
+			<aside id="execphp-2" class="widget widget_execphp widget-container sidebar-widgets">			<div class="execphpwidget"><div class="tagcloud">
+Posted January 15, 2020&emsp;</div></div>
+		</aside>
+		</div>
+	</div>
+</div></div></div></div></div><script id="script-129293" data-row="script-129293" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-129293"));</script></div></div></div></div></div><script type="text/javascript">UNCODE.initHeader();</script><div class="row-container row-breadcrumb row-breadcrumb-light text-left">
+		  					<div class="row row-parent style-light limit-width">
+									<div class="breadcrumb-title h5 text-bold">How to Improve MySQL Performance With Tuning</div><ol class="breadcrumb header-subtitle"><li><a href="https://phoenixnap.com/kb/">Home</a></li><li><a href="https://phoenixnap.com/kb/category/sysadmin">SysAdmin</a></li><li class="current">How to Improve MySQL Performance With Tuning</li></ol>
+								</div>
+							</div><article id="post-88192" class="page-body style-color-xsdn-bg post-88192 post type-post status-publish format-standard hentry category-sysadmin category-databases category-mysql post-ftoc">
+          <div class="post-wrapper">
+          	<div class="post-body"><div class="post-content un-no-sidebar-layout"><div data-parent="true" class="vc_row style-color-xsdn-bg row-container boomapps_vcrow"><div class="row limit-width row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-center align_left column_parent col-lg-10 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="uncode_text_column" ><div id="ftwp-container-outer" class="ftwp-in-post ftwp-float-none"><div id="ftwp-container" class="ftwp-wrap ftwp-hidden-state ftwp-maximize ftwp-middle-right"><button type="button" id="ftwp-trigger" class="ftwp-shape-round ftwp-border-thin" title="click To Maximize The Table Of Contents"><span class="ftwp-trigger-icon ftwp-icon-menu"></span></button><nav id="ftwp-contents" class="ftwp-shape-square ftwp-border-thin" data-colexp="collapse"><header id="ftwp-header"><span id="ftwp-header-control" class="ftwp-icon-menu"></span><button type="button" id="ftwp-header-minimize"></button><span id="ftwp-header-title">Contents</span></header><ol id="ftwp-list" class="ftwp-liststyle-none ftwp-effect-fade ftwp-list-nest ftwp-strong-first ftwp-colexp ftwp-colexp-icon" style="display: none"><li class="ftwp-item ftwp-has-sub ftwp-expand"><button type="button" class="ftwp-icon-expand"></button><a class="ftwp-anchor" href="#htoc-system-performance-tuning-for-mysql"><span class="ftwp-text">System Performance Tuning for MySQL</span></a><ol class="ftwp-sub"><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-1-balance-the-four-main-hardware-resources"><span class="ftwp-text">1. Balance the Four Main Hardware Resources</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-2-use-innodb-not-myisam"><span class="ftwp-text">2. Use InnoDB, Not MyISAM</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-3-use-the-latest-mysql-version"><span class="ftwp-text">3. Use the Latest Version of MySQL</span></a></li></ol></li><li class="ftwp-item ftwp-has-sub ftwp-expand"><button type="button" class="ftwp-icon-expand"></button><a class="ftwp-anchor" href="#htoc-software-performance-tuning"><span class="ftwp-text">Software Performance Tuning</span></a><ol class="ftwp-sub"><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-4-consider-using-an-automatic-performance-improvement-tool"><span class="ftwp-text">4. Consider Using an Automatic Performance Improvement Tool</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-5-optimize-queries"><span class="ftwp-text">5. Optimize Queries</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-6-use-indexes-where-appropriate"><span class="ftwp-text">6. Use Indexes Where Appropriate</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-7-functions-in-predicates"><span class="ftwp-text">7. Functions in Predicates</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-8-avoid-wildcard-in-predicate"><span class="ftwp-text">8. Avoid % Wildcard in a Predicate</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-9-specify-columns-in-select-function"><span class="ftwp-text">9. Specify Columns in SELECT Function</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-10-use-order-by-appropriately"><span class="ftwp-text">10. Use ORDER BY Appropriately</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-11-join-union-distinct"><span class="ftwp-text">11. JOIN, UNION, DISTINCT</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-12-use-the-explain-function"><span class="ftwp-text">12. Use the EXPLAIN Function</span></a></li><li class="ftwp-item"><a class="ftwp-anchor" href="#htoc-13-mysql-server-configuration"><span class="ftwp-text">13. MySQL Server Configuration</span></a></li></ol></li></ol></nav></div></div>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h3" ><span>Introduction</span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>MySQL is a popular open-source database application that stores and structures data in a way that is meaningful and readily accessible.</p>
+<p>With large applications, the sheer amount of data can lead to performance problems. <strong>This guide provides several tuning tips on how to improve the performance of a MySQL database</strong>.</p>
+<p><img class="aligncenter wp-image-88321 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20799%20400'%3E%3C/svg%3E" alt="tutorial on performance tuning MySQL and optimization" width="799" height="400" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" /><noscript><img class="aligncenter wp-image-88321 size-full" src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/mysql-performance.png" alt="tutorial on performance tuning MySQL and optimization" width="799" height="400" /></noscript></p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h3" ><span>Prerequisites</span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><ul>
+<li>A Linux system with MySQL installed and running, <a href="https://phoenixnap.com/kb/how-to-install-mysql-on-centos-7">Centos</a> or <a href="https://phoenixnap.com/kb/how-to-install-mysql-on-ubuntu-18-04">Ubuntu</a></li>
+<li>An existing database</li>
+<li>Administrator credentials for the operating system and the database</li>
+</ul>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h2 class="h2" ><span><span id="htoc-system-performance-tuning-for-mysql">System Performance Tuning for MySQL</span></span></h2></div><div class="clear"></div></div><div class="uncode_text_column" ><p>At the system level, you’ll adjust hardware and software options to improve MySQL performance.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-1-balance-the-four-main-hardware-resources">1. Balance the Four Main Hardware Resources</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p><strong><img class="aligncenter wp-image-88206 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20600%20385'%3E%3C/svg%3E" alt="Balance hardware resources to optimize a mysql database" width="600" height="385" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/balance-resources.png" /><noscript><img class="aligncenter wp-image-88206 size-full" src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/balance-resources.png" alt="Balance hardware resources to optimize a mysql database" width="600" height="385" /></noscript></strong></p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h4" ><span><strong>Storage</strong></span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Take a moment to evaluate your storage. If you’re using traditional hard disk drives (HDD), you can upgrade to <a href="https://phoenixnap.com/kb/nvme-vs-sata-vs-m-2-comparison">solid-state drives (SSD) for a performance improvement</a>.</p>
+<p>Use a tool like <strong>iotop</strong> or <strong>sar</strong> from the <strong>sysstat</strong> package to monitor your disk input/output rates. If disk usage is much higher than usage of other resources, consider adding more storage or upgrading to faster storage.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h4" ><span><strong>Processor</strong></span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Processors are usually considered the measure of how fast your system is. Use the <a href="https://phoenixnap.com/kb/linux-commands-check-memory-usage">Linux <strong>top</strong> command</a> for a breakdown of how your resources are used. Pay attention to the MySQL processes and the percentage of processor usage they require.</p>
+<p><img class="aligncenter wp-image-88198 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20800%20346'%3E%3C/svg%3E" alt="top command output in terminal to view system resources" width="800" height="346" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/top-comand-linux.png" /><noscript><img class="aligncenter wp-image-88198 size-full" src="https://phoenixnap.com/kb/wp-content/uploads/2019/12/top-comand-linux.png" alt="top command output in terminal to view system resources" width="800" height="346" /></noscript></p>
+<p>Processors are more expensive to upgrade, but if your CPU is a bottleneck, an upgrade might be necessary.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h4" ><span><strong>Memory</strong></span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Memory represents the total amount of RAM in your MySQL server. You can adjust the memory cache (more on that later) <strong>to improve performance</strong>. If you don’t have enough memory, or if the existing memory isn&#8217;t optimized, you can end up damaging your performance instead of improving it.</p>
+<p>Like other bottlenecks, if your server is constantly running out of memory, you can upgrade by adding more. If you run short of memory, your server will cache data storage (like a hard drive) to act as memory. Database caching slows down your performance.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h4" ><span><strong>Network</strong></span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>It’s important to <a href="https://phoenixnap.com/kb/linux-network-bandwidth-monitor-traffic">monitor network traffic</a> to make sure you have sufficient infrastructure to manage the load.</p>
+<p>Overloading your network can lead to latency, dropped packets, and even server outages. Make sure you have enough <a href="https://phoenixnap.com/kb/website-bandwidth" target="_blank" rel="noopener noreferrer">network bandwidth</a> to accommodate your normal levels of database traffic.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-2-use-innodb-not-myisam">2. Use InnoDB, Not MyISAM</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p><strong>MyISAM</strong> is an older database style used for some MySQL databases. It is a less efficient database design. The newer <strong>InnoDB</strong> supports more advanced features and has in-built optimization mechanics.</p>
+<p>InnoDB uses a clustered index and keeps data in pages, which are stored in consecutive physical blocks. If a value is too large for a page, InnoDB moves it to another location, then indexes the value. This feature helps keep relevant data in the same place on the storage device, meaning it takes the physical hard drive less time to access the data.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-3-use-the-latest-mysql-version">3. Use the Latest Version of MySQL</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Using the latest version is not always feasible for older and legacy databases. But whenever possible, you should <a href="https://phoenixnap.com/kb/how-to-check-mysql-version">check the version of MySQL</a> in use and upgrade to the latest.</p>
+<p>A part of the ongoing development includes performance enhancements. Some common performance adjustments may be rendered obsolete by newer versions of MySQL. In general, it’s always better to use native MySQL performance enhancement over scripting and configuration files.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h2 class="h2" ><span><span id="htoc-software-performance-tuning">Software Performance Tuning</span></span></h2></div><div class="clear"></div></div><div class="uncode_text_column" ><p>These methods involve tweaking the MySQL configuration files, writing more efficient database queries, and structuring the database to retrieve data more efficiently.</p>
+</div><div class="divider-wrapper "  >
+    <hr class="border-accent-color separator-no-padding"  />
+</div>
+<div class="icon-box icon-box-left" ><div class="icon-box-icon fa-container"><span class="fa fa-stack fa-2x btn-accent fa-squared btn-disable-hover"><i class="fa fa-lightbulb"></i></span></div><div class="icon-box-content"><p><strong>Note</strong>: When adjusting configuration settings, it's best to make small incremental adjustments. A major adjustment may overburden another value and degrade performance. Also, it is recommended that you make one change at a time and then test. It’s easier to track errors or misconfigurations when you only change one variable at a time.</p>
+</div></div><div class="divider-wrapper "  >
+    <hr class="border-accent-color separator-no-padding"  />
+</div>
+<div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-4-consider-using-an-automatic-performance-improvement-tool">4. Consider Using an Automatic Performance Improvement Tool</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>As with most software, not all tools work on all versions of MySQL. We will examine three utilities to evaluate your MySQL database and recommend changes to improve performance.</p>
+<p>The first is <a href="https://github.com/RootService/tuning-primer" target="_blank" rel="noopener noreferrer">tuning-primer</a>. This tool is a bit older, designed for MySQL 5.5 – 5.7. It can analyze your database and suggest settings to improve performance. For example, it may suggest that you raise the <strong><em>query_cache_size</em></strong> parameter if it feels like your system can’t process queries quickly enough to keep the cache clear.</p>
+<p>The second tuning tool, useful for most modern MySQL databases, is <a href="https://github.com/major/MySQLTuner-perl" target="_blank" rel="noopener noreferrer">MySQLTuner</a>. This script (<em><strong>mysqltuner.pl</strong></em>) is written in Perl. Like tuning-primer, it analyzes your database configuration looking for bottlenecks and inefficiencies. The output shows metrics and recommendations:</p>
+<p><img class="aligncenter wp-image-89043 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20800%20606'%3E%3C/svg%3E" alt="MySQLTuner script in Ubuntu with log file recommendations" width="800" height="606" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-script.png" /><noscript><img class="aligncenter wp-image-89043 size-full" src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-script.png" alt="MySQLTuner script in Ubuntu with log file recommendations" width="800" height="606" /></noscript></p>
+<p>At the top of the output, you can see the version of the MySQLTuner tool and your database.</p>
+<p>The script works with MySQL 8.x. Log file recommendations are the first on the list, but if you scroll to the bottom, you can see general recommendations for improving MySQL performance.</p>
+<p><img class="aligncenter size-full wp-image-89048" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20800%20306'%3E%3C/svg%3E" alt="The General Recommendations section of the MySQLTuner script." width="800" height="306" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-recommendations.png" /><noscript><img class="aligncenter size-full wp-image-89048" src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-tuner-recommendations.png" alt="The General Recommendations section of the MySQLTuner script." width="800" height="306" /></noscript></p>
+<p>The third utility, which you may already have, is the <strong>phpMyAdmin Advisor</strong>. Like the other two utilities, it evaluates your database and recommends adjustments. If you’re already using phpMyAdmin, the Advisor is a helpful tool you can use within the GUI.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-5-optimize-queries">5. Optimize Queries</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>A query is a coded request to search the database for data that matches a certain value. There are some query operators that, by their very nature, take a long time to run. If your environment relies on automated queries, they may be impacting performance. Check and <a href="https://phoenixnap.com/kb/how-to-kill-mysql-process" target="_blank" rel="noopener noreferrer">terminate MySQL processes</a> that may pile up in time.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-6-use-indexes-where-appropriate">6. Use Indexes Where Appropriate</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Many database queries use a structure similar to this:</p>
+<pre class="chroma"><code class="language-output" data-lang="output">SELECT … WHERE</code></pre>
+<p>These queries involve evaluating, filtering, and retrieving results. You can restructure these by adding <a href="https://phoenixnap.com/kb/mysql-create-index">a small set of indexes</a> for the related tables. The query can be directed at the index to speed up the query.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-7-functions-in-predicates">7. Functions in Predicates</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Avoid using a function in the predicate of a query. For example:</p>
+<pre class="chroma"><code class="language-output" data-lang="output">SELECT * FROM MYTABLE WHERE UPPER(COL1)='123'Copy</code></pre>
+<p>The <strong><code>UPPER</code></strong> notation creates a function, which has to operate during the <strong><code>SELECT</code></strong> operation. This doubles the work the query is doing, and you should avoid it if possible.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-8-avoid-wildcard-in-predicate">8. Avoid % Wildcard in a Predicate</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>The <strong>wildcard %</strong> stands for zero or more characters. If your query looks like this:</p>
+<pre class="chroma"><code class="language-output" data-lang="output">SELECT * FROM MYTABLE WHERE COL1 LIKE '%123'Copy</code></pre>
+<p>The expression <strong>‘%123’</strong> includes all values that end with <strong>123</strong>. The % sign stands for any type or number of characters preceding, including no characters. The query must now perform a full table scan to test for this condition.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-9-specify-columns-in-select-function">9. Specify Columns in SELECT Function</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>A common expression is to use <strong><code>SELECT *</code></strong> to scan all of the database columns. If you specify the columns you need, your query won’t need to scan irrelevant columns.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-10-use-order-by-appropriately">10. Use ORDER BY Appropriately</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>The <strong><code>ORDER BY</code></strong> expression sorts results by the specified column. It can be used to sort by two columns at once. These should be sorted in the same order, ascending or descending. If you try to sort different columns in different order, it will slow down performance. You may combine this with an index to speed up the sorting.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-11-join-union-distinct">11. JOIN, UNION, DISTINCT</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Try to use an inner join whenever possible. An outer join looks at additional data outside the specified columns. That’s fine if you need that data, but it’s a waste of performance to include data that won’t be required.</p>
+<p>The <strong><code>UNION</code></strong> and <strong><code>DISTINCT</code></strong> commands are sometimes included in queries. Like an outer join, it’s fine to use these expressions if they are necessary. However, they add additional sorting and reading of the database. If you don’t need them, it’s better to find a more efficient expression.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-12-use-the-explain-function">12. Use the EXPLAIN Function</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>Modern MySQL databases include an <strong><code>EXPLAIN</code></strong> function.</p>
+<p>Appending the <strong><code>EXPLAIN</code></strong> expression to the beginning of a query will read and evaluate the query. If there are inefficient expressions or confusing structures, <strong><code>EXPLAIN</code></strong> can help you find them. You can then adjust the phrasing of your query to avoid unintentional table scans or other performance hits.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><h3 class="h3" ><span><span id="htoc-13-mysql-server-configuration">13. MySQL Server Configuration</span></span></h3></div><div class="clear"></div></div><div class="uncode_text_column" ><p>This configuration involves making changes to your <strong>/etc/mysql/my.cnf</strong> file. Proceed with caution and make minor changes at a time.</p>
+<p><strong><img class="aligncenter wp-image-89057 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20798%20443'%3E%3C/svg%3E" alt="Diagram of MySQL my.cnf configuration file with four variables" width="798" height="443" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-diagram-config.png" /><noscript><img class="aligncenter wp-image-89057 size-full" src="https://phoenixnap.com/kb/wp-content/uploads/2020/01/mysql-diagram-config.png" alt="Diagram of MySQL my.cnf configuration file with four variables" width="798" height="443" /></noscript></strong></p>
+<p><strong><code>query_cache_size</code></strong> – Specifies the size of the cache of MySQL queries waiting to run. The recommendation is to start with small values around 10MB and then increase to no more than 100-200MB. With too many cached queries, you can experience a cascade of queries “Waiting for cache lock.” If your queries keep backing up, a better procedure is to use <strong><code>EXPLAIN</code></strong> to evaluate each query and find ways to make them more efficient.</p>
+<p><strong><code>max_connection</code></strong> – Refers to the number of connections allowed into the database. If you’re getting errors citing “<em>Too many connections,</em>” increasing this value may help.</p>
+<p><strong><code>innodb_buffer_pool_size</code> </strong>– This setting allocates system memory as a data cache for your database. If you have large chunks of data, increase this value. Take note of the RAM required to run other system resources.</p>
+<p><strong><code>innodb_io_capacity</code> </strong>– This variable sets the rate for input/output from your storage device. This is directly related to the type and speed of your storage drive. A 5400-rpm HDD will have a much lower capacity than a <a href="https://phoenixnap.com/kb/optane-memory-vs-ssd-vs-ram" target="_blank" rel="noopener noreferrer">high-end SSD or Intel Optane</a>. You can adjust this value to better match your hardware.</p>
+</div><div class="vc_custom_heading_wrap "><div class="heading-text el-text" ><p class="h3" ><span>Conclusion</span></p></div><div class="clear"></div></div><div class="uncode_text_column" ><p>You should now know how to improve MySQL performance and tune your database.</p>
+<p>Look for bottlenecks (hardware and software), queries that are doing more work than needed, and consider using automated tools and the <strong><code>EXPLAIN</code></strong> function to evaluate your database.</p>
+</div><div class="uncode-wrapper uncode-share" ><div class="share-button share-buttons share-inline share-bigger"></div></div></div></div></div></div></div><div class="wpb_column pos-top pos-center align_left column_parent col-lg-2 boomapps_vccolumn tablet-hidden mobile-hidden single-internal-gutter"><div class="uncol style-light sticky-element sticky-sidebar"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="uncode-single-media  text-left"><div class="single-wrapper" style="max-width: 100%;"><a class="single-media-link" href="https://phoenixnap.com/servers/flexservers?utm_source=knowledge-base&amp;utm_medium=banner&amp;utm_campaign=intel-flex-servers&amp;utm_content=160x600" target=" _blank"><div class="tmb tmb-light  tmb-media-first tmb-media-last tmb-content-overlay tmb-no-bg">
+						<div class="t-inside"><div class="t-entry-visual"><div class="t-entry-visual-tc"><div class="uncode-single-media-wrapper">
+									<img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20160%20600'%3E%3C/svg%3E" width="160" height="600" alt="" data-lazy-src="https://phoenixnap.com/kb/wp-content/uploads/2018/09/2020_April_Intel-Flex-Servers-No-Price-160x600.jpg"><noscript><img src="https://phoenixnap.com/kb/wp-content/uploads/2018/09/2020_April_Intel-Flex-Servers-No-Price-160x600.jpg" width="160" height="600" alt=""></noscript></div>
+				</div>
+			</div></div>
+					</div></a></div></div></div></div></div></div></div><script id="script-297935" data-row="script-297935" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-297935"));</script></div></div></div><div data-parent="true" class="vc_row row-container boomapps_vcrow"><div class="row no-top-padding no-bottom-padding single-h-padding limit-width row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-center align_left column_parent col-lg-12 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="divider-wrapper "  >
+    <hr class="border-accent-color separator-no-padding"  />
+</div>
+<div class="uncode_text_column text-lead" ><p style="font-size: 22px;"><strong>Next you should also read</strong></p>
+</div><div class="owl-carousel-wrapper">
+					<div class="owl-carousel-container owl-carousel-loading single-gutter">
+			<div id="index-402243" class="owl-carousel owl-element owl-height-equal owl-dots-inside owl-dots-single-block-padding owl-dots-align-center" data-dotsmobile="true" data-navmobile="false" data-navspeed="400" data-autoplay="true" data-timeout="3000" data-autoheight="true" data-stagepadding="0" data-lg="4" data-md="3" data-sm="1" data-vp-height="false">
+		<div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-2507 grid-cat-2508 tmb-id-90247 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/mysql-find-duplicates" target="_self">How To Find Duplicate Values in MySQL</a></p><p class="t-entry-meta"><span class="t-entry-date">March 4, 2020</span></p><hr /><div class="t-entry-excerpt"><p>Learn how to find the duplicate entries in your MySQL databases. The guide shows you how to use the GROUP BY,…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/mysql-find-duplicates" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div><div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-2507 grid-cat-2508 tmb-id-87675 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/how-to-kill-mysql-process" target="_self">How to Find and Terminate / Kill MySQL Process</a></p><p class="t-entry-meta"><span class="t-entry-date">January 23, 2020</span></p><hr /><div class="t-entry-excerpt"><p>Killing a MySQL process can help you boost the performance of your server. By running a few commands, you can…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/how-to-kill-mysql-process" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div><div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-232 grid-cat-2507 grid-cat-2508 tmb-id-84868 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/sysadmin">SysAdmin</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/install-get-started-mysql-workbench-on-ubuntu" target="_self">Install and Get Started with MySQL Workbench on Ubuntu 18.04</a></p><p class="t-entry-meta"><span class="t-entry-date">November 19, 2019</span></p><hr /><div class="t-entry-excerpt"><p>Workbench is a visual tool for managing MySQL databases . Its graphical interface allows administrators and…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/install-get-started-mysql-workbench-on-ubuntu" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div><div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-2507 grid-cat-2508 tmb-id-84927 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/mysql-show-users" target="_self">How to List All Users in a MySQL Database</a></p><p class="t-entry-meta"><span class="t-entry-date">November 18, 2019</span></p><hr /><div class="t-entry-excerpt"><p>This simple tutorial analyses the commands used to list all user accounts in MySQL. Learn about additional…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/mysql-show-users" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div><div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-2507 grid-cat-2508 tmb-id-80456 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/how-to-list-all-databases-mysql" target="_self">How To Show a List of All Databases in MySQL</a></p><p class="t-entry-meta"><span class="t-entry-date">July 23, 2019</span></p><hr /><div class="t-entry-excerpt"><p>With Structured Query Language (SQL), you can easily access and manage content in all your databases. This…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/how-to-list-all-databases-mysql" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div><div class="tmb tmb-carousel tmb-iso-h33 tmb-round tmb-light tmb-overlay-text-anim tmb-overlay-anim tmb-content-left tmb-image-anim tmb-bordered  grid-cat-228 grid-cat-2507 grid-cat-2508 tmb-id-75350 tmb-only-text tmb-content-under">
+						<div class="t-inside style-color-lxmt-bg" ><div class="t-entry-text">
+							<div class="t-entry-text-tc half-block-padding"><div class="t-entry"><p class="t-entry-meta"><span class="t-entry-category t-entry-tax"><i class="fa fa-archive2 fa-push-right"></i><a href="https://phoenixnap.com/kb/category/web-servers">Web Servers</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases">Databases</a><span class="cat-comma">,</span></span><span class="t-entry-category t-entry-tax"><a href="https://phoenixnap.com/kb/category/databases/mysql">MySQL</a></span></p><p class="t-entry-title h4"><a href="https://phoenixnap.com/kb/connect-mysql-with-php" target="_self">How to Connect to MySQL using PHP</a></p><p class="t-entry-meta"><span class="t-entry-date">May 6, 2019</span></p><hr /><div class="t-entry-excerpt"><p>To access and add content to a MySQL database, you must first establish a connection between the database and…</p></div><p class="t-entry-readmore"><a href="https://phoenixnap.com/kb/connect-mysql-with-php" class="btn btn-link " target="_self">Read More</a></p></div></div>
+					</div></div>
+					</div>		</div>
+
+		</div>
+		</div>
+</div></div></div></div></div><script id="script-991823" data-row="script-991823" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-991823"));</script></div></div></div><div class="row-container">
+		  					<div class="row row-parent style-light no-top-padding double-bottom-padding" style="max-width: 804px; margin: auto;">
+									<div id="ftwp-postcontent"></div>
+								</div>
+							</div></div><div class="post-after row-container"><div data-parent="true" class="vc_row row-container boomapps_vcrow"><div class="row limit-width row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-center align_left column_parent col-lg-12 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="uncode_text_column" ><p class="h3" style="margin-bottom: -20px; font-weight: bold;">Author</p>
+</div><div class="divider-wrapper "  >
+    <hr class="border-accent-color separator-no-padding"  />
+</div>
+<div class="author-profile el-author-profile author-profile-box-left  has-thumb" ><div class="uncode-avatar-wrapper single-media uncode-single-media" style="width: 125px"><div class="single-wrapper" style="max-width: 125px"><div class="uncode-single-media-wrapper single-advanced"><div class="tmb  img-round tmb-media-first tmb-light tmb-img-ratio tmb-content-under tmb-media-last tmb-no-bg">
+						<div class="t-inside" ><div class="t-entry-visual"><div class="t-entry-visual-tc"><div class="t-entry-visual-cont"><div class="dummy" style="padding-top: 100%;"></div><div class="t-entry-visual-overlay"><div class="t-entry-visual-overlay-in " style="opacity: 0;"></div></div>
+									<div class="t-overlay-wrap">
+										<div class="t-overlay-inner">
+											<div class="t-overlay-content">
+												<div class="t-overlay-text half-block-padding"><div class="t-entry t-single-line"></div></div></div></div></div><img alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20125%20125'%3E%3C/svg%3E" data-lazy-srcset='https://secure.gravatar.com/avatar/2f5bae344a7c67ff091025747cf14098?s=250&#038;d=mm&#038;r=g 2x' class='avatar avatar-125 photo' height='125' width='125' data-lazy-src="https://secure.gravatar.com/avatar/2f5bae344a7c67ff091025747cf14098?s=125&#038;d=mm&#038;r=g" /><noscript><img alt='' src='https://secure.gravatar.com/avatar/2f5bae344a7c67ff091025747cf14098?s=125&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/2f5bae344a7c67ff091025747cf14098?s=250&#038;d=mm&#038;r=g 2x' class='avatar avatar-125 photo' height='125' width='125' /></noscript></div>
+				</div>
+			</div></div>
+					</div></div></div></div><div class="author-profile-content"><p class="h3"><span>Goran Jevtic</span></p><div class="author-profile-bio text-top-reduced"><p>Goran combines his passions for research, writing and technology as a technical writer at phoenixNAP. Working with multiple departments and on a variety of projects, he has developed extraordinary understanding of cloud and virtualization technology trends and best practices.</p>
+</div></div></div><div class="divider-wrapper "  >
+    <hr class="border-accent-color separator-no-padding"  />
+</div>
+</div></div></div></div></div><script id="script-491837" data-row="script-491837" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-491837"));</script></div></div></div></div></div>
+          </div>
+        </article>								</div><!-- sections container -->
+							</div><!-- page wrapper -->
+												<footer id="colophon" class="site-footer">
+							<div data-parent="true" class="vc_row style-color-rgdb-bg vc_custom_1574847664676 limit-width boxed-row row-container mobile-hidden boomapps_vcrow"><div class="row unequal row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-left align_left column_parent col-lg-3 boomapps_vccolumn col-md-33 half-internal-gutter"><div class="uncol style-dark"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div  class="wpb_widgetised_column wpb_content_element">
+		<div class="wpb_wrapper">
+			
+			<aside id="recent-posts-3" class="widget widget_recent_entries widget-container sidebar-widgets">		<span class="widget-title">Recent Posts</span>		<ul>
+											<li>
+					<a href="https://phoenixnap.com/kb/cannot-connect-to-the-docker-daemon-error">How to Resolve the &#8220;cannot connect to the Docker daemon&#8221; Error</a>
+									</li>
+											<li>
+					<a href="https://phoenixnap.com/kb/ubuntu-proxy-settings">How to Configure Proxy Settings on Ubuntu 20.04</a>
+									</li>
+											<li>
+					<a href="https://phoenixnap.com/kb/install-helm">How to Install Helm on Ubuntu, Mac and Windows</a>
+									</li>
+					</ul>
+		</aside>
+		</div>
+	</div>
+</div></div></div></div></div><div class="wpb_column pos-top pos-left align_left column_parent col-lg-3 boomapps_vccolumn tablet-hidden col-md-25 single-internal-gutter"><div class="uncol style-dark"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div  class="wpb_widgetised_column wpb_content_element footer-category-menu">
+		<div class="wpb_wrapper">
+			
+			<aside id="nav_menu-3" class="widget widget_nav_menu widget-container sidebar-widgets"><span class="widget-title">Categories</span><div class="menu-categories-container"><ul id="menu-categories" class="menu"><li id="menu-item-86362" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-86362"><a href="https://phoenixnap.com/kb/category/sysadmin">SysAdmin</a></li>
+<li id="menu-item-86364" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86364"><a href="https://phoenixnap.com/kb/category/virtualization">Virtualization</a></li>
+<li id="menu-item-86363" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86363"><a href="https://phoenixnap.com/kb/category/devops-and-development">DevOps and Development</a></li>
+<li id="menu-item-73372" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-73372"><a href="https://phoenixnap.com/kb/category/security">Security</a></li>
+<li id="menu-item-86360" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86360"><a href="https://phoenixnap.com/kb/category/backup-and-recovery">Backup and Recovery</a></li>
+<li id="menu-item-86561" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86561"><a href="https://phoenixnap.com/kb/category/bare-metal-servers">Bare Metal Servers</a></li>
+<li id="menu-item-86562" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86562"><a href="https://phoenixnap.com/kb/category/web-servers">Web Servers</a></li>
+<li id="menu-item-86564" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-86564"><a href="https://phoenixnap.com/kb/category/networking">Networking</a></li>
+<li id="menu-item-86565" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-86565"><a href="https://phoenixnap.com/kb/category/databases">Databases</a></li>
+</ul></div></aside>
+		</div>
+	</div>
+</div></div></div></div></div><div class="wpb_column pos-top pos-left align_left column_parent col-lg-3 boomapps_vccolumn col-md-33 single-internal-gutter"><div class="uncol style-dark"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div  class="wpb_widgetised_column wpb_content_element">
+		<div class="wpb_wrapper">
+			
+			<aside id="nav_menu-4" class="widget widget_nav_menu widget-container sidebar-widgets"><span class="widget-title">Company</span><div class="menu-company-container"><ul id="menu-company" class="menu"><li id="menu-item-73270" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-73270"><a href="https://phoenixnap.com/company/about-us">About Us</a></li>
+<li id="menu-item-82240" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82240"><a href="https://github.com/phoenixnap">GitHub</a></li>
+<li id="menu-item-82242" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82242"><a href="https://phoenixnap.com/blog">Blog</a></li>
+<li id="menu-item-86976" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-86976"><a href="https://phoenixnap.com/company/it-resources/data-center-rfp-template">RFP Template</a></li>
+<li id="menu-item-82353" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82353"><a href="http://employment.ccbill.com/">Careers</a></li>
+</ul></div></aside><aside id="nav_menu-7" class="widget widget_nav_menu widget-container sidebar-widgets"><span class="widget-title">Products</span><div class="menu-products-container"><ul id="menu-products" class="menu"><li id="menu-item-88273" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-88273"><a href="https://phoenixnap.com/colocation">Colocation</a></li>
+<li id="menu-item-88274" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-88274"><a href="https://admin.phoenixnap.com/wap-pncpadmin-shell/orderForm?bmbPath=/order-management/order-form">Servers</a></li>
+<li id="menu-item-88275" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-88275"><a href="https://phoenixnap.com/cloud-services">Cloud Services</a></li>
+<li id="menu-item-88276" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-88276"><a href="https://phoenixnap.com/infrastructure-solutions">Solutions</a></li>
+<li id="menu-item-88277" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-88277"><a href="https://phoenixnap.com/network/locations">Locations</a></li>
+</ul></div></aside>
+		</div>
+	</div>
+</div></div></div></div></div><div class="wpb_column pos-top pos-center align_left column_parent col-lg-3 boomapps_vccolumn single-internal-gutter"><div class="uncol style-dark"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div  class="wpb_widgetised_column wpb_content_element">
+		<div class="wpb_wrapper">
+			
+			<aside id="nav_menu-5" class="widget widget_nav_menu widget-container sidebar-widgets"><span class="widget-title">Connect</span><div class="menu-connect-container"><ul id="menu-connect" class="menu"><li id="menu-item-82350" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82350"><a href="https://phoenixnap.com/company/it-events">Events</a></li>
+<li id="menu-item-82352" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82352"><a href="https://phoenixnap.com/company/press">Press</a></li>
+<li id="menu-item-82351" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82351"><a href="https://phoenixnap.com/contact-us">Contact Us</a></li>
+</ul></div></aside>
+		</div>
+	</div>
+</div></div></div></div></div><script id="script-192514" data-row="script-192514" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-192514"));</script></div></div></div><div data-parent="true" class="vc_row limit-width row-container boomapps_vcrow"><div class="row no-top-padding no-bottom-padding single-h-padding row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-center align_left column_parent col-lg-12 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  vc_custom_1574842242990 boomapps_vccolumn no-block-padding"><div class="uncont"><div class="divider-wrapper limit-width"  >
+    <hr class="border-color-lxmt-color separator-no-padding"  style="border-top-width: 1px;" />
+</div>
+</div></div></div></div></div><script id="script-907815" data-row="script-907815" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-907815"));</script></div></div></div><div data-parent="true" class="vc_row style-color-rgdb-bg limit-width boxed-row row-container boomapps_vcrow"><div class="row no-top-padding single-bottom-padding single-h-padding row-parent"><div class="wpb_row row-inner"><div class="wpb_column pos-top pos-center align_left column_parent col-lg-9 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="uncode_text_column footer-phoenix-icons" ></p>
+<div class="pull-left">
+<ul class="footer-icons-menu list-inline">
+<li class="list-inline-item"><i class="fa fa-bubble fa-lg"></i><a href="https://phoenixnap.com/"> Live Chat</a></li>
+<li class="list-inline-item"><i class="fa fa-check-circle-o fa-lg"></i><a href="https://phoenixnap.com/contact-us"> Get a Quote</a></li>
+<li class="list-inline-item"><i class="fa fa-question-circle-o fa-lg"></i> Support | <a href="tel:1-855-330-1509">1-855-330-1509</a></li>
+<li class="list-inline-item"><i class="fa fa-cart-plus fa-lg"></i> Sales | <a href="tel:1-877-588-5918">1-877-588-5918</a></li>
+</ul>
+</div>
+<p>
+</div></div></div></div></div></div><div class="wpb_column pos-bottom pos-center align_left column_parent col-lg-3 boomapps_vccolumn single-internal-gutter"><div class="uncol style-light"  ><div class="uncoltable"><div class="uncell  boomapps_vccolumn no-block-padding"><div class="uncont"><div class="uncode-vc-social footer-social-icons icons-lead"><div class="social-icon icon-box icon-box-top icon-inline"><a href="https://www.facebook.com/phoenixnap" target="_blank"><i class="fa fa-social-facebook"></i></a></div><div class="social-icon icon-box icon-box-top icon-inline"><a href="https://www.linkedin.com/company/phoenix-nap/" target="_blank"><i class="fa fa-social-linkedin"></i></a></div><div class="social-icon icon-box icon-box-top icon-inline"><a href="https://twitter.com/phoenixNAP" target="_blank"><i class="fa fa-social-twitter"></i></a></div><div class="social-icon icon-box icon-box-top icon-inline"><a href="https://www.instagram.com/phoenixnap/" target="_blank"><i class="fa fa-instagram"></i></a></div><div class="social-icon icon-box icon-box-top icon-inline"><a href="https://www.youtube.com/user/PhoenixNAPdatacenter" target="_blank"><i class="fa fa-youtube"></i></a></div></div></div></div></div></div></div><script id="script-163138" data-row="script-163138" type="text/javascript" class="vc_controls">UNCODE.initRow(document.getElementById("script-163138"));</script></div></div></div>
+<div class="row-container style-dark-bg footer-last">
+		  					<div class="row row-parent style-dark no-top-padding no-h-padding no-bottom-padding">
+									<div class="site-info uncell col-lg-6 pos-middle text-right"><div class="limit-width">
+<div class="pull-left" style="padding-left: 36px;"><a style="margin-right: 24px;" href="https://phoenixnap.com/infrastructure-solutions/legal-it/privacy-shield-compliant-privacy-policy">Privacy Policy</a><a style="margin-right: 24px;" href="https://phoenixnap.com/gdpr">GDPR</a><a href="https://phoenixnap.com/sitemap">Sitemap</a></div>
+<div class="pull-right">© 2020 Copyright phoenixNAP | Global IT Services. All Rights Reserved.</div>
+</div>
+</div><!-- site info -->
+								</div>
+							</div>						</footer>
+											</div><!-- main container -->
+				</div><!-- main wrapper -->
+							</div><!-- box container -->
+		</div><!-- box wrapper -->
+		<div class="style-light footer-scroll-top footer-scroll-higher"><a href="#" class="scroll-top"><i class="fa fa-angle-up fa-stack fa-rounded btn-default btn-hover-nobg"></i></a></div>		<div class="overlay overlay-sequential style-dark style-dark-bg overlay-search" data-area="search" data-container="box-container">
+			<div class="mmb-container"><div class="menu-close-search mobile-menu-button menu-button-offcanvas mobile-menu-button-dark lines-button x2 overlay-close close" data-area="search" data-container="box-container"><span class="lines"></span></div></div>
+			<div class="search-container"><form action="https://phoenixnap.com/kb/" method="get">
+	<div class="search-container-inner">
+		<input type="search" class="search-field form-fluid no-livesearch" placeholder="Search…" value="" name="s" title="Search for:">
+	  <i class="fa fa-search3"></i>
+	</div>
+</form>
+</div>
+		</div>
+
+	<div class="gdpr-overlay"></div><div class="gdpr gdpr-privacy-preferences">
+	<div class="gdpr-wrapper">
+		<form method="post" class="gdpr-privacy-preferences-frm" action="https://phoenixnap.com/kb/wp-admin/admin-post.php">
+			<input type="hidden" name="action" value="uncode_privacy_update_privacy_preferences">
+			<input type="hidden" id="update-privacy-preferences-nonce" name="update-privacy-preferences-nonce" value="d8a1982a00" /><input type="hidden" name="_wp_http_referer" value="/kb/improve-mysql-performance-tuning-optimization" />			<header>
+				<div class="gdpr-box-title">
+					<h3>Privacy Preference Center</h3>
+					<span class="gdpr-close"></span>
+				</div>
+			</header>
+			<div class="gdpr-content">
+				<div class="gdpr-tab-content">
+					<div class="gdpr-consent-management gdpr-active">
+						<header>
+							<h4>Privacy Preferences</h4>
+						</header>
+						<div class="gdpr-info">
+							<p></p>
+													</div>
+					</div>
+				</div>
+			</div>
+			<footer>
+				<input type="submit" class="btn-accent btn-flat" value="Save Preferences">
+							</footer>
+		</form>
+	</div>
+</div>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MLJ5W8M"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) --><script type="text/html" id="wpb-modifications"></script><!--[if lte IE 9]>
+			<script>
+				(function($) {
+					$(document).ready(function() {
+						$( '#ftwp-container' ).addClass( 'ftwp-ie9' );
+					});
+				})(jQuery);
+			</script>
+		<![endif]-->
+
+
+
+
+
+
+
+
+<script type='text/javascript'>
+"use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}var RocketBrowserCompatibilityChecker=function(){function RocketBrowserCompatibilityChecker(options){_classCallCheck(this,RocketBrowserCompatibilityChecker),this.passiveSupported=!1,this._checkPassiveOption(this),this.options=!!this.passiveSupported&&options}return _createClass(RocketBrowserCompatibilityChecker,[{key:"_checkPassiveOption",value:function(self){try{var options={get passive(){return!(self.passiveSupported=!0)}};window.addEventListener("test",null,options),window.removeEventListener("test",null,options)}catch(err){self.passiveSupported=!1}}},{key:"initRequestIdleCallback",value:function(){!1 in window&&(window.requestIdleCallback=function(cb){var start=Date.now();return setTimeout(function(){cb({didTimeout:!1,timeRemaining:function(){return Math.max(0,50-(Date.now()-start))}})},1)}),!1 in window&&(window.cancelIdleCallback=function(id){return clearTimeout(id)})}},{key:"isDataSaverModeOn",value:function(){return"connection"in navigator&&!0===navigator.connection.saveData}},{key:"supportsLinkPrefetch",value:function(){var elem=document.createElement("link");return elem.relList&&elem.relList.supports&&elem.relList.supports("prefetch")&&window.IntersectionObserver&&"isIntersecting"in IntersectionObserverEntry.prototype}},{key:"isSlowConnection",value:function(){return"connection"in navigator&&"effectiveType"in navigator.connection&&("2g"===navigator.connection.effectiveType||"slow-2g"===navigator.connection.effectiveType)}}]),RocketBrowserCompatibilityChecker}();
+</script>
+<script type='text/javascript'>
+(function() {
+"use strict";var e=function(){function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),e}}();function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function r(e,t){n(this,r),this.attrName="data-rocketlazyloadscript",this.browser=t,this.options=this.browser.options,this.triggerEvents=e,this.userEventListener=this.triggerListener.bind(this)}return e(r,[{key:"init",value:function(){this._addEventListener(this)}},{key:"reset",value:function(){this._removeEventListener(this)}},{key:"_addEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.addEventListener(e,t.userEventListener,t.options)})}},{key:"_removeEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.removeEventListener(e,t.userEventListener,t.options)})}},{key:"_loadScriptSrc",value:function(){var r=this,e=document.querySelectorAll("script["+this.attrName+"]");0!==e.length&&Array.prototype.slice.call(e).forEach(function(e){var t=e.getAttribute(r.attrName);e.setAttribute("src",t),e.removeAttribute(r.attrName)}),this.reset()}},{key:"triggerListener",value:function(){this._loadScriptSrc(),this._removeEventListener(this)}}],[{key:"run",value:function(){RocketBrowserCompatibilityChecker&&new r(["keydown","mouseover","touchmove","touchstart"],new RocketBrowserCompatibilityChecker({passive:!0})).init()}}]),r}();t.run();
+}());
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>window.lazyLoadOptions = {
+                elements_selector: "img[data-lazy-src],.rocket-lazyload",
+                data_src: "lazy-src",
+                data_srcset: "lazy-srcset",
+                data_sizes: "lazy-sizes",
+                class_loading: "lazyloading",
+                class_loaded: "lazyloaded",
+                threshold: 300,
+                callback_loaded: function(element) {
+                    if ( element.tagName === "IFRAME" && element.dataset.rocketLazyload == "fitvidscompatible" ) {
+                        if (element.classList.contains("lazyloaded") ) {
+                            if (typeof window.jQuery != "undefined") {
+                                if (jQuery.fn.fitVids) {
+                                    jQuery(element).parent().fitVids();
+                                }
+                            }
+                        }
+                    }
+                }};
+        window.addEventListener('LazyLoad::Initialized', function (e) {
+            var lazyLoadInstance = e.detail.instance;
+
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                    var image_count = 0;
+                    var iframe_count = 0;
+                    var rocketlazy_count = 0;
+
+                    mutations.forEach(function(mutation) {
+                        for (i = 0; i < mutation.addedNodes.length; i++) {
+                            if (typeof mutation.addedNodes[i].getElementsByTagName !== 'function') {
+                                return;
+                            }
+
+                           if (typeof mutation.addedNodes[i].getElementsByClassName !== 'function') {
+                                return;
+                            }
+
+                            images = mutation.addedNodes[i].getElementsByTagName('img');
+                            is_image = mutation.addedNodes[i].tagName == "IMG";
+                            iframes = mutation.addedNodes[i].getElementsByTagName('iframe');
+                            is_iframe = mutation.addedNodes[i].tagName == "IFRAME";
+                            rocket_lazy = mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');
+
+                            image_count += images.length;
+			                iframe_count += iframes.length;
+			                rocketlazy_count += rocket_lazy.length;
+
+                            if(is_image){
+                                image_count += 1;
+                            }
+
+                            if(is_iframe){
+                                iframe_count += 1;
+                            }
+                        }
+                    } );
+
+                    if(image_count > 0 || iframe_count > 0 || rocketlazy_count > 0){
+                        lazyLoadInstance.update();
+                    }
+                } );
+
+                var b      = document.getElementsByTagName("body")[0];
+                var config = { childList: true, subtree: true };
+
+                observer.observe(b, config);
+            }
+        }, false);</script><script data-no-minify="1" async src="https://phoenixnap.com/kb/wp-content/plugins/rocket-lazy-load/assets/js/16.1/lazyload.min.js"></script><script>"use strict";var wprRemoveCPCSS=function wprRemoveCPCSS(){var elem;document.querySelector('link[data-rocket-async="style"][rel="preload"]')?setTimeout(wprRemoveCPCSS,200):(elem=document.getElementById("rocket-critical-css"))&&"remove"in elem&&elem.remove()};window.addEventListener?window.addEventListener("load",wprRemoveCPCSS):window.attachEvent&&window.attachEvent("onload",wprRemoveCPCSS);</script><script src="https://phoenixnap.com/kb/wp-content/cache/min/1/b426d7ade2088bcde2bfcec77555bce8.js" data-minify="1"></script><noscript><link rel='stylesheet' id='wp-block-library-css'  href='https://phoenixnap.com/kb/wp-includes/css/dist/block-library/style.min.css?ver=5.4.2' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='contact-form-7-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/contact-form-7/includes/css/styles-2cb6038ac51dd8f87a0b2bde914ae8b1.css' type='text/css' media='all' /><link rel='stylesheet' id='uncodefont-google-css'  href='//fonts.googleapis.com/css?family=Poppins%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2Cregular%2Citalic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto%3A100%2C100italic%2C300%2C300italic%2Cregular%2Citalic%2C500%2C500italic%2C700%2C700italic%2C900%2C900italic&#038;subset=devanagari%2Clatin%2Clatin-ext%2Cgreek%2Cvietnamese%2Ccyrillic%2Cgreek-ext%2Ccyrillic-ext&#038;ver=2.2.8&#038;display=swap' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='uncode-privacy-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/uncode-privacy/assets/css/uncode-privacy-public-347c3862a68ba8d4d5cfefc3181d427a.css' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='uncode-style-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/style-fb6f9ee6ec1279037f92b9c4ad927320.css' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='uncode-icons-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/uncode-icons-91f7fce714e2f17a00419e7756d33541.css' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='uncode-custom-style-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/themes/uncode/library/css/style-custom-0d8554c76a5177763db0dc074cd82e97.css' type='text/css' media='all' /><link data-minify="1" rel='stylesheet' id='fixedtoc-style-css'  href='https://phoenixnap.com/kb/wp-content/cache/min/1/kb/wp-content/plugins/fixed-toc/frontend/assets/css/ftoc.min-782db9e9443f1417dba6b70f4cb6f43d.css' type='text/css' media='all' /></noscript></body>
+</html>
+
+<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me -->

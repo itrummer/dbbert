@@ -1,0 +1,621 @@
+5 MySQL Performance Tuning – 5 Steps for Database Developers - Database Management - Blogs - Quest Community
+Products
+View all products
+Free trials
+Buy online
+Product lines
+ApexSQL
+Change Auditor
+Enterprise Reporter
+Foglight Database Monitoring
+Foglight Evolve
+KACE
+Metalogix
+Migration Manager
+NetVault Backup
+One Identity
+QoreStor
+Quest On Demand
+Rapid Recovery
+Recovery Manager
+RemoteScan
+SharePlex
+Spotlight
+Stat
+Toad
+Featured products
+Cloud Management
+Cloud Access Manager
+Foglight for Virtualization, Enterprise Edition
+Identity Manager
+On Demand Migration for Email
+Quest On Demand
+Rapid Recovery
+Data Protection
+Foglight for Virtualization
+NetVault
+NetVault for Office 365
+QorePortal
+QoreStor
+Rapid Recovery
+vRanger
+Database Management
+Foglight for Databases
+Litespeed for SQL Server
+SharePlex
+Spotlight SQL Server Enterprise
+Toad Data Point
+Toad DevOps Toolkit
+Toad Edge
+Toad for Oracle
+Toad for SQL Server
+Identity & Access Management
+Active Roles
+Defender
+Identity Manager
+Identity Manager Data Governance
+One Identity Safeguard
+Password Manager
+Privileged Access Suite for Unix
+Starling Connect
+Starling Two-Factor Authentication
+syslog-ng
+Microsoft Platform Management
+Active Administrator
+Change Auditor
+Enterprise Reporter
+GPOADmin
+InTrust
+Metalogix
+Migration Manager
+On Demand Migration for Email
+Quest On Demand
+Recovery Manager
+Performance Monitoring
+Foglight Capacity Director
+Foglight Hybrid Cloud Manager
+Foglight for Databases
+Foglight for Operating Systems
+Foglight for Oracle
+Foglight for PostgreSQL
+Foglight for SQL Server
+Foglight for Storage Management
+Foglight for Virtualization
+Spotlight on SQL Server
+Unified Endpoint Management
+Desktop Authority Management Suite
+KACE Cloud Mobile Device Manager
+KACE Desktop Authority
+KACE Privilege Manager
+KACE Systems Deployment Appliance
+KACE Systems Management Appliance
+RemoteScan
+Solutions
+View all Solutions
+Industries
+Education
+Energy
+Federal Government
+Financial Services
+Healthcare
+State & Local Government
+Platforms
+Active Directory
+Cisco
+DB2
+Exchange
+Google
+Hyper-v
+Lotus Notes
+OneDrive for Business
+Office 365
+Oracle
+SAP/Sybase
+SharePoint
+SQL Server
+Teams
+Unix/Linux
+VMware
+Windows Server
+Cloud Management
+Data Protection
+Overview
+Backup & Recovery
+Cloud Management
+Deduplication & Compression
+Disaster Recovery
+Office 365 Data Protection
+Virtualization Management
+Database Management
+Overview
+Administration
+Cloud Migration
+Data Preparation and Provisioning
+Development
+DevOps
+Performance Monitoring
+Replication
+Supported Platforms
+IBM DB2
+MySQL
+Oracle
+PostgreSQL
+SAP Solutions
+SQL Server
+GDPR Compliance
+Identity & Access Management
+Overview
+Identity Administration
+Identity Governance
+Privileged Access Management
+AD Account Lifecycle Management
+Access Control
+Cloud
+Log Management
+Microsoft Platform Management
+Overview
+Mergers & Acquisitions
+Migration & Consolidation
+Office 365 Migration & Management
+Security & Compliance
+Windows Backup & Recovery
+Supported Platforms
+Active Directory
+Cisco
+Exchange
+Google
+Groupwise
+Lotus Notes
+Office 365
+OneDrive for Business
+SharePoint
+SQL Server
+Teams
+Unix/Linux
+Windows Server
+Performance Monitoring
+Overview
+Database Performance Monitoring
+Operating System Monitoring
+Storage Performance & Utilization Management
+Supported Platforms
+Active Directory
+DB2
+Exchange
+Java
+Hyper-V
+.NET
+Oracle
+SAP/Sybase
+Storage
+SQL Server
+VMware
+Unified Endpoint Management
+Overview
+Endpoint Compliance
+Endpoint Security
+Endpoint Visibility
+Industries
+Education
+Healthcare
+Supported Platforms
+Internet of things
+Microsoft® Windows
+MAC
+UNIX/LinuX
+Resources
+Blogs
+Blogs A to Z
+Data Protection
+Database Management
+Microsoft Platform Management
+Performance Monitoring
+Unified Endpoint Management
+Customer Stories
+Documents
+Events
+Webcasts
+Technical Documentation
+Videos
+Whitepapers
+Trials
+Services
+Consulting Services
+Overview
+Microsoft Platform Services
+Data Protection Services
+Unified Endpoint Management
+Performance Monitoring Services
+Database Management Services
+Educational Services
+Support Services
+Support
+Support Home
+By Product
+All Products
+AppAssure
+Archive Manager
+Change Auditor
+Desktop Authority
+DR Series
+Foglight
+KACE
+Migration Manager
+NetVault
+Rapid Recovery
+SharePlex
+Toad
+vRanger
+Contact Support
+Overview
+Customer Service
+Licensing Assistance
+Renewal Assistance
+Technical Support
+Download Software
+Knowledge Base
+My Account
+My Products
+My Service Requests
+My Licenses
+My Groups
+My Profile
+Policies & Procedures
+Consulting Services
+Microsoft Platform Management
+Data Protection
+Unified Endpoint Management
+Performance Monitoring
+Database Management
+Technical Documentation
+Educational Services
+User Forums
+Video Tutorials
+Partners
+Overview
+Partner Circle Log In
+Become a Partner
+Find a Partner
+Partner Community
+Communities
+Home
+Blogs
+Data Protection
+Database Management
+ITNinja
+Microsoft Platform Management
+Performance Monitoring
+Toad World Blog
+Unified Endpoint Management
+Forums
+All Product Forums
+Active Administrator
+Desktop Authority
+Foglight
+ITNinja
+Migration Manager for Active Directory
+NetVault
+Rapid Recovery
+Toad World Forum
+Social Networks
+Facebook
+LinkedIn
+Twitter@Quest
+Twitter@QuestSupport
+YouTube
+製品情報
+すべての製品情報を見る
+Change Auditor
+Foglight
+KACE
+Metalogix
+Migration Manager
+Migrator for Notes to SharePoint
+NetVault Backup
+On Demand Migration for Email
+QoreStor
+Rapid Recovery
+Recovery Manager
+SharePlex
+Spotlight
+Toad
+ソリューション
+すべてのプラットフォームを見る
+クラウド管理
+GDPRコンプライアンス
+データ保護
+概要
+クラウド管理
+ディザスタリカバリ
+バックアップとリカバリ
+Office 365 データ保護
+仮想化管理
+重複除外と複製
+データベース管理
+概要
+DevOps
+データの準備と分析
+データベースのクラウド移行
+データベースパフォーマンス監視
+データベース管理
+データベース複製ソフトウェアツール
+統合エンドポイント管理
+概要
+エンドポイントコンプライアンス
+エンドポイントセキュリティ
+エンドポイントの可視化
+Microsoftプラットフォーム管理
+概要
+ハイブリッドActive Directoryのセキュリティとガバナンス
+Microsoftプラットフォームの移行計画と統合
+セキュリティとコンプライアンス
+情報アーカイブおよびストレージ管理ソリューション
+Windowsのバックアップとリカバリ
+Microsoft Serverのパフォーマンスと可用性
+レポート作成機能
+グループポリシーと権限
+パフォーマンス監視
+サービス
+コンサルティングサービス
+概要
+Microsoftプラットフォーム管理
+データ保護
+統合エンドポイント管理
+パフォーマンス監視
+データベース管理
+トレーニングと認定資格
+サポートサービス
+サポート
+サポートホーム
+製品で検索
+All Products
+AppAssure
+Archive Manager
+Change Auditor
+Desktop Authority
+DR Series
+Foglight
+KACE
+Migration Manager
+NetVault
+Rapid Recovery
+SharePlex
+Toad
+vRanger
+お問い合わせ
+すべて
+カスタマサービス
+ライセンス アシスタンス
+更新のアシスタンス
+技術サポート
+コミュニティフォーラム
+ソフトウェアのダウンロード
+ナレッジベース
+マイアカウント
+マイ プロダクト
+Myサービスリクエスト
+マイ ライセンス
+マイ グループ
+マイ プロファイル
+ポリシーおよび手順
+コンサルティングサービス
+Microsoftプラットフォーム管理
+データ保護
+統合エンドポイント管理
+パフォーマンス監視
+データベース管理
+リリースノートおよびガイド
+教育サービス
+ビデオチュートリアル
+トライアル
+パートナー
+概要
+Partner Circleへのログイン
+パートナーになる
+Find a Partner
+パートナーコミュニティ
+コミュニティ
+Quest Community
+Site
+Search
+User
+Site
+Search
+User
+Blogs
+Database Management
+5 MySQL Performance Tuning Tips
+Data Protection
+Database Management
+Microsoft Platform Management
+Performance Monitoring
+Unified Endpoint Management
+Quest
+More
+Cancel
+New
+5 MySQL Performance Tuning Tips
+Actions
+Subscribe by email
+Posts RSS
+More
+Cancel
+Tags
+Database Performance
+MySQL
+Janis Griffin
+30 Jul 2020
+If you pride yourself on your SQL optimization skills, then this is a good time to advance your MySQL performance tuning.
+For one thing, MySQL has spent the last seven years as a very close #2 in the race with #1- Oracle and #3- Microsoft SQL Server, according to DB-Engines.
+For another, MySQL is an open source database, something you can’t say about #1 or #3. If you and your fellow database professionals are gravitating toward open source, MySQL is currently the one to beat. It’s available on FreeBSD, Linux, OS X, Solaris and Windows. It supports almost 20 different programming languages, from Ada to Tcl, which means it has something for just about every developer.
+And, MySQL has made recent news by changing obsolete terminology written into its source code and documentation. Their creators and engineers are paying attention.
+The need for MySQL performance tuning
+But even with the #2 database, you can still write inefficient SQL statements and launch queries that run slowly. For that, there’s MySQL performance tuning, which I’ll describe in the five tips below.
+Tip 1: Monitor wait time
+How long are your users waiting for a response from the database? MySQL provides wait events and thread states to help you answer that question. By monitoring each step that a SQL statement takes in the database until it sends back a response, you draw a clear picture of where the query spends time. And that’s where you start your MySQL performance tuning.
+In early versions of MySQL, you couldn’t look at the Performance_Schema database or the Information_Schema database without causing locking or affecting performance. Nowadays, MySQL offers better information on both current and historical events at the levels of statements, stages and waits. For example, the number of tables in Performance_Schema that you can query for tuning information grew from 17 to 87 between versions 5.5 and 5.7. Version 8 includes a transactional data dictionary for the database objects (you’ll query those in Tip 3) that used to be stored only in underlying files.
+Query for wait time data
+Start your MySQL performance tuning with this query on the main tables associated with wait time:
+INSERT INTO wta_data SELECTt.processlist_id AS conn_id, t.processlist_user AS user, t.processlist_host AS host, t.processlist_db AS db, LOWER(t.processlist_state) AS state, t.processlist_info AS current_sql, MD5(t.processlist_info) AS current_sql_md5, t.processlist_command AS command, w.event_id AS wait_event_id, w.end_event_id AS wait_event_end_id, w.event_name AS wait_event_name, w.operation AS wait_operation, w.object_schema AS wait_schema, w.object_name AS wait_object_name, w.object_type AS wait_type, w.index_name AS wait_index, s.sql_text AS statement_sql, MD5(s.sql_text) AS statement_sql_md5, CASE WHEN RIGHT(s.digest_text, 3)= '...' THEN 1 ELSE 0 END AS statement_digest_truncated, s.digest AS statement_digest, s.event_id AS statement_event_id, s.end_event_id AS statement_event_end_id, conn.attr_value AS program_nameFROM performance_schema.threads AS t LEFT JOINperformance_schema.events_waits_current AS w ON w.thread_id = t.thread_idAND w.end_event_id IS NULL AND w.event_name <> 'idle'LEFT JOIN performance_schema.events_statements_current AS s ON s.thread_id= t.thread_id AND s.digest IS NOT NULLLEFT JOIN (SELECT processlist_id, GROUP_CONCAT(attr_value ORDER BYattr_name DESC SEPARATOR '~^~') attr_valueFROM performance_schema.session_connect_attrs WHERE attr_name IN('program_name','_client_name') GROUP BY processlist_id ) connON t.processlist_id = conn.processlist_idWHERE t.instrumented = 'YES' AND t.processlist_id <> connection_id()AND (t.PROCESSLIST_COMMAND <> 'Sleep');Notice that the query excludes threads containing a Sleep command and those with a wait event of idle.
+To study wait time, run that query repeatedly at some interval — say, one minute — and save the results to a table (here, wta_data).
+Find the queries that are spending the most time in the database
+Now run a query that groups the data by sql_text, wait_operation and time_in_seconds for each wait event, then sums the total time the query spends.
+select w.sql_text, w.wait_operation, w.time_in_seconds, tot.tot_time from(select substr(current_sql, 1, 60) sql_text,
+wait_operation, count(*) time_in_seconds
+from wta_data w group by substr(current_sql, 1, 60), wait_operation) w c(select substr(current_sql, 1,60) sql_text, count(*) tot_time
+from wta_data
+group by substr(current_sql, 1,60)) totwhere w.wait_operation is not nulland w.sql_text = tot.sql_textorder by tot.tot_time, time_in_seconds;
+Then, examine the query output (this is from a sample database for a rental company):
+The middle two rows reveal that one SQL statement spent 21 seconds on a read and 56 times that long (1183 seconds) on a fetch. The bottom two rows show that another SQL statement spent 39 seconds on a read and 35 times that long (1370 seconds) on a fetch. That’s an awful lot of fetching for not much reading. Clearly, there’s room for improvement.
+Analyzing wait time reveals important baseline metrics you’ll need in MySQL performance tuning. In this case, the focus is on the big difference between rows examined and rows sent. Average wait time itself is another useful metric. Baseline metrics allow you to set a tuning target, when you can say, “That’s good enough.” Then you move on to the next performance problem.
+Tip 2: Review the execution plan
+The execution plan reveals the cost of each operation. That helps you find the most expensive steps, such as I/O (rows examined, rows sent), full table scans, index scans, filtering predicates and column data types.
+MySQL gives you several options for generating an execution plan:
+Run explain from a command prompt.
+Running EXPLAIN FORMAT=JSON generates a JSON-formatted explain plan with extended and partition information, plus detail on the operations including which part of the key was used.
+SET OPTIMIZER_TRACE="ENABLED=ON"; puts the trace in memory to write information to the optimizer_trace table in information_schema. It captures the costs of all the operations that the optimizer considered for the current plan (version 5.6.3 and above).
+MySQL Workbench offers a graphical view of the plan, shown below.
+That execution plan shows table name, type of data access, references and the number of rows that the optimizer estimates it will examine when it runs — all useful in MySQL performance tuning.
+In general, the earlier in your query that you apply filtering predicates, the less data you discard later. The execution plan makes it easy to see how early or late your query is applying filters. Does your query launch any temporary or filesort activities? If so, the execution plan shows you where they occur so you can try to reduce the amount of data you’re sending to them.
+Note the Cost Hint that MySQL Workbench displays (gray box above), advising you that the full table scan on student can be an expensive operation.
+Tip 3: Gather object information
+Next, you’ll want to know as much as possible about the underlying tables in a query. Useful information includes table size, whether it’s really a table or just a view, the cardinality of columns in where clauses, and the use of wildcards and scalar functions.
+A quick way to gather that information is the mysqlshow --status command.
+To review indexes and constraints, run show indexes.
+That shows you which columns are in the index, especially the left leading column in a multi-column index.
+Can the query even use the index? If your query applies functions on an indexed column, the optimizer won’t use the index at all, and you may need to rewrite the query.
+Review the existing keys, constraints and relationships. For queries that join many tables, create an Entity Relationship Diagram (ERD) that shows you how the tables are related to one another.
+Tip 4: Find the driving table
+Your goal in MySQL performance tuning is to drive the query with the table that returns the least data. In other words, you compare the number of rows in the final result set to the number of rows the query examined.
+Using the driving table reduces the number of logical reads. To find the driving table, you study Joins (Right, Left, Outer) and filtering predicates to figure out how to filter as early in the query as possible.
+Below is a partial execution plan for a query in a university billing application. The red operation shows a high number of rows read (more than 8,700) from the student table. In fact, it’s every row in the table, which is inefficient.
+Here is a sample query for all students taking a class called “MySQL Performance Tuning”:
+SELECT s.fname, s.lname, r.signup_dateFROM student sINNER JOIN registration rON s.student_id = r.student_idINNER JOIN class cON r.class_id = c.class_idWHERE c.name
+= 'MYSQL PERFORMANCE TUNING'AND r.signup_date BETWEENDATE_SUB(@BillDate, INTERVAL 1 DAY) and @BillDateAND r.cancelled = 'N';
+Using SQL diagramming, you determine that class is the driving table. You run the following SQL to add and view two foreign keys:
+ALTER TABLE registration ADD FOREIGN KEY (student_id) REFERENCES student(student_id);ALTER TABLE registration ADD FOREIGN KEY (class_id) REFERENCES class(class_id);SELECT table_name,column_name,constraint_name,referenced_table_name,referenced_column_nameFROM
+information_schema.key_column_usageWHERE
+table_schema = 'csu' AND table_name = 'registration'AND referenced_column_name IS NOT NULL;
+With the addition of those foreign key constraints, the optimizer chooses a better execution plan using class as the driving table. Although it’s still running that full table scan, several important numbers are improved:
+Before foreign keys
+After foreign keys
+Executions
+28K
+348K
+Average Wait Time
+114 ms
+4 ms
+Rows Examined/Sent
+84K/2
+1.4K/2
+To send the same number of rows, just 1/60th of the rows (1.4/84) now need to be examined. Plus, the ratio of executions to average wait time is vastly improved.
+You may find room for even more improvement, for example, by reviewing your choice of indexes to reduce the number of rows examined. In MySQL you can create a covering index, which includes all the columns in the query. That prevents extra I/O because the index can satisfy the query. Or you can create a partial index, say, on a table containing a large varchar column, where the index would be too large to traverse. MySQL supports indexes on a virtual column, which works similarly to a function index in Oracle, except that the data is stored only in the index.
+Note, though, that adding indexes doesn’t always improve performance. Fortunately, MySQL Workbench makes it easy to capture metrics before and after you experiment so you can see whether and how you’ve improved things.
+Tip 5: Identify performance inhibitors
+Finally, most of the low-hanging fruit of MySQL performance tuning lies in small programming mistakes that have a big impact:
+Cursor or row-by-row processing
+Parallel query processing — Sometimes it’s better to split a complex report into multiple queries and run them in parallel.
+Hard-coded hints allow you to execute the query with the plan that you want to test. But hints can become stale or forgotten over time.
+Wild cards like * may seem handy, but they just generate I/O, add to CPU workload and thrash memory. Beware of SELECT * (often used by SQL generators such as EMF, LINQ and NHibernate) and the missing where clause.
+Implicit data conversions are a mismatch of datatypes between the column and a parameter. They impact CPU consumption and can turn off index usage.
+Performance is often hampered by mistakes that database developers introduce when they’re rushing to beat a release deadline and feeling pressure to get new features working. Usually, the mistakes are easy to fix, but it does take time and effort to find them.
+Start tuning the performance of your MySQL databases
+While the details vary from one database vendor to another, the five main steps of MySQL performance tuning apply:
+Monitor wait time
+Review the execution plan
+Gather object information
+Find the driving table
+Identify performance inhibitors
+As a MySQL database professional or developer, you’ll find that the methodical approach described here will help you get the most out of this open source database.
+The Fundamental Guide to SQL Server Query OptimizationWant more background on wait times, execution plans, object information, driving tables and performance inhibitors? Now that you’ve seen how to apply MySQL performance tuning, take a deeper dive into SQL query optimization in general.
+Learn more about how optimizers use the execution plan. Walk through SQL diagramming. See how a covering index can affect I/O. Follow all 5 tips through a couple of real-world case studies.
+Download the e-Book
+sales2
+3 months ago
+Above Information is good. Interested one can also visit INDIA Access web for relevant services.
+Cancel
+Up
+0
+Down
+Reply
+More
+Cancel
+Mark.Kurtz
+4 months ago
+very nice.  Thanks for writing this.
+Cancel
+Up
+0
+Down
+Reply
+More
+Cancel
+Phil.Rodas
+4 months ago
+As always. Great job Janice!
+Cancel
+Up
+0
+Down
+Reply
+More
+Cancel
+Related Content
+Company
+About Us
+Buy
+Contact Us
+Careers
+News
+Resources
+Blogs
+Customer Stories
+Documents
+Events
+Videos
+Support
+Professional Services
+Renew Support
+Technical Support
+Training & Certification
+Support Services
+Social Networks
+Facebook
+Instagram
+LinkedIn
+Twitter
+YouTube
+© 2020 Quest Software Inc. ALL RIGHTS RESERVED.
+Legal
+Terms of Use
+Privacy
+Community Feedback & Support
+会社名
+会社情報
+購入
+お問い合わせ
+採用情報
+ニュース
+リソース
+ブログ
+お客様の事例
+ドキュメント
+イベント
+ビデオ
+サポート
+プロフェッショナルサービス
+サポートの更新
+テクニカルサポート
+トレーニングと認定資格
+サポートサービス
+ソーシャルネットワーク
+Facebook
+Instagram
+LinkedIn
+Twitter
+YouTube
+© 2020 Quest Software Inc. ALL RIGHTS RESERVED.
+「法務」
+ご利用規約
+個人情報保護方針
+コミュニティのフィードバックとサポート

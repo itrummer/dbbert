@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)https://pippio.com/api/sync?pid=1391&ref=&it=1&iv=c8s837cu3m54i31 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><meta name="referrer" content="no-referrer"><script>
+		var f = function () {
+	function loadChains(chains, limit, onChainDone) {
+    function newImageLoader(url) {
+        return function () {
+            var e = new Image();
+            addListeners(e);
+            e.src = url;
+        };
+    }
+
+    function newScriptLoader(url) {
+        return function () {
+            var e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.async = true;
+            addListeners(e);
+            e.src = url;
+            document.head.appendChild(e);
+        };
+    }
+
+    function newIframeLoader(url) {
+        return function () {
+            var e = document.createElement('iframe');
+            e.style.display = 'none';
+            e.width = 1;
+            e.height = 1;
+            addListeners(e);
+            e.src = url;
+            document.body.appendChild(e);
+        };
+    }
+
+    function addListeners(e) {
+        addLoadErrorListeners(e, loadNext);
+        if (typeof onChainDone === 'function') {
+            addLoadErrorListeners(e, onChainDone);
+        }
+    }
+
+    function addLoadErrorListeners(e, listener) {
+        if (typeof e.addEventListener === 'function') {
+            e.addEventListener('load', listener, false);
+            e.addEventListener('error', listener, false);
+        } else if (typeof e.attachEvent === 'function') {
+            e.attachEvent('onload', listener);
+            e.attachEvent('onerror', listener);
+        }
+    }
+
+    function loadNext() {
+        var next = loaders.shift();
+        if (typeof next === "function") {
+            setTimeout(next);
+        }
+    }
+
+    var loaders = chains.reduce(function (acc, value) {
+        var mode = value[0];
+        var url = value[1];
+
+        switch (mode) {
+            case 'image':
+                acc.push(newImageLoader(url));
+                break;
+            case 'script':
+                acc.push(newScriptLoader(url));
+                break;
+            case 'iframe':
+                acc.push(newIframeLoader(url));
+                break;
+        }
+        return acc;
+    }, []);
+
+    for (var i = 0; i < limit; i++) {
+        loadNext();
+    }
+}
+
+	var chains = [];
+	chains.push(['image', 'https://ei.rlcdn.com/448046.gif?n\x3D1\x26partner_site_id\x3D1017\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D1\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D2\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D3\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D4\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D5\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D6\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D7\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D8\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D9\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D10\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D11\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D12\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D13\x26cparams\x3Dplacement%3D1391']);
+	chains.push(['image', 'https://rc.rlcdn.com/456809.gif?n\x3D14\x26cparams\x3Dplacement%3D1391']);
+
+	loadChains(chains, 10, (typeof onDone === "function") ? onDone : null);
+		};
+
+		if (document.body) { f(); } else { document.addEventListener('DOMContentLoaded', f); }
+	</script>
+</head><body></body></html>

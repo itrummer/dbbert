@@ -1,0 +1,565 @@
+
+    <!DOCTYPE html>
+<html lang="en" class="svg no-js">
+<head>
+    <meta charset="utf-8" />
+    <!--[if IE ]>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="country" content="United States">
+        <meta name="Language" content="en">
+
+    <title>MySQL :: MySQL Performance Tuning and Optimization Resources</title>
+    <link rel="stylesheet" media="all" href="https://labs.mysql.com/common/css/main-20201123.min.css" />
+            <link rel="stylesheet" media="all" href="https://labs.mysql.com/common/css/page-20201123.min.css" />
+    
+    
+    <link rel="stylesheet" media="print" href="https://labs.mysql.com/common/css/print-20201123.min.css" />
+
+    
+    
+    
+                    <link rel="alternate" hreflang="en" href="https://www.mysql.com/why-mysql/performance/index.html" />
+                <link rel="alternate" hreflang="de" href="https://www.mysql.com/de/why-mysql/performance/index.html" />
+                <link rel="alternate" hreflang="fr" href="https://www.mysql.com/fr/why-mysql/performance/index.html" />
+                <link rel="alternate" hreflang="it" href="https://www.mysql.com/it/why-mysql/performance/index.html" />
+                <link rel="alternate" hreflang="ja" href="https://www.mysql.com/jp/why-mysql/performance/index.html" />
+                <link rel="alternate" hreflang="zh" href="https://www.mysql.com/cn/why-mysql/performance/index.html" />
+            
+    
+    <link rel="shortcut icon" href="https://labs.mysql.com/common/themes/sakila/favicon.ico" />
+    <script async="async" type="text/javascript" src='https://consent.truste.com/notice?domain=oracle.com&c=teconsent&js=bb&noticeType=bb&text=true&cdn=1&pcookie&gtm=1' crossorigin></script>
+    <script src="https://www.oracle.com/assets/truste-oraclelib.js"></script>
+    <script>(function(H){ H.className=H.className.replace(/\bno-js\b/,'js') })(document.documentElement)</script>
+    <script src="https://labs.mysql.com/common/js/site-20200928.min.js"></script>
+
+    
+    
+    <!--[if lt IE 9]>
+        <script src="https://labs.mysql.com/common/js/polyfills/html5shiv-printshiv-3.7.2.min.js"></script>
+        <script src="https://labs.mysql.com/common/js/polyfills/respond-1.4.2.min.js"></script>
+    <![endif]-->
+    </head>
+
+<body class="  www en">
+<div class="page-wrapper">
+    <header>
+
+                        <a href="https://www.mysql.com/" aria-label="Home" title="MySQL" id="l1-home-link"></a>
+        
+        <div id="l1-nav-container">
+            <div id="l1-line1">
+                <div id="l1-auth-links">
+                    <a href="https://www.mysql.com/about/contact/"><b>Contact MySQL</b></a>
+                    <span id="l1-contact-separator">&nbsp;|&nbsp;</span>
+                    <span id="l1-contact-separator-br"><br /></span>
+                                             <a href="https://www.mysql.com/auth/login/?dest=https%3A%2F%2Fwww.mysql.com%2Fwhy-mysql%2Fperformance%2Findex.html">Login</a> &nbsp;|&nbsp;
+                         <a href="https://www.mysql.com/auth/register/">Register</a>
+                                    </div>
+                <div id="l1-lhs">
+                    <div id="l1-slogan">
+                        The world's most popular open source database
+                    </div>
+                    <div id="l1-search-box">
+                        <form id="l1-search-form" method="get" action="https://www.oracle.com/search/results">
+                        <input type="hidden" name="cat" value="mysql" />
+                        <input type="hidden" name="Ntk" value="SI-ALL5" />
+                        <input id="l1-search-input" type="search" class="icon-search" placeholder="Search" aria-label="Search" name="Ntt" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="l1-line2">
+                <div class="social-icons">
+                    <a aria-label="Join us on Facebook" title="Join us on Facebook" href="http://www.facebook.com/mysql"><span class="icon-facebook"></span></a>
+                    <a aria-label="Follow us on Twitter" title="Follow us on Twitter" href="https://twitter.com/mysql"><span class="icon-twitter"></span></a>
+                    <a aria-label="Follow us on LinkedIn" title="Follow us on LinkedIn" href="https://www.linkedin.com/company/mysql"><span class="icon-linkedin"></span></a>
+                    <a aria-label="Visit our YouTube channel" title="Visit our YouTube channel" href="http://www.youtube.com/mysqlchannel"><span class="icon-youtube"></span></a>
+                </div>
+                <ul id="l1-nav">
+                    <li class="active">
+                        <a href="/"><!-- <span class="icon-sakila"></span>  -->MySQL.com</a>
+                    </li><li>
+                        <a href="/downloads/"><!-- <span class="icon-download-thin"></span>  -->Downloads</a>
+                    </li><li>
+                        <a href="https://dev.mysql.com/doc/"><!-- <span class="icon-books"></span>  -->Documentation</a>
+                    </li><li>
+                        <a href="https://dev.mysql.com/"><!-- <span class="icon-code"></span>  -->Developer Zone</a>
+                    </li>                </ul>
+            </div>
+        </div>
+        <div id="sub-header">
+            <div id="l2-nav-container">
+                <div id="l2-nav-toggle">
+                    <span class="icon-three-bars"></span>
+                </div>
+                                                                                        <a class="button nav-button-3" href="https://dev.mysql.com/"><span class="icon-code"></span> Developer Zone</a>
+                                                                                                <a class="button nav-button-2" href="https://dev.mysql.com/doc/"><span class="icon-books"></span> Documentation</a>
+                                                                                                <a class="button nav-button-1" href="/downloads/"><span class="icon-download-thin"></span> Downloads</a>
+                                                                                                            <div id="l2-search-toggle">
+                    <span class="icon-search"></span>
+                </div>
+                <div id="l2-site-icon">
+                                                                                                                            <span class="icon-sakila"></span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                <div id="l1-section-title">
+                    <span id="l1-section-label">
+                        <a href="/">MySQL.com</a>
+                    </span>
+                </div>
+                <nav>
+                    
+
+<ul id="l2-nav">
+            	<li class=""><a  href="/products/">Products</a>
+    			</li>
+	        	<li class=""><a  href="/cloud/">Cloud</a>
+    			</li>
+	        	<li class=""><a  href="/services/">Services</a>
+    			</li>
+	        	<li class=""><a  href="/partners/">Partners</a>
+    			</li>
+	        	<li class=""><a  href="/customers/">Customers</a>
+    			</li>
+	        	<li class="active"><a class="active subitems" href="/why-mysql/">Why MySQL?</a>
+    			</li>
+	        	<li class=""><a  href="/news-and-events/web-seminars/">News & Events</a>
+    			</li>
+	        	<li class=" last"><a  href="/buy-mysql/">How to Buy</a>
+    			</li>
+	                                    <li class="other-section"><a href="/downloads/">Downloads</a></li>
+                            <li class="other-section"><a href="https://dev.mysql.com/doc/">Documentation</a></li>
+                            <li class="other-section"><a href="https://dev.mysql.com/">Developer Zone</a></li>
+            </ul>
+                </nav>
+            </div>
+            <div id="l3-search-container"></div>
+            <div id="top-orange"><span id="section-nav">Section Menu: &nbsp; </span></div>
+        </div>
+    </header>
+        <div id="page">
+                <div id="sidebar">
+
+            
+                <div id="menu">
+                    <nav>
+                        
+
+<ul>
+        	<li class=" level1"><a  href="/why-mysql/white-papers/"><span class="icon-dot"></span>White Papers</a>
+    			</li>
+	        	<li class=" level1"><a  href="/why-mysql/presentations/"><span class="icon-dot"></span>Presentations</a>
+    			</li>
+	        	<li class=" level1"><a  href="/why-mysql/case-studies/"><span class="icon-dot"></span>Case Studies</a>
+    			</li>
+	        	<li class=" level1"><a  href="/why-mysql/books/"><span class="icon-dot"></span>Books</a>
+    			</li>
+	        	<li class="active level1"><a class="active " href="/why-mysql/performance/index.html"><span class="icon-dot"></span>Performance</a>
+    			</li>
+	        	<li class=" level1"><a  href="/why-mysql/benchmarks/"><span class="icon-chevron-right"></span>Benchmarks</a>
+    			</li>
+	        	<li class=" level1"><a  href="/why-mysql/migration/"><span class="icon-dot"></span>Migration</a>
+    			</li>
+	        	<li class=" level1"><a  href="/tcosavings/"><span class="icon-dot"></span>TCO Savings</a>
+    			</li>
+	        	<li class=" last level1"><a  href="/industry/government/"><span class="icon-chevron-right"></span>Industries</a>
+    			</li>
+	</ul>
+                    </nav>
+                    <br class="clear" />
+                </div>
+
+                
+                
+                    
+                    
+                    
+                    
+                    
+                                            
+                    
+                    
+                                    </div>
+                
+                <div role="main" id="main">
+
+            
+            <div id="content">
+                                                        <h1 class="page-title" id="mainContent">MySQL Performance Tuning and Optimization Resources
+                                        </h1>
+                                                
+                
+
+
+<div id="content-results">
+                    <h2>White Papers</h2>
+                <ul>
+                                    <li><a href="/why-mysql/white-papers/whats-new-mysql-8-0/">What&#039;s New in MySQL 8.0</a>
+                                                </li>
+                                    <li><a href="/why-mysql/white-papers/mysql-enterprise-edition-product-guide/">MySQL Enterprise Edition Product Guide</a>
+                                                </li>
+                                    <li><a href="/why-mysql/white-papers/a-guide-to-mysql-for-saas/">A Guide for SaaS Vendors: Gaining Competitive Advantage with MySQL</a>
+                                                </li>
+                                    <li><a href="/why-mysql/white-papers/guide-to-optimizing-performance-of-the-mysql-cluster/">Guide to Optimizing Performance of the MySQL Cluster Database</a>
+                                                </li>
+                </ul>
+                    <h2>Presentations</h2>
+                <ul>
+                                    <li><a href="/why-mysql/presentations/tune-mysql-queries-performance/">How to Analyze and Tune MySQL Queries for Better Performance</a>
+                                                </li>
+                                    <li><a href="/why-mysql/presentations/millions-real-time-iops-with-mysql-cluster/">Millions of Real Time IOPS  with MySQL Cluster</a>
+                                                </li>
+                                    <li><a href="/why-mysql/presentations/mysql-80-overview/">MySQL 8.0 Overview</a>
+                                                </li>
+                                    <li><a href="/why-mysql/presentations/mysql-performance-tuning101/">MySQL Performance Tuning 101</a>
+                                                </li>
+                                    <li><a href="/why-mysql/presentations/mysql-performance-sys-schema/">MySQL Performance Schema &amp; Sys Schema</a>
+                                                </li>
+                                                    <a id="li17" class="content-more" href="">More (2) &raquo;</a>
+                <li class="content-hidden li17"><a href="/why-mysql/presentations/mysql-performance-tuning-best-practices/">MySQL Performance: Demystified Tuning &amp; Best Practices</a>
+                                                </li>
+                                    <li class="content-hidden li17"><a href="/why-mysql/presentations/mysql-enterprise-edition/">MySQL Enterprise Edition</a>
+                                                </li>
+                </ul>
+                    <h2>Case Studies</h2>
+                <ul>
+                                    <li><a href="https://www.mysql.com/why-mysql/case-studies/rtts-querysurge-mysql-embedded.html">RTTS’ QuerySurge Automates Data Testing with MySQL Embedded as Powerful Backend</a>
+                                                </li>
+                                    <li><a href="https://www.mysql.com/why-mysql/case-studies/bse-online-trading-mysql-enterprise-edition.html">BSE Takes Online Trading from Milliseconds to Microseconds with MySQL Enterprise Edition</a>
+                                                </li>
+                                    <li><a href="https://www.mysql.com/why-mysql/case-studies/tmon-online-malling-platform-mysql-enterprise-edition.html">TMON Builds ‪Korea’s Number One Online Malling Platform ‬‬‬on MySQL Enterprise Edition‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬‬</a>
+                                                </li>
+                                    <li><a href="https://www.mysql.com/why-mysql/case-studies/globo-adopts-mysql-enterprise-edition.html">Globo Adopts MySQL Enterprise Edition as Platform for Content Development</a>
+                                                </li>
+                                    <li><a href="https://www.mysql.com/why-mysql/case-studies/university-toronto-astronomers-massive-mysql-database.html">University of Toronto Empowers Astronomers to Research Dark Matter with Massive Space Image Database</a>
+                                                </li>
+                                                    <a id="li5" class="content-more" href="">More (71) &raquo;</a>
+                <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/france-billet-high-availability-mysql-enterprise-edition.html">France Billet Stakes Online TicketSales on High Availability of MySQL Enteperprise Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/mobitel-mysql-optimum-price-performance.html">Mobitel Achieves Optimum Price Performance Ratio for 2 Tier Applications</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/certigna-availability-mysql-cluster.html">Certigna Gains Maximum Availability Through Enhance Performance of MySQL Cluster Carrier Grade Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/plusnet-performance-scalability-mysql.html">Plusnet Supports Rapid Growth of Customer Base by Improving Visibility, Performance, and Scalability</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/bitcash-growth-mysql.html">BitCash Supports Future Business Growth with MySQL Cluster Carrier Grade Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/isibet-achieves-24x7-uptime-mysql.html">Isibet Achieve 24x7 Uptime with High Availability MySQL Enterprise</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://www.mysql.com/why-mysql/case-studies/line-database-availability-scalability-security-mysql.html">LINE Enhances Database Availability, Scalability, and Security with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/iot-based-big-data-system-mysql/">IoT based Big Data System for Chungho-Nais With MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/anura-mysql-reduce-wasted-advertising-dollars/">Anura.io uses MySQL to reduce wasted advertising dollars spent on fraudulent traffic by as much as 90%</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/fabrikant-mysql-near-zero-downtime.html">Fabrikant.ru Enjoys Near-Zero Downtime</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/gina-tricot-scales-online-sales-with-mysql.html">Gina Tricot Scales Online Sales with MySQL Enterprise Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/atos-manages-transaction-clearing-mysql-enterprise-edition.html">Atos Manages Transaction Clearing for the Euronext Markets in Continental Europe with MySQL Enterprise Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/ioof-cuts-trades-to-seconds-mysql.html">IOOF Cuts Time to Complete Online Trades from Days to Seconds with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/mysql-cs-bigfish.html">Big Fish Selects MySQL Cluster for Real-Time Web Recommendations</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/customers/view/?id=1223">PayPal Powers its Global Fraud Detection System with MySQL Cluster</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://blogs.oracle.com/mysql/mysql-cluster-powers-el-chavo-from-playful-play%2c-latin-americas-most-popular-facebook-game">MySQL Cluster Powers El Chavo from Playful Play, Latin America&#039;s Most Popular Facebook Game</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://blogs.oracle.com/mysql/verizon-wireless-supports-its-mission-critical-employee-portal-with-mysql">Verizon Wireless Supports its Mission-Critical Employee Portal with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://blogs.oracle.com/MySQL/entry/case_study_polystar_improves_telecom">Polystar Improves Telecom Networks Performance with Embedded MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="https://blogs.oracle.com/mysql/case-study%3a-waiting-room-solutions-relies-on-mysql-for-web-based-medical-management-systems">Waiting Room Solutions Relies on MySQL for Web-Based Medical Management Systems</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cs-istockphoto.html">iStockphoto Grows to a Top-100 U.S. Website with MySQL Enterprise Unlimited</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cs-zillow.html">Zillow.com Deploys MySQL Cluster for High Growth with High Availability</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cs-zappos.html">Zappos Uses MySQL to Power its Growth &amp;amp; Exceptional Customer Service</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cs-gumtree.html">Gumtree Relies on MySQL Enterprise to Help Tame Explosive Growth</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/f5-relies-on-mysql-to-improve-performance-1000/">F5 Relies on MySQL to Improve Performance 1000%</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/tralix-delivers-high-slas-and-extreme-performance-with-mysql/">Tralix Delivers High SLAs and Extreme Performance with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-telecoms-network-management-framework/">MySQL Powers the Market Leading Telecoms Network Management Framework</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/adobe-mysql-make-more-productive/">Adobe Relies on MySQL to Make Creative Professionals More Productive</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cluster-scores-with-pyro-and-cell-c-at-the-fifa-world-cup/">MySQL Cluster Scores with Pyro and Cell C at the FIFA World Cup</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-enterprise-powers-2-million-hospital-registry/">MySQL Enterprise powers 2 Million Referrals in Central Hospital Registry</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cluster-document-management-web-service/">MySQL Cluster Powers Leading Document Management Web Service</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/promovacances-performance-mysql-query-analyzer/">Promovacances.com boosts its performance with MySQL Enterprise &amp; the Query Analyzer</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/ucr-mysql-enterprise-medical-registries-1-5-million-patients/">UCR Selects MySQL Enterprise to Power the Medical Registries of 1.5 Million Patients</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-powers-saas-erp-for-italian-authorities/">MySQL Enterprise powers SaaS ERP for Italian local and central authorities</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/aito-technologies-selects-mysql-manage-mobile-traffic-data/">Aito Technologies Selects MySQL to Manage Mobile Traffic Data and Customer Information</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/cashpoint-saves-half-a-million-euros-mysql/">Cashpoint Saves Half a Million Euros per Year as it Bets on MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/symantec-benefits-from-mysql.html">Symantec Benefits from MySQL Embedded Server&#039;s Rock-Solid Quality and Low Administrative Costs For Over Six Years</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/be2-scales-matchmaking-web-site-mysql/">be2 scales fast growing matchmaking web site with MySQL Enterprise</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/mysql-cluster-powers-rapidlygrowing-ecommerce-service/">MySQL Cluster Powers Rapidly Growing eCommerce Service</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/caspur-mysql-scientific-research/">Caspur relies on MySQL Enterprise to support its scientific research</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/tweetmeme-manages-explosive-growth-with-mysql-enterprise/">TweetMeme Manages Explosive Growth with MySQL Enterprise</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/sage-increase-revenue-market-share-mysql/">MySQL Helps Simply Accounting by Sage Increase Revenue, Market Share, and Customer Satisfaction</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/nethawk-develops-network-monitoring-solutions-mysql/">MySQL Delivers 50% Lower Database Costs as NetHawk Develops Network Monitoring Solutions</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/tema-real-time-mobile-billing-solution-mysql/">Tema Networks Selects MySQL Embedded Server to Power its Real Time Mobile Billing Solution</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/kurier-at-powers-its-high-traffic-news-portal-with-mysql-cluster/">KURIER.at Powers its High-Traffic News Portal with MySQL Cluster</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/speech-design-call-completion-services-mysql-cluster/">SPEECH DESIGN Delivers Next Generation Call Completion Services with MySQL Cluster</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/xceedium-relies-on-mysql-high-security-appliance/">Xceedium Relies on MySQL Embedded Server&#039;s Resilience and Performance for Its High-Risk User Security Appliance</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/big-fish-games-triples-performance-with-mysql-query-analyzer/">Big Fish Games Triples Database Performance with MySQL Query Analyzer</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/shinsei-bank-relies-on-mysql/">Shinsei Bank Relies on MySQL and SugarCRM to Radically Accelerate Enterprise Application Deployment</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/kace-relies-on-mysql-to-deliver-management-solution/">KACE Relies on MySQL to Deliver Mission-Critical Systems Management Solution</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/italtel-enables-networking-convergence-using-mysql-cluster/">Italtel enables Networking Convergence using MySQL Cluster Carrier Grade Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/conceivium-relies-on-mysql-real-time-analytics-for-blackberry/">CONCEIVIUM Relies on MySQL to Perform Real-Time Analytics for BlackBerry Enterprise Server</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/gorilla-nation-relies-on-mysql-advertising-business-intelligence/">Gorilla Nation Relies on MySQL to Power its Advertising Network Business Intelligence Platform</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="http://www.mysql.com/why-mysql/case-studies/fairwarning-mysql-hipaa-healthcare-security-compliance.html">FairWarning Relies on MySQL to Automate HIPAA Healthcare Security Compliance</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/paggo-mysql-cluster-java-financial-transactions-over-telecom/">Paggo Relies on MySQL Cluster and Java to Deliver Financial Transactions over Telecom Networks</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/supply-dynamics-delivers-saas-solution-using-mysql/">Supply Dynamics Delivers Business-Critical SaaS Solution using MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/logicworks-managed-database-hosting-service-with-mysql/">Logicworks Delivers Managed Database Hosting Service with MySQL Enterprise</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/m1-mysql-cluster-carrier-grade-telecom-subscriber-revenue/">M1 Deploys MySQL Cluster Carrier Grade Solution from hSenid to Improve Telecom Subscriber Revenue</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/rightnow-delivers-software-as-a-service-using-mysql/">RightNow Delivers Software as a Service using MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/sciencelogic-mysql-network-management-appliance/">ScienceLogic Relies on MySQL to Deliver Integrated Network Management Appliance</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/netqos-network-management-solution-mysql/">NetQoS Delivers Distributed Network Management Solution with Embedded MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/pricer-increases-retailer-efficiency-with-mysql/">Pricer Increases Retailer Efficiency with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/alcatel-lucent-converged-services-with-mysql-cluster/">Alcatel-Lucent Delivers Next Generation Converged Services with MySQL Cluster Carrier Grade Edition</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/quantel/">Quantel</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/alcatel-lucent-uses-mysql-cluster-60-million-subscribers/">Alcatel-Lucent uses MySQL Cluster Carrier Grade Edition to Handle over 60 million Subscribers</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/aastra-telecom-schweiz-telecom-equipment-mysql/">Aastra Telecom Schweiz Delivers Highly Reliable Telecom Equipment using MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/deal-group-media-scales-out-with-mysql/">Deal Group Media scales out online advertising with MySQL</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/alcatel-lucent-utilise-mysql-cluster-60-millions-dabonnes/">Alcatel-Lucent utilise MySQL Cluster Carrier Grade Edition pour gérer plus de 60 millions d&#039;abonnés</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/bbc-news-website-uses-mysql-to-monitor-reader-interest/">BBC News Website uses MySQL to Monitor Reader Interest</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/bredbandsbolaget-b2-makes-the-connection-with-mysql-cluster/">Bredbandsbolaget (B2) Makes the Connection with MySQL Cluster</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/jajja-communications-search-engine-traffic-with-mysql/">Jajja Communications Optimizes Search Engine Traffic with MySQL Network</a>
+                                                </li>
+                                    <li class="content-hidden li5"><a href="/why-mysql/case-studies/local-county-government-turns-to-mysql/">Local County Government Turns to MySQL to Help Support its Citizens</a>
+                                                </li>
+                </ul>
+                    <h2>Webinars</h2>
+                <ul>
+                                    <li><a href="/news-and-events/web-seminars/mysql-performance-tuning-2020/">MySQL Performance Tuning</a>
+                                    <span class="content-list-date">(2020-05-27)</span>
+                                    </li>
+                                    <li><a href="/news-and-events/web-seminars/thoughts-on-performance-tuning-and-war-stories-2019/">Thoughts on Performance Tuning and War Stories</a>
+                                    <span class="content-list-date">(2019-06-26)</span>
+                                    </li>
+                                    <li><a href="/news-and-events/web-seminars/top-10-performance-tricks-and-techniques-for-mysql-2019/">Top 10 Performance Tricks and Techniques for MySQL</a>
+                                    <span class="content-list-date">(2019-06-19)</span>
+                                    </li>
+                </ul>
+                    <h2>Demos</h2>
+                <ul>
+                                    <li><a href="http://www.mysql.com/products/enterprise/demo.html">Remotely Monitor MySQL in the Cloud</a>
+                                                </li>
+                                    <li><a href="http://www.mysql.com/products/enterprise/demo.html">Performance Tuning with MySQL Query Analyzer</a>
+                                                </li>
+                                    <li><a href="http://www.mysql.com/products/enterprise/demo.html">Real-time MySQL Performance &amp; Availability Monitoring</a>
+                                                </li>
+                                    <li><a href="http://www.mysql.com/products/enterprise/demo.html">Installing MySQL Enterprise Monitor</a>
+                                                </li>
+                </ul>
+                    <h2>Articles</h2>
+                <ul>
+                                    <li><a href="https://modern-sql.com/blog/2018-04/mysql-8.0">One Giant Leap For SQL: MySQL 8.0 Released</a>
+                                                </li>
+                </ul>
+                    <h2>Forums</h2>
+                <ul>
+                                    <li><a href="http://forums.mysql.com/list.php?26">Replication</a>
+                                                </li>
+                                    <li><a href="http://forums.mysql.com/list.php?106">Partitioning</a>
+                                                </li>
+                                    <li><a href="http://forums.mysql.com/list.php?24">Performance &amp; Scalability</a>
+                                                </li>
+                                    <li><a href="http://forums.mysql.com/list.php?25">MySQL Cluster</a>
+                                                </li>
+                                    <li><a href="http://forums.mysql.com/list.php?22">InnoDB</a>
+                                                </li>
+                </ul>
+    </div>
+
+<script>
+$(function() {
+	$('.content-more').click( function() {
+		var id = $(this).attr('id');
+		$('.' + id).show();
+		$(this).hide();
+		return false;
+	});
+});
+</script>
+
+                        </div>
+            
+        </div>
+    </div>
+
+    <footer>
+        <div id="footer-bottom">
+                                    <div class="footer-contact">
+                <div id="footer-contact-icon">
+                    <span class="icon-call-phone"></span>
+                </div>
+                <div id="footer-contact-numbers">
+                    <strong>Contact MySQL Sales</strong><br/>
+                    USA/Canada: +1-866-221-0634 &nbsp;
+                    (<a href="https://www.mysql.com/about/contact/phone/">More Countries &raquo;</a>)
+                </div>
+                <div id="footer-contact-copyright">
+                    <a href="http://www.oracle.com/" aria-label="Oracle" title="Oracle"><span class="oracle-logo"></span></a>
+                    &nbsp; &copy; 2020, Oracle Corporation and/or its affiliates
+                </div>
+            </div>
+            <div class="social-icons">
+                <a aria-label="Join us on Facebook" title="Join us on Facebook" href="http://www.facebook.com/mysql"><span class="icon-facebook-square"></span></a>
+                <a aria-label="Follow us on Twitter" title="Follow us on Twitter" href="https://twitter.com/mysql"><span class="icon-twitter-square"></span></a>
+                <a aria-label="Follow us on LinkedIn" title="Follow us on LinkedIn" href="https://www.linkedin.com/company/mysql"><span class="icon-linkedin-square"></span></a>
+                <a aria-label="Visit our YouTube channel" title="Visit our YouTube channel" href="http://www.youtube.com/mysqlchannel"><span class="icon-youtube-square"></span></a>
+            </div>
+            <br class="clear" />
+        </div>
+        <div id="footer-links">
+
+            <div id="site-footer-links">
+                <div id="footer-nav"></div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/products/">Products</a></li>
+                        <li><a href="https://www.mysql.com/cloud/">MySQL Database Service</a></li>
+                        <li><a href="https://www.mysql.com/products/enterprise/">MySQL Enterprise Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/standard/">MySQL Standard Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/classic/">MySQL Classic Edition</a></li>
+                        <li><a href="https://www.mysql.com/products/cluster/">MySQL Cluster CGE</a></li>
+                        <li><a href="https://www.mysql.com/oem/">MySQL Embedded (OEM/ISV)</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/services/">Services</a></li>
+                        <li><a href="https://www.mysql.com/training/">Training</a></li>
+                        <li><a href="https://www.mysql.com/certification/">Certification</a></li>
+                        <li><a href="https://www.mysql.com/consulting/">Consulting</a></li>
+                        <li><a href="https://www.mysql.com/support/">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/downloads/">Downloads</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/mysql/">MySQL Community Server</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/cluster/">MySQL NDB Cluster</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/shell/">MySQL Shell</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/router/">MySQL Router</a></li>
+                        <li><a href="https://dev.mysql.com/downloads/workbench/">MySQL Workbench</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://dev.mysql.com/doc/">Documentation</a></li>
+                        <li><a href="https://dev.mysql.com/doc/refman/en/">MySQL Reference Manual</a></li>
+                        <li><a href="https://dev.mysql.com/doc/workbench/en/">MySQL Workbench</a></li>
+                        <li><a href="https://dev.mysql.com/doc/index-cluster.html">MySQL NDB Cluster</a></li>
+                        <li><a href="https://dev.mysql.com/doc/index-connectors.html">MySQL Connectors</a></li>
+                        <li><a href="https://dev.mysql.com/doc/#topic">Topic Guides</a></li>
+                    </ul>
+                </div>
+
+                <div class="links">
+                    <ul>
+                        <li class="top"><a href="https://www.mysql.com/about/">About MySQL</a></li>
+                        <li><a href="https://www.mysql.com/about/contact/">Contact Us</a></li>
+                                                                        <li><a href="https://www.mysql.com/buy-mysql/">How to Buy</a></li>
+                        <li><a href="https://www.mysql.com/partners/">Partners</a></li>
+                        <li><a href="https://www.mysql.com/about/jobs/">Job Opportunities</a></li>
+                        <li><a href="https://www.mysql.com/sitemap.html">Site Map</a></li>
+                    </ul>
+                </div>
+
+                                <div id="footer-langs">
+                    <span class="icon-earth"></span> English &nbsp;
+                (
+                                            <a data-localize-url="no" href="https://www.mysql.com/de/why-mysql/performance/index.html">Deutsch</a> |                                             <a data-localize-url="no" href="https://www.mysql.com/fr/why-mysql/performance/index.html">Français</a> |                                             <a data-localize-url="no" href="https://www.mysql.com/it/why-mysql/performance/index.html">Italiano</a> |                                             <a data-localize-url="no" href="https://www.mysql.com/jp/why-mysql/performance/index.html">日本</a> |                                             <a data-localize-url="no" href="https://www.mysql.com/cn/why-mysql/performance/index.html">中文</a>                                    )
+                </div>
+                            </div>
+
+            <div id="footer-logo">
+                <a href="http://www.oracle.com/" aria-label="Oracle" title="Oracle"><span class="oracle-logo"></span></a>
+                &nbsp; &copy; 2020, Oracle Corporation and/or its affiliates
+                <div class="footer-legal-links">
+                    <a href="https://www.mysql.com/about/legal/">Legal Policies</a> |
+                    <a href="http://www.oracle.com/us/legal/privacy/index.htm">Your Privacy Rights</a> |
+                    <a href="http://www.oracle.com/us/legal/terms/index.html">Terms of Use</a> |
+                    <a href="http://www.oracle.com/us/legal/third-party-trademarks/index.html">Trademark Policy</a> |
+                    <a href="http://www.oracle.com/technetwork/community/oca-486395.html">Contributor Agreement</a> |
+                    <div id="teconsent"></div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</div>
+
+            <script>
+    if ((oracle.truste.api.getGdprConsentDecision().consentDecision) &&
+            (oracle.truste.api.getGdprConsentDecision().consentDecision.indexOf(0) != -1 ||
+             oracle.truste.api.getGdprConsentDecision().consentDecision.indexOf(2) != -1) )
+    {
+        document.write('<script src="https://labs.mysql.com/common/js/metrics/s_code_remote.js"><\/script>');
+        document.write('<script type="text/javascript" async src="//c.oracleinfinity.io/acs/account/wh3g12c3gg/js/mysql/odc.js?_ora.context=analytics:production"><\/script>');
+    }
+    </script>
+
+        
+            <script>var sc_product = 224;</script>
+        <script data-reqjq="" src="//www.oracle.com/asset/web/js/oracle-chat.js"
+            id="oracle_chat" data-scchannel="SC MYSQL" data-path="/common/chat/chat-translation-data.json"></script>
+    
+</body>
+</html>
+

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en-US" class="html_stretched responsive av-preloader-disabled av-default-lightbox  html_header_top html_logo_left html_bottom_nav_header html_menu_left html_custom html_header_sticky_disabled html_header_shrinking_disabled html_header_topbar_active html_mobile_menu_phone html_header_searchicon_disabled html_content_align_center html_header_unstick_top_disabled html_header_stretch_disabled html_minimal_header html_minimal_header_shadow html_av-submenu-hidden html_av-submenu-display-hover html_av-overlay-side html_av-overlay-side-minimal html_av-submenu-noclone html_entry_id_461 av-cookies-no-cookie-consent av-no-preview html_text_menu_active ">
+
+<head>
+	<!-- Google Tag Manager -->
+	<script>
+		(function(w, d, s, l, i) {
+			w[l] = w[l] || [];
+			w[l].push({
+				'gtm.start': new Date().getTime(),
+				event: 'gtm.js'
+			});
+			var f = d.getElementsByTagName(s)[0],
+				j = d.createElement(s),
+				dl = l != 'dataLayer' ? '&l=' + l : '';
+			j.async = true;
+			j.src =
+				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+			f.parentNode.insertBefore(j, f);
+		})(window, document, 'script', 'dataLayer', 'GTM-T6H2WCG');
+	</script>
+	<!-- End Google Tag Manager -->
+
+	<meta charset="UTF-8" />
+	
+
+	<!-- mobile setting -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- Scripts/CSS and wp_head hook -->
+	<link rel="alternate" href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/" hreflang="x-default" />
+<link rel="alternate" hreflang="en" href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/" />
+<link rel="alternate" hreflang="fr" href="https://www.2ndquadrant.com/fr/services/optimisation-postgresql/" />
+<link rel="alternate" hreflang="it" href="https://www.2ndquadrant.com/it/services/postgresql-performance-tuning/" />
+<link rel="alternate" hreflang="es" href="https://www.2ndquadrant.com/es/services/postgresql-performance-tuning/" />
+<link rel="alternate" hreflang="de" href="https://www.2ndquadrant.com/de/services-2/postgresql-tuning/" />
+<link rel="alternate" hreflang="pt-br" href="https://www.2ndquadrant.com/pt-br/services/postgresql-performance-tuning/" />
+
+	<!-- This site is optimized with the Yoast SEO plugin v15.4 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>PostgreSQL Performance Tuning - 2ndQuadrant | PostgreSQL</title>
+	<meta name="description" content="The Performance Tuning Service includes an in-depth analysis of your PostgreSQL database with a detailed report to optimize it for your specific use case." />
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+	<link rel="canonical" href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="PostgreSQL Performance Tuning - 2ndQuadrant | PostgreSQL" />
+	<meta property="og:description" content="The Performance Tuning Service includes an in-depth analysis of your PostgreSQL database with a detailed report to optimize it for your specific use case." />
+	<meta property="og:url" content="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/" />
+	<meta property="og:site_name" content="2ndQuadrant | PostgreSQL" />
+	<meta property="article:publisher" content="https://www.facebook.com/2ndQuadrant/" />
+	<meta property="article:modified_time" content="2020-12-08T13:48:56+00:00" />
+	<meta property="og:image" content="https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high.jpg" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:creator" content="@2ndQuad" />
+	<meta name="twitter:site" content="@2ndQuad" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Nouman">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="19 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.2ndquadrant.com/en/#organization","name":"2ndQuadrant","url":"https://www.2ndquadrant.com/en/","sameAs":["https://www.facebook.com/2ndQuadrant/","https://pk.linkedin.com/company/2ndquadrant","https://www.youtube.com/channel/UC2PlX2QkaoQIbaZwPzA7yCg","https://twitter.com/2ndQuad"],"logo":{"@type":"ImageObject","@id":"https://www.2ndquadrant.com/en/#logo","inLanguage":"en-US","url":"https://www.2ndquadrant.com/wp-content/uploads/2019/07/2ndQuadrant.png","width":150,"height":150,"caption":"2ndQuadrant"},"image":{"@id":"https://www.2ndquadrant.com/en/#logo"}},{"@type":"WebSite","@id":"https://www.2ndquadrant.com/en/#website","url":"https://www.2ndquadrant.com/en/","name":"2ndQuadrant | PostgreSQL","description":"Mission Critical Databases","publisher":{"@id":"https://www.2ndquadrant.com/en/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://www.2ndquadrant.com/en/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#primaryimage","inLanguage":"en-US","url":"https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high.jpg","width":1800,"height":429,"caption":"Chicago-based learning success platform, BenchPrep, was able to successfully scale their infrastructure and provide an unmatched learning experience to its customers using recommended solutions from 2ndQuadrant."},{"@type":"WebPage","@id":"https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#webpage","url":"https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/","name":"PostgreSQL Performance Tuning - 2ndQuadrant | PostgreSQL","isPartOf":{"@id":"https://www.2ndquadrant.com/en/#website"},"primaryImageOfPage":{"@id":"https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#primaryimage"},"datePublished":"2018-12-18T10:22:49+00:00","dateModified":"2020-12-08T13:48:56+00:00","description":"The Performance Tuning Service includes an in-depth analysis of your PostgreSQL database with a detailed report to optimize it for your specific use case.","inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/"]}]}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//js.hs-scripts.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="2ndQuadrant | PostgreSQL &raquo; Feed" href="https://www.2ndquadrant.com/en/feed/" />
+<link rel="alternate" type="application/rss+xml" title="2ndQuadrant | PostgreSQL &raquo; Comments Feed" href="https://www.2ndquadrant.com/en/comments/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.2ndquadrant.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.5.3"}};
+			!function(e,a,t){var r,n,o,i,p=a.createElement("canvas"),s=p.getContext&&p.getContext("2d");function c(e,t){var a=String.fromCharCode;s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,e),0,0);var r=p.toDataURL();return s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,t),0,0),r===p.toDataURL()}function l(e){if(!s||!s.fillText)return!1;switch(s.textBaseline="top",s.font="600 32px Arial",e){case"flag":return!c([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])&&(!c([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!c([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]));case"emoji":return!c([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}function d(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(i=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},o=0;o<i.length;o++)t.supports[i[o]]=l(i[o]),t.supports.everything=t.supports.everything&&t.supports[i[o]],"flag"!==i[o]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[i[o]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(r=t.source||{}).concatemoji?d(r.concatemoji):r.wpemoji&&r.twemoji&&(d(r.twemoji),d(r.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://www.2ndquadrant.com/wp-includes/css/dist/block-library/style.min.css?ver=5.5.3' type='text/css' media='all' />
+<link rel='stylesheet' id='wpml-menu-item-0-css'  href='//www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/templates/language-switchers/menu-item/style.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='cms-navigation-style-base-css'  href='https://www.2ndquadrant.com/wp-content/plugins/wpml-cms-nav/res/css/cms-navigation-base.css?ver=1.5.5' type='text/css' media='screen' />
+<link rel='stylesheet' id='cms-navigation-style-css'  href='https://www.2ndquadrant.com/wp-content/plugins/wpml-cms-nav/res/css/cms-navigation.css?ver=1.5.5' type='text/css' media='screen' />
+<link rel='stylesheet' id='mediaelement-css'  href='https://www.2ndquadrant.com/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css?ver=4.2.13-9993131' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-mediaelement-css'  href='https://www.2ndquadrant.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=5.5.3' type='text/css' media='all' />
+<link rel='stylesheet' id='avia-merged-styles-css'  href='https://www.2ndquadrant.com/wp-content/uploads/dynamic_avia/avia-merged-styles-f4fd16ac9cb886c6f9180531d791b2e8---5fd248be384a4.css' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.2ndquadrant.com/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp' id='jquery-core-js'></script>
+<script type='text/javascript' id='wpml-browser-redirect-js-extra'>
+/* <![CDATA[ */
+var wpml_browser_redirect_params = {"pageLanguage":"en","languageUrls":{"en_us":"https:\/\/www.2ndquadrant.com\/en\/services\/postgresql-performance-tuning\/","en":"https:\/\/www.2ndquadrant.com\/en\/services\/postgresql-performance-tuning\/","us":"https:\/\/www.2ndquadrant.com\/en\/services\/postgresql-performance-tuning\/","fr_fr":"https:\/\/www.2ndquadrant.com\/fr\/services\/optimisation-postgresql\/","fr":"https:\/\/www.2ndquadrant.com\/fr\/services\/optimisation-postgresql\/","it_it":"https:\/\/www.2ndquadrant.com\/it\/services\/postgresql-performance-tuning\/","it":"https:\/\/www.2ndquadrant.com\/it\/services\/postgresql-performance-tuning\/","es_es":"https:\/\/www.2ndquadrant.com\/es\/services\/postgresql-performance-tuning\/","es":"https:\/\/www.2ndquadrant.com\/es\/services\/postgresql-performance-tuning\/","de_de":"https:\/\/www.2ndquadrant.com\/de\/services-2\/postgresql-tuning\/","de":"https:\/\/www.2ndquadrant.com\/de\/services-2\/postgresql-tuning\/","pt_br":"https:\/\/www.2ndquadrant.com\/pt-br\/services\/postgresql-performance-tuning\/","pt":"https:\/\/www.2ndquadrant.com\/pt-br\/services\/postgresql-performance-tuning\/","br":"https:\/\/www.2ndquadrant.com\/pt-br\/services\/postgresql-performance-tuning\/","pt-br":"https:\/\/www.2ndquadrant.com\/pt-br\/services\/postgresql-performance-tuning\/"},"cookie":{"name":"_icl_visitor_lang_js","domain":"www.2ndquadrant.com","path":"\/","expiration":24}};
+/* ]]> */
+</script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/dist/js/browser-redirect/app.js?ver=4.4.6' id='wpml-browser-redirect-js'></script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-content/uploads/dynamic_avia/avia-head-scripts-d001f4033ca07682330f0c85eab90a33---5fd248be5c73c.js' id='avia-head-scripts-js'></script>
+<link rel="https://api.w.org/" href="https://www.2ndquadrant.com/en/wp-json/" /><link rel="alternate" type="application/json" href="https://www.2ndquadrant.com/en/wp-json/wp/v2/pages/461" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.2ndquadrant.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.2ndquadrant.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.5.3" />
+<link rel='shortlink' href='https://www.2ndquadrant.com/en/?p=461' />
+<link rel="alternate" type="application/json+oembed" href="https://www.2ndquadrant.com/en/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.2ndquadrant.com%2Fen%2Fservices%2Fpostgresql-performance-tuning%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.2ndquadrant.com/en/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.2ndquadrant.com%2Fen%2Fservices%2Fpostgresql-performance-tuning%2F&#038;format=xml" />
+<meta name="generator" content="WPML ver:4.4.6 stt:1,4,3,27,43,2;" />
+
+<!-- This site is using AdRotate v5.8.13 to display their advertisements - https://ajdg.solutions/ -->
+<!-- AdRotate CSS -->
+<style type="text/css" media="screen">
+	.g { margin:0px; padding:0px; overflow:hidden; line-height:1; zoom:1; }
+	.g img { height:auto; }
+	.g-col { position:relative; float:left; }
+	.g-col:first-child { margin-left: 0; }
+	.g-col:last-child { margin-right: 0; }
+	@media only screen and (max-width: 480px) {
+		.g-col, .g-dyn, .g-single { width:100%; margin-left:0; margin-right:0; }
+	}
+</style>
+<!-- /AdRotate CSS -->
+
+			<!-- DO NOT COPY THIS SNIPPET! Start of Page Analytics Tracking for HubSpot WordPress plugin v7.48.24-->
+			<script type="text/javascript">
+				var _hsq = _hsq || [];
+				_hsq.push(["setContentType", "standard-page"]);
+			</script>
+			<!-- DO NOT COPY THIS SNIPPET! End of Page Analytics Tracking for HubSpot WordPress plugin -->
+						<script>
+				(function() {
+					var hbspt = window.hbspt = window.hbspt || {};
+					hbspt.forms = hbspt.forms || {};
+					hbspt._wpFormsQueue = [];
+					hbspt.enqueueForm = function(formDef) {
+						if (hbspt.forms && hbspt.forms.create) {
+							hbspt.forms.create(formDef);
+						} else {
+							hbspt._wpFormsQueue.push(formDef);
+						}
+					}
+					if (!window.hbspt.forms.create) {
+						Object.defineProperty(window.hbspt.forms, 'create', {
+							configurable: true,
+							get: function() {
+								return hbspt._wpCreateForm;
+							},
+							set: function(value) {
+								hbspt._wpCreateForm = value;
+								while (hbspt._wpFormsQueue.length) {
+									var formDef = hbspt._wpFormsQueue.shift();
+									if (!document.currentScript) {
+										var formScriptId = 'leadin-forms-v2-js';
+										hubspot.utils.currentScript = document.getElementById(formScriptId);
+									}
+									hbspt._wpCreateForm.call(hbspt.forms, formDef);
+								}
+							},
+						});
+					}
+				})();
+			</script>
+		<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="alternate" type="application/rss+xml" title="2ndQuadrant | PostgreSQL RSS2 Feed" href="https://www.2ndquadrant.com/en/feed/" />
+<link rel="pingback" href="https://www.2ndquadrant.com/xmlrpc.php" />
+
+<style type='text/css' media='screen'>
+ #top #header_main > .container, #top #header_main > .container .main_menu  .av-main-nav > li > a, #top #header_main #menu-item-shop .cart_dropdown_link{ height:100px; line-height: 100px; }
+ .html_top_nav_header .av-logo-container{ height:100px;  }
+ .html_header_top.html_header_sticky #top #wrap_all #main{ padding-top:182px; } 
+</style>
+<!--[if lt IE 9]><script src="https://www.2ndquadrant.com/wp-content/themes/enfold/js/html5shiv.js"></script><![endif]-->
+<link rel="icon" href="https://www.2ndquadrant.com/wp-content/uploads/2019/01/favicon-296x300.png" type="image/png">
+
+<!-- To speed up the rendering and to display the site as fast as possible to the user we include some styles and scripts for above the fold content inline -->
+<script type="text/javascript">'use strict';var avia_is_mobile=!1;if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)&&'ontouchstart' in document.documentElement){avia_is_mobile=!0;document.documentElement.className+=' avia_mobile '}
+else{document.documentElement.className+=' avia_desktop '};document.documentElement.className+=' js_active ';(function(){var e=['-webkit-','-moz-','-ms-',''],n='';for(var t in e){if(e[t]+'transform' in document.documentElement.style){document.documentElement.className+=' avia_transform ';n=e[t]+'transform'};if(e[t]+'perspective' in document.documentElement.style)document.documentElement.className+=' avia_transform3d '};if(typeof document.getElementsByClassName=='function'&&typeof document.documentElement.getBoundingClientRect=='function'&&avia_is_mobile==!1){if(n&&window.innerHeight>0){setTimeout(function(){var e=0,o={},a=0,t=document.getElementsByClassName('av-parallax'),i=window.pageYOffset||document.documentElement.scrollTop;for(e=0;e<t.length;e++){t[e].style.top='0px';o=t[e].getBoundingClientRect();a=Math.ceil((window.innerHeight+i-o.top)*0.3);t[e].style[n]='translate(0px, '+a+'px)';t[e].style.top='auto';t[e].className+=' enabled-parallax '}},50)}}})();</script><link rel="icon" href="https://www.2ndquadrant.com/wp-content/uploads/2020/05/cropped-circle-512px-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://www.2ndquadrant.com/wp-content/uploads/2020/05/cropped-circle-512px-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.2ndquadrant.com/wp-content/uploads/2020/05/cropped-circle-512px-180x180.png" />
+<meta name="msapplication-TileImage" content="https://www.2ndquadrant.com/wp-content/uploads/2020/05/cropped-circle-512px-270x270.png" />
+		<style type="text/css" id="wp-custom-css">
+			div#header_meta {
+	background-color: #121646;
+}
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+.phone-info {
+  width: 100% !important;			
+}
+.header_color span {
+	width: 100% !important;
+}
+.header_color p {
+	color: #ffffff;
+  font-size: 1.3em;
+  font-weight: 100;
+  margin-top: 1px;
+	margin-bottom: 0px;
+}
+img {
+ 
+}
+#hide-head {
+	visibility: hidden;
+}
+
+.header_color span {
+  text-align: left;
+	line-height: 1.5em !important;
+}
+
+.phone-info .leftdiv {
+	width: 90%;
+  margin-top: 1%;	
+}
+
+
+.phone-info .rightdiv {
+	width: 10%;
+  margin-top: 0.5%;	
+}
+
+ @media screen and (min-width: 376px) and  (max-width: 768px) {
+ .phone-info .leftdiv {
+  	width: 80%;	
+  } 
+	.phone-info .rightdiv {
+  	width: 20%;	
+		margin-top: 3%;
+  } 
+}
+
+
+ @media screen and (max-width: 375px) {
+ .phone-info .leftdiv {
+  	width: 75%;	
+  } 
+	.phone-info .rightdiv {
+  	width: 25% !important;	
+		margin-top: 15% !important;
+  } 
+}
+/* Form Section */
+.mktoForm .mktoRequiredField .mktoAsterix {
+  display: none !important;
+}
+
+.mktoForm {
+  width: 100% !important;
+  font-family: “proxima_nova”, Helvetica, sans-serif;
+  background-color:rgba(255,255,255,.1);
+  padding: 20px;
+  border-radius:4px;
+}
+ .mktoForm .mktoFormCol {
+    float: left;
+    position: relative;
+    min-height: 2em;
+    width: 100%;
+   margin:0;
+}
+.mktoHtmlText{
+    position: relative;
+		width: 100% !important;
+    left:30px;
+    top: -3.7em;
+    font-size: 13px;
+}
+.mktoHtmlText a{
+    color:#ff3e00;
+}
+
+.mktoFieldWrap input:not([type=checkbox]):focus ~ label, .mktoFieldWrap input:not([type=checkbox]):valid ~ label, .mktoFieldWrap .mktoError + label, .mktoFieldWrap .select-wrapper + label {
+    transform: translateY(-20px);
+    left: 5px;
+    top: 20px;
+    padding: 2px;
+    font-size: 10px;
+    font-weight: 400;
+    pointer-events: all;
+}
+  .mktoFieldWrap input[type=“checkbox”]:checked + label:before, .mktoFieldWrap input[type=“radio”]:checked + label:before {
+    content: ‘’;
+    border: 2px solid #FE5000;
+    background: #FE5000;
+}
+.mktoForm .mktoFieldWrap {
+  	position:relative;
+    float: left;
+    box-sizing: border-box;
+    border-radius: 4px;
+    max-width: 100%;
+    font-size: 14px;
+    width: 100% !important;
+}
+
+.mktoFieldWrap input:not([type=checkbox]), .mktoFieldWrap input:not([type=radio]), .mktoFieldWrap select, .mktoFieldWrap textarea {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin-bottom: 0px !important;
+    padding: 10px !important;
+    border-radius: 2px;
+    max-width: 100%;
+    width: 100% !important;
+    font-size: 14px;
+}
+
+.mktoFieldWrap input:not([type=checkbox]):focus, .mktoFieldWrap input:not([type=checkbox]):active, .mktoFieldWrap input:not([type=radio]):focus, .mktoFieldWrap input:not([type=radio]):active,
+.mktoFieldWrap select:focus,
+.mktoFieldWrap select:active,
+.mktoFieldWrap textarea:focus,
+.mktoFieldWrap textarea:active {
+  outline: none;
+}
+.mktoFieldWrap input:not([type=checkbox]):focus ~ label, .mktoFieldWrap input:not([type=checkbox]):valid ~ label, .mktoFieldWrap .mktoError + label, .mktoFieldWrap .select-wrapper + label {
+    transform: translateY(-20px);
+    left: 5px;
+    top: 20px;
+    padding: 2px;
+    font-size: 10px;
+    font-weight: 400;
+    pointer-events: all;
+}
+.mktoFieldWrap input[type=“checkbox”], .mktoFieldWrap input[type=“radio”] {
+  opacity: 0;
+  height: 40px;
+}
+.mktoFieldWrap input[type=“checkbox”] + label:before {
+  content: ‘’;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  background: transparent;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+
+.mktoFieldWrap input[type=“checkbox”]:checked + label:before,
+.mktoFieldWrap input[type=“radio”]:checked + label:before {
+  content: ‘’;
+  border: 2px solid #FE5000;
+  background: #FE5000;
+}
+.mktoFieldWrap input[type=“checkbox”] + label,
+.mktoFieldWrap input[type=“radio”] + label {
+  padding-right: 10px;
+  padding-left: 28px;
+  font-weight: normal;
+  font-size: 16px;
+  text-transform: none;
+  color: #2D3035;
+  cursor: pointer;
+}
+.mktoFieldWrap select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+  .mktoForm .mktoError {
+    position: absolute;
+    z-index: 99;
+    color: #BF0000;
+    left: 0;
+    bottom:-29px!important;
+    width:100%;
+    text-align: center;
+    font-size: 11px;
+  background: #FF3E00;
+}
+  .mktoForm .mktoError .mktoErrorArrowWrap {
+    display:none;
+}
+  .mktoForm .mktoError .mktoErrorMsg {
+  background-image:none!important;
+  box-shadow:none!important;
+  width:100%;
+  border:none!important;
+  }
+  .mktoForm .mktoError .mktoErrorMsg .mktoErrorDetail {
+    display: inline-block!important;
+}
+ .mktoForm .mktoButtonWrap.mktoSimple button.mktoButton{
+    max-width: 100%;
+    width: 100%;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+   	border:none;
+   	padding: 12px 35px;
+    background-color:#ff3e00;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#D73D3C), to(#D23401));
+    background-image: -webkit-linear-gradient(top, #FF3E00, #D23401);
+    background-image: -moz-linear-gradient(top, #FF3E00, #D23401);
+   	background-image: linear-gradient(to bottom, #FF3E00, #D23401);
+  }
+  .mktoForm .mktoButtonWrap.mktoSimple button.mktoButton:hover,
+  .mktoForm .mktoButtonWrap.mktoSimple button.mktoButton:focus{
+    color: #fff;
+    background: #CC5835;
+  }
+.mktoForm .mktoGutter {
+  display: none;
+}
+.mktoButtonRow {
+  padding-top: 1em;
+  width: 100% !important;
+}
+.mktoButtonWrap {
+  margin-left: 0 !important;
+}
+select {
+  max-width: 100% !important;
+}
+div.mktoFieldDescriptor.mktoFormCol > div.mktoFieldWrap > label {
+  width: auto !important;
+}
+.mktoForm .mktoRadioList > label, .mktoForm .mktoCheckboxList > label {
+  margin: 0em !important;
+}
+.select-wrapper {
+  position: relative;
+}
+.select-wrapper:before {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  display: block;
+  content: ' ’;
+  background-image: url(“https://info.enterprisedb.com/rs/069-ALB-339/images/arrow.svg”);
+  height: 10px;
+  width: 10px;
+  z-index: 1000;
+  pointer-events: none;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+select::-ms-expand {
+  display: none;
+}
+@supports (display: grid) {
+  @media screen and (min-width: 768px) {
+    .mktoFormRow-2-col, .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 2ch;
+    }
+  }
+}
+@supports not (display: grid) {
+  @media screen and (min-width: 768px) {
+    .mktoFormRow-2-col {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+    }
+    .mktoFormRow-2-col .mktoFormCol {
+      width: 50%;
+      margin: 5px;
+    }
+    .checkbox-grid {
+      display: -ms-flexbox;
+      display: flex;
+    }
+    .checkbox-grid .checkbox-row {
+      width: 50%;
+    }
+  }
+}
+input#Consent_to_Processing__c {
+    height: inherit;
+    opacity: 1;
+    position: inherit;
+}
+		</style>
+		<style type='text/css'>
+@font-face {font-family: 'entypo-fontello'; font-weight: normal; font-style: normal; font-display: auto;
+src: url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.woff2') format('woff2'),
+url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.woff') format('woff'),
+url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.ttf') format('truetype'), 
+url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.svg#entypo-fontello') format('svg'),
+url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.eot'),
+url('https://www.2ndquadrant.com/wp-content/themes/enfold/config-templatebuilder/avia-template-builder/assets/fonts/entypo-fontello.eot?#iefix') format('embedded-opentype');
+} #top .avia-font-entypo-fontello, body .avia-font-entypo-fontello, html body [data-av_iconfont='entypo-fontello']:before{ font-family: 'entypo-fontello'; }
+</style>
+
+<!--
+Debugging Info for Theme support: 
+
+Theme: Enfold
+Version: 4.7.6.4
+Installed: enfold
+AviaFramework Version: 5.0
+AviaBuilder Version: 4.7.6.4
+aviaElementManager Version: 1.0.1
+- - - - - - - - - - -
+ChildTheme: Enfold Child
+ChildTheme Version: 1.14
+ChildTheme Installed: enfold
+
+ML:128-PU:39-PLA:27
+WP:5.5.3
+Compress: CSS:all theme files - JS:all theme files
+Updates: enabled - token has changed and not verified
+PLAu:24
+--></head>
+
+
+
+
+<body id="top" class="page-template-default page page-id-461 page-child parent-pageid-449  rtl_columns stretched metrophobic helvetica-neue-websave helvetica_neue sidebar_shadow">
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T6H2WCG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+
+	
+	<div id='wrap_all'>
+
+		
+<header id='header' class='all_colors header_color light_bg_color  av_header_top av_logo_left av_bottom_nav_header av_menu_left av_custom av_header_sticky_disabled av_header_shrinking_disabled av_header_stretch_disabled av_mobile_menu_phone av_header_searchicon_disabled av_header_unstick_top_disabled av_minimal_header av_minimal_header_shadow av_header_border_disabled' >
+
+            <div id='header_meta' class='container_wrap container_wrap_meta  av_phone_active_left av_extra_header_active av_entry_id_461'>
+
+            <div class='container'>
+                <div class='phone-info '><span><div class="leftdiv" style="float: left;"><h4 style="color:#ffffff">2ndQuadrant is now part of EDB</h4><p >Bringing together some of the world's top PostgreSQL experts.</p></div><div class="center rightdiv" style="float: right; width: 10%"><a href="https://enterprisedb.com"><img src="https://www.2ndquadrant.com/wp-content/uploads/2020/12/EDB_Logo-orange-whiteout.png" /></a></div></span></div>            </div>
+            <img src="/wp-content/uploads/2019/12/white-cross-circle.png" id="hide-head">
+        </div>
+
+        <div id='header_main' class='container_wrap container_wrap_logo'>
+
+        <div class='container av-logo-container'><div class='inner-container'><span class='logo'><a href='https://www.2ndquadrant.com/en/'><img height="100" width="300" src='/wp-content/uploads/2019/04/2ndQuadrant-Logo-e1554357894467.png' alt='2ndQuadrant | PostgreSQL' title='' /></a></span><div class="logo-right"><div id="blog-desc" class="blog-desc">Mission Critical Databases</div><div id="header-ph-div" class="header-ph-div"></div><div id="righttologo-widget-area" class="righttologo widget-area" role="complementary"><div class="hw-widget"><div class="menu-righttologo-container"><ul id="menu-righttologo" class="menu"><li id="menu-item-60754" class="talk-icon menu-item menu-item-type-post_type menu-item-object-page menu-item-60754"><a href="https://www.2ndquadrant.com/en/contact/">Contact Us</a></li>
+</ul></div></div></div></div></div><nav class='sub_menu' ><ul id="avia2-menu" class="menu"><li id="menu-item-wpml-ls-13-en" class="menu-item-language menu-item-language-current menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-en wpml-ls-current-language wpml-ls-menu-item wpml-ls-first-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-has-children menu-item-wpml-ls-13-en"><a title="EN" href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/"><span class="wpml-ls-native" lang="en">EN</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-wpml-ls-13-fr" class="menu-item-language menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-fr wpml-ls-menu-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-wpml-ls-13-fr"><a title="FR" href="https://www.2ndquadrant.com/fr/services/optimisation-postgresql/"><span class="wpml-ls-native" lang="fr">FR</span></a></li>
+	<li id="menu-item-wpml-ls-13-it" class="menu-item-language menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-it wpml-ls-menu-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-wpml-ls-13-it"><a title="IT" href="https://www.2ndquadrant.com/it/services/postgresql-performance-tuning/"><span class="wpml-ls-native" lang="it">IT</span></a></li>
+	<li id="menu-item-wpml-ls-13-es" class="menu-item-language menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-es wpml-ls-menu-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-wpml-ls-13-es"><a title="ES" href="https://www.2ndquadrant.com/es/services/postgresql-performance-tuning/"><span class="wpml-ls-native" lang="es">ES</span></a></li>
+	<li id="menu-item-wpml-ls-13-de" class="menu-item-language menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-de wpml-ls-menu-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-wpml-ls-13-de"><a title="DE" href="https://www.2ndquadrant.com/de/services-2/postgresql-tuning/"><span class="wpml-ls-native" lang="de">DE</span></a></li>
+	<li id="menu-item-wpml-ls-13-pt-br" class="menu-item-language menu-item wpml-ls-slot-13 wpml-ls-item wpml-ls-item-pt-br wpml-ls-menu-item wpml-ls-last-item menu-item-type-wpml_ls_menu_item menu-item-object-wpml_ls_menu_item menu-item-wpml-ls-13-pt-br"><a title="PT" href="https://www.2ndquadrant.com/pt-br/services/postgresql-performance-tuning/"><span class="wpml-ls-native" lang="pt-br">PT</span></a></li>
+</ul>
+</li>
+</ul></nav></div><div id='header_main_alternate' class='container_wrap'><div class='container'><nav class='main_menu' data-selectname='Select a page' ><div class="avia-menu av-main-nav-wrap"><ul id="avia-menu" class="menu av-main-nav"><li id="menu-item-28510" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor menu-item-has-children menu-item-top-level menu-item-top-level-1"><a href="https://www.2ndquadrant.com/en/services/"><span class="avia-bullet"></span><span class="avia-menu-text">Support &#038; Services</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a>
+
+
+<ul class="sub-menu">
+	<li id="menu-item-28537" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="https://www.2ndquadrant.com/en/support/support-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">Support</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-490" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/support-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">24/7 PostgreSQL Support</span></a></li>
+		<li id="menu-item-487" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/support-developer/"><span class="avia-bullet"></span><span class="avia-menu-text">Developer Support</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-28538" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="https://www.2ndquadrant.com/en/services/rdba/"><span class="avia-bullet"></span><span class="avia-menu-text">DBA Services</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-454" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/rdba/"><span class="avia-bullet"></span><span class="avia-menu-text">Remote DBA</span></a></li>
+		<li id="menu-item-457" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/monitoring-service/"><span class="avia-bullet"></span><span class="avia-menu-text">Database Monitoring</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-28542" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children"><a href="https://www.2ndquadrant.com/en/services/"><span class="avia-bullet"></span><span class="avia-menu-text">Consulting Services</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-460" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/postgresql-healthcheck/"><span class="avia-bullet"></span><span class="avia-menu-text">Health Check</span></a></li>
+		<li id="menu-item-475" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-461 current_page_item"><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/"><span class="avia-bullet"></span><span class="avia-menu-text">Performance Tuning</span></a></li>
+		<li id="menu-item-473" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/postgresql-security-audit/"><span class="avia-bullet"></span><span class="avia-menu-text">Database Security Audit</span></a></li>
+		<li id="menu-item-472" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/upgrade-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL Upgrade</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-28540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="https://www.2ndquadrant.com/en/services/"><span class="avia-bullet"></span><span class="avia-menu-text">Migration Services</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-56764" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/migrate-from-oracle-to-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">Migrate to PostgreSQL</span></a></li>
+		<li id="menu-item-471" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/services/postgresql-migration-assessment/"><span class="avia-bullet"></span><span class="avia-menu-text">Migration Assessment</span></a></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-523" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-top-level menu-item-top-level-2"><a href="https://www.2ndquadrant.com/en/resources/"><span class="avia-bullet"></span><span class="avia-menu-text">Products</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a>
+
+
+<ul class="sub-menu">
+	<li id="menu-item-583" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgres-bdr-2ndquadrant/"><span class="avia-bullet"></span><span class="avia-menu-text">Postgres-BDR <sup>®<sup></span></a></li>
+	<li id="menu-item-15886" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/highly-available-postgresql-clusters/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL High Availability</span></a></li>
+	<li id="menu-item-33802" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/kubernetes-operators-for-highly-available-postgresql-and-bdr/"><span class="avia-bullet"></span><span class="avia-menu-text">Kubernetes Operators for BDR &#038; PostgreSQL</span></a></li>
+	<li id="menu-item-22962" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgres-cloud-manager/"><span class="avia-bullet"></span><span class="avia-menu-text">Managed PostgreSQL in the Cloud</span></a></li>
+	<li id="menu-item-43817" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Installers</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-615" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgresql-installer-2ndquadrant/"><span class="avia-bullet"></span><span class="avia-menu-text">Postgres Installer</span></a></li>
+		<li id="menu-item-26912" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/2uda/"><span class="avia-bullet"></span><span class="avia-menu-text">2UDA</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-595" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/2ndqpostgres/"><span class="avia-bullet"></span><span class="avia-menu-text">2ndQPostgres</span></a></li>
+	<li id="menu-item-594" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/pglogical/"><span class="avia-bullet"></span><span class="avia-menu-text">pglogical</span></a></li>
+	<li id="menu-item-619" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/barman/"><span class="avia-bullet"></span><span class="avia-menu-text">Barman</span></a></li>
+	<li id="menu-item-601" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/repmgr/"><span class="avia-bullet"></span><span class="avia-menu-text">repmgr</span></a></li>
+	<li id="menu-item-616" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/omnidb/"><span class="avia-bullet"></span><span class="avia-menu-text">OmniDB</span></a></li>
+	<li id="menu-item-618" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgresql-security-firewall/"><span class="avia-bullet"></span><span class="avia-menu-text">SQL Firewall</span></a></li>
+	<li id="menu-item-617" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgres-xl/"><span class="avia-bullet"></span><span class="avia-menu-text">Postgres-XL</span></a></li>
+</ul>
+</li>
+<li id="menu-item-31592" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-top-level menu-item-top-level-3"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Downloads</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a>
+
+
+<ul class="sub-menu">
+	<li id="menu-item-43329" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Installers</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-32039" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/postgresql-installer-2ndquadrant/"><span class="avia-bullet"></span><span class="avia-menu-text">Postgres Installer</span></a></li>
+		<li id="menu-item-32040" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/resources/2uda/"><span class="avia-bullet"></span><span class="avia-menu-text">2UDA &#8211; Unified Data Analytics</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-43330" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Whitepapers</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-55370" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/business-case-for-postgresql-support"><span class="avia-bullet"></span><span class="avia-menu-text">Business Case for PostgreSQL Support</span></a></li>
+		<li id="menu-item-43333" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://info.enterprisedb.com/Whitepaper_Multi-Master-Replication-PostgreSQL.html"><span class="avia-bullet"></span><span class="avia-menu-text">AlwaysOn Postgres</span></a></li>
+		<li id="menu-item-61778" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://info.enterprisedb.com/Whitepaper_HighlyAvailablePostgreSQLwithPhysicalStreamingReplication_WhitepaperSecurityBestPracticesforPostgreSQL.html?_ga=2.29298366.368245233.1606198872-1470137188.1605606494"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL with High Availability</span></a></li>
+		<li id="menu-item-43336" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/postgresql-security-best-practices-whitepaper"><span class="avia-bullet"></span><span class="avia-menu-text">Security Best Practices</span></a></li>
+		<li id="menu-item-43335" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/postgres-bdr-whitepaper-download"><span class="avia-bullet"></span><span class="avia-menu-text">BDR</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-43331" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Case Studies</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-43339" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Performance Tuning</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-43340" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/benchprep-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">BenchPrep</span></a></li>
+			<li id="menu-item-43341" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/tastyworks-case-study"><span class="avia-bullet"></span><span class="avia-menu-text">tastyworks</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-43342" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Distributed Clusters</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-43343" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/clickup-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">ClickUp</span></a></li>
+			<li id="menu-item-43344" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/european-space-agency-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">European Space Agency (ESA)</span></a></li>
+			<li id="menu-item-43345" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/telefonica-del-sur-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Telefónica del Sur</span></a></li>
+			<li id="menu-item-43346" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/animal-logic-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Animal Logic</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-43347" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Database Administration</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-43348" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/agilis-systems-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Agilis Systems</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-43349" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Professional Training</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-43350" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/met-office-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Met Office</span></a></li>
+			<li id="menu-item-43351" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/london-partners-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">London &#038; Partners</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-43352" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Database Upgrades</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-43353" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/alfred-wegener-institute-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Alfred Wegener Institute (AWI)</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-43354" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Database Migration</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-55054" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/igt-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">International Game Technology (IGT)</span></a></li>
+			<li id="menu-item-43355" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/healthcare-software-systems-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">Healthcare Software Solutions (HSS)</span></a></li>
+			<li id="menu-item-43356" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/navionics-download-case-study"><span class="avia-bullet"></span><span class="avia-menu-text">Navionics</span></a></li>
+		</ul>
+</li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-34736" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-top-level menu-item-top-level-4"><a href="https://www.2ndquadrant.com/en/postgres-learning-center/"><span class="avia-bullet"></span><span class="avia-menu-text">Postgres Learning Center</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a>
+
+
+<ul class="sub-menu">
+	<li id="menu-item-41787" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">Webinars</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-41784" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/webinars/"><span class="avia-bullet"></span><span class="avia-menu-text">Upcoming Webinars</span></a></li>
+		<li id="menu-item-41785" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/webinar-library/"><span class="avia-bullet"></span><span class="avia-menu-text">Webinar Library</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-35058" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"><a href="https://www.2ndquadrant.com/en/whitepapers/"><span class="avia-bullet"></span><span class="avia-menu-text">Whitepapers</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-55369" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/business-case-for-postgresql-support"><span class="avia-bullet"></span><span class="avia-menu-text">Business Case for PostgreSQL Support</span></a></li>
+		<li id="menu-item-31595" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/alwayson-postgres-whitepaper"><span class="avia-bullet"></span><span class="avia-menu-text">AlwaysOn Postgres</span></a></li>
+		<li id="menu-item-61779" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://info.enterprisedb.com/Whitepaper_HighlyAvailablePostgreSQLwithPhysicalStreamingReplication_WhitepaperSecurityBestPracticesforPostgreSQL.html?_ga=2.29298366.368245233.1606198872-1470137188.1605606494"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL with High Availability</span></a></li>
+		<li id="menu-item-31597" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/postgresql-security-best-practices-whitepaper"><span class="avia-bullet"></span><span class="avia-menu-text">Security Best Practices</span></a></li>
+		<li id="menu-item-31596" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/postgres-bdr-whitepaper-download"><span class="avia-bullet"></span><span class="avia-menu-text">BDR</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-9370" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/blog/"><span class="avia-bullet"></span><span class="avia-menu-text">Blog</span></a></li>
+	<li id="menu-item-574" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"><a href="https://www.2ndquadrant.com/en/training/"><span class="avia-bullet"></span><span class="avia-menu-text">Training</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-37768" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://www.2ndquadrant.com/en/training/training-course-catalog/"><span class="avia-bullet"></span><span class="avia-menu-text">Course Catalogue</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-517" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"><a href="https://www.2ndquadrant.com/en/case-studies/"><span class="avia-bullet"></span><span class="avia-menu-text">Case Studies</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-22322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Performance Tuning</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-28633" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/benchprep-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">BenchPrep</span></a></li>
+			<li id="menu-item-15791" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/performance-tuning/tastyworks-2ndquadrant-postgresql-case-study/"><span class="avia-bullet"></span><span class="avia-menu-text">tastyworks</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-22327" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Distributed Clusters</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-33771" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/clickup-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">ClickUp</span></a></li>
+			<li id="menu-item-27300" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/european-space-agency-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">European Space Agency (ESA)</span></a></li>
+			<li id="menu-item-15792" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/multi-master-clusters/telefonica-del-sur-postgres-bdr-story-2ndquadrant/"><span class="avia-bullet"></span><span class="avia-menu-text">Telefónica del Sur</span></a></li>
+			<li id="menu-item-15788" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/multi-master-clusters/animal-logic-2ndquadrant-case-study/"><span class="avia-bullet"></span><span class="avia-menu-text">Animal Logic</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-22981" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Database Administration</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-15794" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/database-administration/agilis-systems/"><span class="avia-bullet"></span><span class="avia-menu-text">Agilis Systems</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-22982" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Professional Training</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-15795" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/professional-training/met-office-2ndquadrant-case-study/"><span class="avia-bullet"></span><span class="avia-menu-text">Met Office</span></a></li>
+			<li id="menu-item-15796" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/professional-training/london-partners-2ndquadrant-case-study/"><span class="avia-bullet"></span><span class="avia-menu-text">London &#038; Partners</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-22983" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Database Upgrades</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-15797" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/database-upgrades/alfred-wegener-institute-awi/"><span class="avia-bullet"></span><span class="avia-menu-text">Alfred Wegener Institute (AWI)</span></a></li>
+		</ul>
+</li>
+		<li id="menu-item-22984" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children"><a><span class="avia-bullet"></span><span class="avia-menu-text">Database Migration</span></a>
+		<ul class="sub-menu">
+			<li id="menu-item-55055" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://resources.2ndquadrant.com/igt-case-study-download"><span class="avia-bullet"></span><span class="avia-menu-text">International Game Technology (IGT)</span></a></li>
+			<li id="menu-item-15783" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/database-migration/healthcare-software-solutions-hss/"><span class="avia-bullet"></span><span class="avia-menu-text">Healthcare Software Solutions (HSS)</span></a></li>
+			<li id="menu-item-15798" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/case-studies/database-migration/navionics-2ndquadrant-case-study/"><span class="avia-bullet"></span><span class="avia-menu-text">Navionics</span></a></li>
+		</ul>
+</li>
+	</ul>
+</li>
+	<li id="menu-item-536" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"><a href="https://www.2ndquadrant.com/en/books/"><span class="avia-bullet"></span><span class="avia-menu-text">Books</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-25077" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-11-administration-cookbook/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL 11 Administration Cookbook</span></a></li>
+		<li id="menu-item-541" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-10-administration-cookbook/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL 10 Administration Cookbook</span></a></li>
+		<li id="menu-item-540" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-high-availability-cookbook-second-edition/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL High Availability Cookbook – 2nd Edition</span></a></li>
+		<li id="menu-item-539" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-9-administration-cookbook/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL 9 Administration Cookbook – 3rd Edition</span></a></li>
+		<li id="menu-item-538" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-server-programming/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL Server Programming Cookbook – 2nd Edition</span></a></li>
+		<li id="menu-item-537" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/books/postgresql-9-cookbook-chinese-edition/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL 9 Cookbook – Chinese Edition</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-37035" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/videos/"><span class="avia-bullet"></span><span class="avia-menu-text">Videos</span></a></li>
+	<li id="menu-item-518" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/events/"><span class="avia-bullet"></span><span class="avia-menu-text">Events</span></a></li>
+	<li id="menu-item-562" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children"><a href="https://www.2ndquadrant.com/en/postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL</span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-571" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/postgresql-story/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL – History</span></a></li>
+		<li id="menu-item-569" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/who-uses-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">Who uses PostgreSQL?</span></a></li>
+		<li id="menu-item-567" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/postgresql-faq/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL FAQ</span></a></li>
+		<li id="menu-item-566" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/postgresql-vs-mysql/"><span class="avia-bullet"></span><span class="avia-menu-text">PostgreSQL vs MySQL</span></a></li>
+		<li id="menu-item-565" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/business-case-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">The Business Case for PostgreSQL</span></a></li>
+		<li id="menu-item-563" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/postgresql-security-information/"><span class="avia-bullet"></span><span class="avia-menu-text">Security Information</span></a></li>
+		<li id="menu-item-40879" class="menu-item menu-item-type-custom menu-item-object-custom"><a href="https://www.2ndquadrant.com/documents/pg_doc/?utm_campaign=Postgres%20Docs&amp;utm_source=PGDocsMenuItem"><span class="avia-bullet"></span><span class="avia-menu-text">Documentation</span></a></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-22945" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-top-level menu-item-top-level-5"><a href="#"><span class="avia-bullet"></span><span class="avia-menu-text">About Us</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a>
+
+
+<ul class="sub-menu">
+	<li id="menu-item-521" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/about-2ndquadrant/"><span class="avia-bullet"></span><span class="avia-menu-text">About 2ndQuadrant</span></a></li>
+	<li id="menu-item-520" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/what-does-2ndquadrant-mean/"><span class="avia-bullet"></span><span class="avia-menu-text">What Does “2ndQuadrant” Mean?</span></a></li>
+	<li id="menu-item-570" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/postgresql/2ndquadrants-passion-postgresql/"><span class="avia-bullet"></span><span class="avia-menu-text">2ndQuadrant’s Passion for PostgreSQL</span></a></li>
+	<li id="menu-item-519" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/news/"><span class="avia-bullet"></span><span class="avia-menu-text">News</span></a></li>
+	<li id="menu-item-16804" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/careers/"><span class="avia-bullet"></span><span class="avia-menu-text">Careers</span></a></li>
+	<li id="menu-item-514" class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.2ndquadrant.com/en/team-profile/"><span class="avia-bullet"></span><span class="avia-menu-text">Team Profile</span></a></li>
+</ul>
+</li>
+<li id="menu-item-34737" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-top-level menu-item-top-level-6"><a href="https://www.2ndquadrant.com/en/blog/"><span class="avia-bullet"></span><span class="avia-menu-text">Blog</span><span class="avia-menu-fx"><span class="avia-arrow-wrap"><span class="avia-arrow"></span></span></span></a></li>
+<li class='av-language-switch-item language_en avia_current_lang'><a href='https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/'>	<span class='language_flag'><img title='EN' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.png' /></span></a></li><li class='av-language-switch-item language_fr '><a href='https://www.2ndquadrant.com/fr/services/optimisation-postgresql/'>	<span class='language_flag'><img title='FR' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/fr.png' /></span></a></li><li class='av-language-switch-item language_it '><a href='https://www.2ndquadrant.com/it/services/postgresql-performance-tuning/'>	<span class='language_flag'><img title='IT' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/it.png' /></span></a></li><li class='av-language-switch-item language_es '><a href='https://www.2ndquadrant.com/es/services/postgresql-performance-tuning/'>	<span class='language_flag'><img title='ES' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/es.png' /></span></a></li><li class='av-language-switch-item language_de '><a href='https://www.2ndquadrant.com/de/services-2/postgresql-tuning/'>	<span class='language_flag'><img title='DE' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/de.png' /></span></a></li><li class='av-language-switch-item language_pt-br '><a href='https://www.2ndquadrant.com/pt-br/services/postgresql-performance-tuning/'>	<span class='language_flag'><img title='PT' src='https://www.2ndquadrant.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/pt-br.png' /></span></a></li><li class="av-burger-menu-main menu-item-avia-special ">
+	        			<a href="#" aria-label="Menu" aria-hidden="false">
+							<span class="av-hamburger av-hamburger--spin av-js-hamburger">
+								<span class="av-hamburger-box">
+						          <span class="av-hamburger-inner"></span>
+						          <strong>Menu</strong>
+								</span>
+							</span>
+							<span class="avia_hidden_link_text">Menu</span>
+						</a>
+	        		   </li></ul></div></nav></div> </div> 
+        <!-- end container_wrap-->
+    </div>
+        <div class='header_bg'></div>
+
+    <!-- end header -->
+</header>
+		<div id='main' class='all_colors' data-scroll-offset='0'>
+
+			<div   class='main_color container_wrap_first container_wrap sidebar_right' style=' '  ><div class='container' ><main  class='template-page content  av-content-small alpha units'><div class='post-entry post-entry-type-page post-entry-461'><div class='entry-content-wrapper clearfix'><div class='stretch_full container_wrap custom-breadcrumb empty_title  title_container'><div class="breadcrumb breadcrumbs avia-breadcrumbs"><div class="breadcrumb-trail" ><span class="trail-before"><span class="breadcrumb-title">You are here:</span></span> <span  itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList" ><span  itemscope="itemscope" itemtype="https://schema.org/ListItem" itemprop="itemListElement" ><a itemprop="url" href="https://www.2ndquadrant.com/en/" title="2ndQuadrant | PostgreSQL" rel="home" class="trail-begin"><span itemprop="name">Home</span></a><span itemprop="position" class="hidden">1</span></span></span> <span class="sep">/</span> <span  itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList" ><span  itemscope="itemscope" itemtype="https://schema.org/ListItem" itemprop="itemListElement" ><a itemprop="url" href="https://www.2ndquadrant.com/en/services/" title="Services"><span itemprop="name">Services</span></a><span itemprop="position" class="hidden">2</span></span></span> <span class="sep">/</span> <span class="trail-end">PostgreSQL Performance Tuning</span></div></div></div><div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-0  el_before_av_image  avia-builder-el-first  " style='margin-top:0px; margin-bottom:0px; border-radius:0px; '><div  style='padding-bottom:0px; margin:0 0 0 0; ' class='av-special-heading av-special-heading-h1  blockquote modern-quote  avia-builder-el-1  el_before_av_hr  avia-builder-el-first  '><h1 class='av-special-heading-tag '  >PostgreSQL Performance Tuning</h1><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-2  el_after_av_heading  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><h2><b>Boost the Performance of your Database.</b></h2>
+<p>You have made significant investments in your hardware, so be sure your database fully utilizes it for your workloads. To maximize your ROI, it is crucial for your business to tune your PostgreSQL Database to its top performance.</p>
+<p>Although PostgreSQL performs well out-of-the-box, there are several parameters that require further tuning to achieve peak performance for your specific workloads. 2ndQuadrant provides a personalized service for tuning your database, customized to your organizational needs. Our PostgreSQL consultants will help you deliver outstanding performance to your customers while ensuring data integrity.</p>
+</div></section></div>
+<div  class='avia-image-container  av-styling-    avia-builder-el-4  el_after_av_one_full  el_before_av_textblock  avia-align-center '  ><div class='avia-image-container-inner'><div class='avia-image-overlay-wrap'><img class='wp-image-26498 avia-img-lazy-loading-not-26498 avia_image' src="https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning.png" alt='2ndQuadrant provides a customized service for tuning your database that allows you to deliver outstanding performance to your customers while ensuring data integrity.' title='PostgreSQL Performance Tuning 2ndQuadrant' height="720" width="2601" srcset="https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning.png 2601w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-300x83.png 300w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-768x213.png 768w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-1030x285.png 1030w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-1500x415.png 1500w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-705x195.png 705w, https://www.2ndquadrant.com/wp-content/uploads/2019/06/8710-update-performance-tunning-450x125.png 450w" sizes="(max-width: 2601px) 100vw, 2601px" /></div></div></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><strong><span data-sheets-value="{" data-sheets-userformat="{">On this page:</span></strong></p>
+</div></section>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding first  avia-builder-el-6  el_after_av_textblock  el_before_av_one_half  column-top-margin" style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><ul>
+<li><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#section1">7 Good Reasons to get Performance Tuning</a></li>
+<li><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#section2">PostgreSQL Performance Tuning Service</a></li>
+<li><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#section3">Our Customers&#8217; Experiences</a></li>
+</ul>
+</div></section></div>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding   avia-builder-el-8  el_after_av_one_half  el_before_av_one_full  column-top-margin" style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><ul>
+<li><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#section4">Performance Tuning Knowledge Base</a></li>
+<li><a href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/#section5">Get in touch with us</a></li>
+</ul>
+</div></section></div>
+<div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-10  el_after_av_one_half  el_before_av_one_full  column-top-margin" style='margin-top:0px; margin-bottom:0px; border-radius:0px; '><div  style='padding-bottom:0px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-11  el_before_av_content_slider  avia-builder-el-first  '><h2 class='av-special-heading-tag '  >What Our Clients Say</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div   data-autoplay='true'  data-interval='10'  data-animation='slide'  data-show_slide_delay='30'  class='avia-content-slider-element-container avia-content-slider-element-slider avia-content-slider avia-smallarrow-slider avia-content-slider-active avia-content-slider1 avia-content-slider-odd  avia-builder-el-12  el_after_av_heading  el_before_av_heading  av_inherit_color '  style=' color:#686868; '><div class='avia-smallarrow-slider-heading  no-content-slider-heading '><div class='new-special-heading'>&nbsp;</div><div class='avia-slideshow-dots avia-slideshow-controls'><a href='#1' class='goto-slide active' >1</a><a href='#2' class='goto-slide ' >2</a></div></div><div class='avia-content-slider-inner'><div class='slide-entry-wrap'><section class='slide-entry flex_column post-entry slide-entry-overview slide-loop-1 slide-parity-odd  av_fullwidth first' ><div class='slide-entry-excerpt entry-content' ><p style="padding-left: 80px; text-align: left;"><span style="font-size: large;"><em>&#8220;During our daily load test, we observed an immediate 2-4x improvement in peak throughput.&#8221;</em></span></p>
+<p style="text-align: left; padding-left: 80px;"><strong>Jordan von Kluck, CTO, tastyworks</strong></p>
+</div></section></div><div class='slide-entry-wrap'><section class='slide-entry flex_column post-entry slide-entry-overview slide-loop-2 slide-parity-odd  post-entry-last  av_fullwidth first' ><div class='slide-entry-excerpt entry-content' ><p style="padding-left: 80px; text-align: left;"><span style="font-size: large;"><em>&#8220;The goal of having platinum support was very simple – to serve as a backup and safety mechanism for the internal team at BenchPrep. This allowed the team the ability to work with the professionals at 2ndQuadrant and figure out what we should be tuning and tweaking continuously with regards to the Postgres configuration and also with regards to errors and issues. This ensures that we have a very efficient, responsive, and professional team ready to be accessed any time we need.&#8221;</em></span></p>
+<p style="text-align: left; padding-left: 80px;"><strong>Nickolay Schwarz, CTO, BenchPrep</strong></p>
+</div></section></div></div></div>
+<div  style='padding-bottom:0px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-13  el_after_av_content_slider  el_before_av_hr  '><h2 class='av-special-heading-tag '  >7 Good Reasons to get Performance Tuning</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-14  el_after_av_heading  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><span style="font-weight: 400;">Increasing the performance of your Postgres database is of critical importance, whether it is to improve your current architecture or as a preparation to start a new project. Every database is different, but these are some of the top indications you can tune the performance of your PostgreSQL database:</span></p>
+<ol>
+<li><strong>Scalability Analysis.</strong> Before investing in vertical or horizontal scaling, analyze available headroom in your existing hardware by tuning it for performance.</li>
+<li><strong>Capacity Planning.</strong> It is important to benchmark the maximum throughput your database can achieve in order to plan the workloads it can handle. Tune your database before you benchmark.</li>
+<li><strong>Performance Degradation.</strong> You are routinely encountering problems in database performance, slowing your applications down. Optimize your database performance and give your applications a boost.</li>
+<li><strong>Under-Utilized Hardware.</strong> Your database server does not fully utilize available hardware resources, resulting in slower performance than what is achievable. Tune your database to ensure full utilization of your hardware’s potential.</li>
+<li><strong>Sub-Optimal Configuration.</strong> Your database is delivering throughput that is lower than what’s achievable because it isn’t customized for your organizational workload. Optimize your database configuration based on your organizational workloads.</li>
+<li><strong>Underperforming Queries.</strong> Some frequently executed queries are taking too long to return. Let our experts guide you on how to optimize these queries.</li>
+<li><strong>Changing Workloads. </strong>As businesses grow, workloads can change and/or increase. Tune your database for performance so it can keep up.</li>
+</ol>
+</div></section></div>
+<div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-16  el_after_av_one_full  el_before_av_textblock  column-top-margin" style='margin-top:0px; margin-bottom:0px; border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a name="section2"></a></p>
+</div></section>
+<div  style='padding-bottom:0px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-18  el_after_av_textblock  el_before_av_hr  '><h2 class='av-special-heading-tag '  >PostgreSQL Performance Tuning Service</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-19  el_after_av_heading  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p>Performance Tuning from 2ndQuadrant includes an <strong>in-depth analysis</strong> of the following aspects, after which, we provide you with a detailed report of our findings. The report includes our recommendations to <strong>optimize your database</strong> for your specific use case and overall <strong>business goals.</strong></p>
+<ul>
+<li><strong>Database Configuration Tuning.</strong> We analyze the configuration parameters of your PostgreSQL database and recommend the optimum configuration for your organizational workload. Among other things, we examine the block size of different file systems like ZFS, and recommend optimum configuration.</li>
+<li><strong>Index Analysis. </strong>Indexes can be tricky to handle, especially as your data grows. We analyze your existing indexes and suggest any optimizations. In addition to that, we recommend the addition/removal of indexes according to your organizational needs.</li>
+<li><strong>Table Partition Analysis. </strong>Table partitions are essential to data management and maximizing efficiency when accessing that data. We analyze and recommend the addition/removal of partitions based on your workloads.</li>
+<li><strong>Hardware Usage Analysis.</strong> In order to fully utilize the hardware your database is hosted on, we study the configuration and recommend changes which will ensure full utilization of the power your hardware provides.</li>
+<li><strong>Connection Pooling Review.</strong> Many users and applications will connect to the database to perform functions they are responsible for; we review your connection pooling strategy to ensure that it’s optimized for your specific use case.</li>
+<li><strong>Analysis of Slow Running Queries.</strong> If there are specific queries that you feel are running slower than expected, we perform a detailed analysis to identify potential optimizations accordingly.</li>
+<li><strong>Operating System Configuration Tuning.</strong> The OS forms the underlying layer of your database, so configuration parameters for the OS and the hardware it’s hosted on should also be customized for your organizational workload. Among other things, we can use pg_buffercache as our guide and make recommendations about shared_buffer parameter setting to optimize for your workload.</li>
+<li><strong>Storage Partition Analysis.</strong> Building on the OS configuration, storage disk partitions also tend to play a significant role in the performance of any software the OS hosts. We examine existing partitions and provide recommendations on their configuration and structure that will enhance processing efficiency.</li>
+</ul>
+</div></section></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a name="section3"></a></p>
+</div></section>
+<div  style='padding-bottom:0px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-22  el_after_av_textblock  el_before_av_hr  '><h2 class='av-special-heading-tag '  >Our Customers’ Experiences</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-23  el_after_av_heading  el_before_av_one_half '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding first  avia-builder-el-24  el_after_av_hr  el_before_av_one_half  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a href="https://resources.2ndquadrant.com/benchprep-case-study-download?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=BenchPrep%20Case%20Study&#038;utm_medium=Logo"><img loading="lazy" class="wp-image-28845 aligncenter" src="https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high.jpg" alt="" width="452" height="108" srcset="https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high.jpg 1800w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-300x72.jpg 300w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-768x183.jpg 768w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-1030x245.jpg 1030w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-1500x358.jpg 1500w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-705x168.jpg 705w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/BenchPrep-logo-high-450x107.jpg 450w" sizes="(max-width: 452px) 100vw, 452px" /></a></p>
+<p>BenchPrep is a Chicago-based learning success platform which allows organizations to offer test preparation and continued learning programs to users across the globe.</p>
+<p>Due to an exponential increase in the demand for online training, the number of organizations using BenchPrep for their learning needs grew significantly. The platform, which was originally based on a single Postgres database, started to have performance issues due to the unexpected load.</p>
+<p>Find out how 2ndQuadrant recommended solutions to help BenchPrep scale their infrastructure and provide an unmatched learning experience to its customers.</p>
+</div></section>
+<div  class='avia-button-wrap avia-button-right  avia-builder-el-26  el_after_av_textblock  avia-builder-el-last ' ><a href='https://resources.2ndquadrant.com/benchprep-case-study-download?utm_campaign=Performance%20Tuning%20Web%20Page&utm_source=BenchPrep%20Case%20Study&utm_medium=CTA' class='avia-button  avia-color-theme-color   avia-icon_select-yes-left-icon avia-size-medium avia-position-right ' target="_blank" rel="noopener noreferrer"><span class='avia_button_icon avia_button_icon_left ' aria-hidden='true' data-av_icon='' data-av_iconfont='entypo-fontello'></span><span class='avia_iconbox_title' >Download Case Study</span></a></div></div>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding   avia-builder-el-27  el_after_av_one_half  el_before_av_hr  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a href="https://resources.2ndquadrant.com/tastyworks-case-study?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=tastyworks%20Case%20Study&#038;utm_medium=Logo"><img loading="lazy" class="wp-image-29946 aligncenter" src="https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test.png" alt="" width="448" height="118" srcset="https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test.png 835w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test-300x79.png 300w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test-768x202.png 768w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test-705x186.png 705w, https://www.2ndquadrant.com/wp-content/uploads/2019/08/tastyworks-performance-test-450x119.png 450w" sizes="(max-width: 448px) 100vw, 448px" /></a></p>
+<p>tastyworks is a retail brokerage firm based in Chicago, IL that is leading a financial revolution for the do-it-yourself investor, and uses PostgreSQL as its backend database for its cutting edge technology applications. Shortly after launching, the rapid success of the <em>tastyworks</em> platform created a larger than expected production volume, leading to <strong>unforeseen performance issues</strong>.</p>
+<p>Find out how 2ndQuadrant helped optimize their database with a 4x performance boost and achieve: High Availability, updated PostgreSQL configuration to meet best practices, seamless migration to new servers, and much more!</p>
+</div></section>
+<div  class='avia-button-wrap avia-button-right  avia-builder-el-29  el_after_av_textblock  avia-builder-el-last ' ><a href='https://resources.2ndquadrant.com/tastyworks-case-study?utm_campaign=Performance%20Tuning%20Web%20Page&utm_source=tastyworks%20Case%20Study&utm_medium=CTA' class='avia-button  avia-color-theme-color   avia-icon_select-yes-left-icon avia-size-medium avia-position-right ' target="_blank" rel="noopener noreferrer"><span class='avia_button_icon avia_button_icon_left ' aria-hidden='true' data-av_icon='' data-av_iconfont='entypo-fontello'></span><span class='avia_iconbox_title' >Download Case Study</span></a></div></div>
+<div  style='height:50px' class='hr hr-invisible   avia-builder-el-30  el_after_av_one_half  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a name="section4"></a></p>
+</div></section>
+<div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-32  el_after_av_textblock  el_before_av_heading  column-top-margin" style='border-radius:0px; '><div  style='padding-bottom:10px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-33  avia-builder-el-no-sibling  '><h2 class='av-special-heading-tag '  >Performance Tuning Knowledge Base </h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div></div>
+<div  style='padding-bottom:10px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-34  el_after_av_one_full  el_before_av_one_half  '><h2 class='av-special-heading-tag '  >Videos</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding first  avia-builder-el-35  el_after_av_heading  el_before_av_one_half  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><strong><a href="https://resources.2ndquadrant.com/webinar-postgres-vacuuming-through-pictures?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=Postgres%20Vacuuming%20Through%20Pictures%20Webinar%20Video&#038;utm_medium=Image"><img loading="lazy" class="alignleft wp-image-24350 size-full" src="https://www.2ndquadrant.com/wp-content/uploads/2019/05/Videos-by-2ndQuadrant-e1560868155476.png" alt="Videos by 2ndQuadrant" width="96" height="93" hspace="10" /></a></strong></p>
+<p style="padding-left: 120px;"><strong>Postgres Vacuuming Through Pictures Webinar Video<br />
+</strong>This webinar was held on 24 July 2019 and covered key concepts of Postgres Vacuum and Autovacuum. It included use of diagrams, illustrations, and animations to present Postgres Vacuum, tuning Postgres Vacuum concepts and how tuning Vacuum properly makes a difference in database performance. Watch the complete webinar video <a href="https://resources.2ndquadrant.com/webinar-postgres-vacuuming-through-pictures?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=Postgres%20Vacuuming%20Through%20Pictures%20Webinar%20Video&#038;utm_medium=Link">here</a>.</p>
+</div></section></div>
+<div class="flex_column av_one_half  flex_column_div av-zero-column-padding   avia-builder-el-37  el_after_av_one_half  el_before_av_heading  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><strong><a href="https://resources.2ndquadrant.com/webinar-power-of-indexing-in-postgresql?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=Power%20of%20Indexing%20in%20PostgreSQL%20Webinar%20Video&#038;utm_medium=Image"><img loading="lazy" class="alignleft wp-image-24350 size-full" src="https://www.2ndquadrant.com/wp-content/uploads/2019/05/Videos-by-2ndQuadrant-e1560868155476.png" alt="Videos by 2ndQuadrant" width="96" height="93" hspace="10" /></a></strong></p>
+<p style="padding-left: 120px;"><strong>Power of Indexing in PostgreSQL Webinar Video<br />
+</strong>The webinar was held on April 4, 2018 and covered the following topics: various ways to access data in PostgreSQL, different types of indexes supported by PostgreSQL, internals of BTree and BRIN indexes, overview of GIN and GiST indexes, how to find missing and unused indexes. Watch the complete webinar video <a href="https://resources.2ndquadrant.com/webinar-power-of-indexing-in-postgresql?utm_campaign=Performance%20Tuning%20Web%20Page&#038;utm_source=Power%20of%20Indexing%20in%20PostgreSQL%20Webinar%20Video&#038;utm_medium=Link">here</a>.</p>
+</div></section></div>
+<div  style='padding-bottom:10px; ' class='av-special-heading av-special-heading-h2  blockquote modern-quote  avia-builder-el-39  el_after_av_one_half  el_before_av_one_full  '><h2 class='av-special-heading-tag '  >Training</h2><div class='special-heading-border'><div class='special-heading-inner-border' ></div></div></div>
+<div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-40  el_after_av_heading  el_before_av_hr  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><p><a href="https://www.2ndquadrant.com/en/training/advanced-development-performance/"><img loading="lazy" class="alignleft wp-image-24355" src="https://www.2ndquadrant.com/wp-content/uploads/2019/05/Training-by-2ndQuadrant-e1575018338958.png" alt="" width="100" height="79" hspace="10" /></a><a href="https://www.2ndquadrant.com/en/training/advanced-development-performance/">Advanced Development &#038; Performance</a></p>
+<p>This class covers important Intermediate and Advanced level details for developers interacting with PostgreSQL.</p>
+</div></section></div>
+<div  style='height:5px' class='hr hr-invisible   avia-builder-el-42  el_after_av_one_full  el_before_av_hr '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<div   class='hr hr-short hr-center   avia-builder-el-43  el_after_av_hr  el_before_av_heading '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<div  style='padding-bottom:10px; color:#003467;' class='av-special-heading av-special-heading-h1 custom-color-heading blockquote modern-quote  avia-builder-el-44  el_after_av_hr  el_before_av_hr  '><h1 class='av-special-heading-tag '  >Blogs</h1><div class='special-heading-border'><div class='special-heading-inner-border' style='border-color:#003467'></div></div></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-45  el_after_av_heading  el_before_av_blog '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<div  class='av-alb-blogposts template-blog  av-blog-meta-comments-disabled av-blog-meta-tag-disabled ' ><article class='post-entry post-entry-type-standard post-entry-58620 post-loop-1 post-parity-odd bloglist-excerpt  post-58620 post type-post status-publish format-standard hentry category-http2ndquadrant-com category-postgresql category-tomas-planetpostgresql tag-benchmarking tag-performance tag-tpc-h tag-tpch' ><div class='blog-meta'></div><div class='entry-content-wrapper clearfix standard-content'><header class="entry-content-header"><h2 class='post-title entry-title ' >	<a href='https://www.2ndquadrant.com/en/blog/tpc-h-performance-since-postgresql-8-3/' rel='bookmark' title='Permanent Link: TPC-H performance since PostgreSQL 8.3'>TPC-H performance since PostgreSQL 8.3			<span class='post-format-icon minor-meta'></span>	</a></h2><span class='post-meta-infos'><time class='date-container minor-meta updated' >October 22, 2020</time><span class='text-sep text-sep-date'>/</span><span class='comment-container minor-meta'><a href="https://www.2ndquadrant.com/en/blog/tpc-h-performance-since-postgresql-8-3/#respond" class="comments-link" >0 Comments</a></span><span class='text-sep text-sep-comment'>/</span><span class="blog-categories minor-meta">in <a href="https://www.2ndquadrant.com/en/blog/category/http2ndquadrant-com/" rel="tag">2ndQuadrant</a>, <a href="https://www.2ndquadrant.com/en/blog/category/postgresql/" rel="tag">PostgreSQL</a>, <a href="https://www.2ndquadrant.com/en/blog/category/tomas-planetpostgresql/" rel="tag">Tomas' PlanetPostgreSQL</a> </span><span class="text-sep text-sep-cat">/</span><span class="blog-author minor-meta">by <span class="entry-author-link" ><span class="author"><span class="fn"><a href="https://www.2ndquadrant.com/en/blog/author/tomas-vondra/" title="Posts by Tomas Vondra" rel="author">Tomas Vondra</a></span></span></span></span></span></header><p>In the first part of this blog series, I’ve presented a couple of benchmark results showing how PostgreSQL OLTP performance changed since 8.3, released in 2008. In this part I plan to do the same thing but for analytical / BI queries, processing large amounts of data. There’s a number of industry benchmarks for testing [&hellip;]</p>
+<div class="read-more-link"><a href="https://www.2ndquadrant.com/en/blog/tpc-h-performance-since-postgresql-8-3/" class="more-link">Read more<span class="more-link-arrow"></span></a></div><footer class="entry-footer"></footer><div class='post_delimiter'></div></div><div class='post_author_timeline'></div></article><article class='post-entry post-entry-type-standard post-entry-58565 post-loop-2 post-parity-even bloglist-excerpt  post-58565 post type-post status-publish format-standard hentry category-postgresql category-tomas-planetpostgresql tag-benchmarking tag-performance tag-pgbench' ><div class='blog-meta'></div><div class='entry-content-wrapper clearfix standard-content'><header class="entry-content-header"><h2 class='post-title entry-title ' >	<a href='https://www.2ndquadrant.com/en/blog/oltp-performance-since-postgresql-8-3/' rel='bookmark' title='Permanent Link: OLTP performance since PostgreSQL 8.3'>OLTP performance since PostgreSQL 8.3			<span class='post-format-icon minor-meta'></span>	</a></h2><span class='post-meta-infos'><time class='date-container minor-meta updated' >October 8, 2020</time><span class='text-sep text-sep-date'>/</span><span class='comment-container minor-meta'><a href="https://www.2ndquadrant.com/en/blog/oltp-performance-since-postgresql-8-3/#comments" class="comments-link" >4 Comments</a></span><span class='text-sep text-sep-comment'>/</span><span class="blog-categories minor-meta">in <a href="https://www.2ndquadrant.com/en/blog/category/postgresql/" rel="tag">PostgreSQL</a>, <a href="https://www.2ndquadrant.com/en/blog/category/tomas-planetpostgresql/" rel="tag">Tomas' PlanetPostgreSQL</a> </span><span class="text-sep text-sep-cat">/</span><span class="blog-author minor-meta">by <span class="entry-author-link" ><span class="author"><span class="fn"><a href="https://www.2ndquadrant.com/en/blog/author/tomas-vondra/" title="Posts by Tomas Vondra" rel="author">Tomas Vondra</a></span></span></span></span></span></header><p>A couple years ago (at the pgconf.eu 2014 in Madrid) I presented a talk called “Performance Archaeology” which showed how performance changed in recent PostgreSQL releases. I did that talk as I think the long-term view is interesting and may give us insights that may be very valuable. For people who actually work on PostgreSQL [&hellip;]</p>
+<div class="read-more-link"><a href="https://www.2ndquadrant.com/en/blog/oltp-performance-since-postgresql-8-3/" class="more-link">Read more<span class="more-link-arrow"></span></a></div><footer class="entry-footer"></footer><div class='post_delimiter'></div></div><div class='post_author_timeline'></div></article><article class='post-entry post-entry-type-standard post-entry-46413 post-loop-3 post-parity-odd post-entry-last bloglist-excerpt with-slider post-46413 post type-post status-publish format-standard has-post-thumbnail hentry category-webinars tag-performance tag-postgresql tag-webinars' ><div class='blog-meta'></div><div class='entry-content-wrapper clearfix standard-content'><header class="entry-content-header"><h2 class='post-title entry-title ' >	<a href='https://www.2ndquadrant.com/en/blog/webinar-knn-indexing-in-postgresql-follow-up/' rel='bookmark' title='Permanent Link: Webinar: KNN Indexing in PostgreSQL [Follow Up]'>Webinar: KNN Indexing in PostgreSQL [Follow Up]			<span class='post-format-icon minor-meta'></span>	</a></h2><span class='post-meta-infos'><time class='date-container minor-meta updated' >May 4, 2020</time><span class='text-sep text-sep-date'>/</span><span class='comment-container minor-meta'><a href="https://www.2ndquadrant.com/en/blog/webinar-knn-indexing-in-postgresql-follow-up/#respond" class="comments-link" >0 Comments</a></span><span class='text-sep text-sep-comment'>/</span><span class="blog-categories minor-meta">in <a href="https://www.2ndquadrant.com/en/blog/category/webinars/" rel="tag">Webinars</a> </span><span class="text-sep text-sep-cat">/</span><span class="blog-author minor-meta">by <span class="entry-author-link" ><span class="author"><span class="fn"><a href="https://www.2ndquadrant.com/en/blog/author/bilalibrar/" title="Posts by Bilal Ibrar" rel="author">Bilal Ibrar</a></span></span></span></span></span></header><p>K-nearest neighbor is a proximity algorithm to find data in order of distance. Typically, this data cannot be indexed in advance, as both the centroid and the data can be in constant motion.  PostgreSQL provides efficient searching algorithms for finding proximity data on the fly, including unique, high-performance indexing options. For a deeper understanding of [&hellip;]</p>
+<div class="read-more-link"><a href="https://www.2ndquadrant.com/en/blog/webinar-knn-indexing-in-postgresql-follow-up/" class="more-link">Read more<span class="more-link-arrow"></span></a></div><footer class="entry-footer"></footer><div class='post_delimiter'></div></div><div class='post_author_timeline'></div></article></div>
+<div  class='avia-button-wrap avia-button-center  avia-builder-el-47  el_after_av_blog  el_before_av_hr  full-width-btn' ><a href='https://www.2ndquadrant.com/en/blog/tag/performance/'  class='avia-button  avia-color-theme-color   avia-icon_select-yes-right-icon avia-size-large avia-position-center '   ><span class='avia_iconbox_title' >View All Blogs</span><span class='avia_button_icon avia_button_icon_right' aria-hidden='true' data-av_icon='' data-av_iconfont='entypo-fontello'></span></a></div>
+<div  style='height:50px' class='hr hr-invisible   avia-builder-el-48  el_after_av_button  el_before_av_button '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<div  class='avia-button-wrap avia-button-left  avia-builder-el-49  el_after_av_hr  el_before_av_hr ' ><a href='https://www.2ndquadrant.com/en/services/?utm_campaign=PostgreSQL%20Support%20%26%20Services%20Pillar%20Page%20%5BBACKLINKS%5D&utm_source=Performance%20Tuning%20Page&utm_medium=CTA'  class='avia-button  avia-color-theme-color-subtle   avia-icon_select-yes-left-icon avia-size-medium avia-position-left '   ><span class='avia_button_icon avia_button_icon_left ' aria-hidden='true' data-av_icon='' data-av_iconfont='entypo-fontello'></span><span class='avia_iconbox_title' >Back to Postgres Support & Services</span></a></div>
+<div  style='height:20px' class='hr hr-invisible   avia-builder-el-50  el_after_av_button  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ></div></section>
+<div class="flex_column av_one_full  flex_column_div av-zero-column-padding first  avia-builder-el-52  el_after_av_textblock  avia-builder-el-last  ts-style-form column-top-margin" style='border-radius:0px; '><section class="avia_codeblock_section  avia_code_block_0" ><div class='avia_codeblock ' ><h1>Get in touch with us!</h1>
+<h4>Please fill in the form below and we'll be in touch as soon as possible.</h4>
+<script src="//info.enterprisedb.com/js/forms2/js/forms2.min.js"></script>
+
+<form id="mktoForm_3194"></form><script>MktoForms2.loadForm("//info.enterprisedb.com", "069-ALB-339", 3194);</script></div></section></div>
+</div></div></main><!-- close content main element --> <!-- section close by builder template --><aside class='sidebar sidebar_right   alpha units' ><div class='inner_sidebar extralight-border'><div id="custom_html-85" class="widget_text widget clearfix widget_custom_html"><div class="textwidget custom-html-widget"><div class="g g-19"><div class="g-single a-108"><a class="gofollow" data-track="MTA4LDE5LDEsNjA=" href="https://resources.2ndquadrant.com/benchprep-case-study-download?utm_campaign=BenchPrep&utm_source=casestudy_benchprep_sidebar_website"><img src="https://www.2ndquadrant.com/wp-content/uploads/2020/08/Benchprep-Case-Study-Sidebar-Banner.png" /></a></div></div>	</div></div><div id="custom_html-84" class="widget_text widget clearfix widget_custom_html"><div class="textwidget custom-html-widget"><div style="background:#1D70B7; padding-top:10px"><h4 style="padding-left:10px">Get in touch with us!</h4>
+<script src="//info.enterprisedb.com/js/forms2/js/forms2.min.js"></script>
+
+<form id="mktoForm_3194"></form><script>MktoForms2.loadForm("//info.enterprisedb.com", "069-ALB-339", 3194);</script>
+</div></div></div></div></aside>		</div><!--end builder template--></div><!-- close default .container_wrap element -->		<p><div id='av_section_1'  class='avia-section main_color avia-section-default avia-no-border-styling  avia-bg-style-scroll  avia-builder-el-0  avia-builder-el-no-sibling  tq-footer  container_wrap fullsize' style='background-color: #043f5e;  '  ><div class='container' ><main  class='template-page content  av-content-full alpha units'><div class='post-entry post-entry-type-page post-entry-461'><div class='entry-content-wrapper clearfix'>
+<div class="flex_column av_one_fifth  flex_column_div av-zero-column-padding first  avia-builder-el-1  el_before_av_one_fifth  avia-builder-el-first  " style='border-radius:0px; '><div  class='avia-builder-widget-area clearfix  avia-builder-el-2  avia-builder-el-no-sibling '><section id="text_icl-11" class="widget clearfix widget_text_icl">		<div class="textwidget"><a href="https://www.2ndquadrant.com">
+<img class="alignnone size-medium wp-image-422" src="https://www.2ndquadrant.com/wp-content/uploads/2019/08/logo-whitebg_trasparent-e1564982769598.png" alt="" width="300" height="80" />
+</a>           </div>
+		<span class="seperator extralight-border"></span></section></div></div><div class="flex_column av_one_fifth  flex_column_div av-zero-column-padding   avia-builder-el-3  el_after_av_one_fifth  el_before_av_one_fifth  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><h3><a href="https://www.2ndquadrant.com/en/services/"><strong><span style="color: #ffffff;">Support &#038; Services</span></strong></a></h3>
+</div></section>
+<div  style='height:7px' class='hr hr-invisible   avia-builder-el-5  el_after_av_textblock  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/support/support-postgresql/">24/7 Production Support</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/support/support-developer/">Developer Support</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/rdba/">Remote DBA for PostgreSQL</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/monitoring-service/">PostgreSQL Database Monitoring</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/postgresql-healthcheck/">PostgreSQL Health Check</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/">PostgreSQL Performance Tuning</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/postgresql-security-audit/">Database Security Audit</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/upgrade-postgresql/">Upgrade PostgreSQL</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/postgresql-migration-assessment/">PostgreSQL Migration Assessment</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/services/migrate-from-oracle-to-postgresql/">Migrate from Oracle to PostgreSQL</a></span></p>
+</div></section></div><div class="flex_column av_one_fifth  flex_column_div av-zero-column-padding   avia-builder-el-7  el_after_av_one_fifth  el_before_av_one_fifth  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><h3><a href="https://www.2ndquadrant.com/en/resources/"><strong><span style="color: #ffffff;">Products</span></strong></a></h3>
+</div></section>
+<div  style='height:7px' class='hr hr-invisible   avia-builder-el-9  el_after_av_textblock  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/highly-available-postgresql-clusters/">HA Postgres Clusters</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/postgres-bdr-2ndquadrant/">Postgres-BDR<sup>®</sup></a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/2ndqpostgres/">2ndQPostgres</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/pglogical/">pglogical</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/repmgr/">repmgr</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/barman/">Barman</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/postgres-cloud-manager/">Postgres Cloud Manager</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/postgresql-security-firewall/">SQL Firewall</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/postgres-xl/">Postgres-XL</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/omnidb/">OmniDB</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/postgresql-installer-2ndquadrant/">Postgres Installer</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/resources/2uda/">2UDA</a></span></p>
+</div></section></div><div class="flex_column av_one_fifth  flex_column_div av-zero-column-padding   avia-builder-el-11  el_after_av_one_fifth  el_before_av_one_fifth  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><h3><a href="https://www.2ndquadrant.com/en/postgres-learning-center/"><strong><span style="color: #ffffff;">Postgres Learning Center</span></strong></a></h3>
+</div></section>
+<div  style='height:7px' class='hr hr-invisible   avia-builder-el-13  el_after_av_textblock  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/postgresql/">Introducing Postgres</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/blog/">Blog</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/webinars/">Webinars</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/books/">Books</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.youtube.com/2ndquadrantpostgresql">Videos</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/training/">Training</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/case-studies/">Case Studies</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/events/">Events</a></span></p>
+</div></section></div><div class="flex_column av_one_fifth  flex_column_div av-zero-column-padding   avia-builder-el-15  el_after_av_one_fifth  avia-builder-el-last  " style='border-radius:0px; '><section class="av_textblock_section " ><div class='avia_textblock  '  ><h3><a href="https://www.2ndquadrant.com/en/about-2ndquadrant/"><strong><span style="color: #ffffff;">About Us</span></strong></a></h3>
+</div></section>
+<div  style='height:7px' class='hr hr-invisible   avia-builder-el-17  el_after_av_textblock  el_before_av_textblock '><span class='hr-inner ' ><span class='hr-inner-style'></span></span></div>
+<section class="av_textblock_section " ><div class='avia_textblock  '  ><p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/about-2ndquadrant/">About 2ndQuadrant</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/what-does-2ndquadrant-mean/">What does 2ndQuadrant Mean?</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/news/">News</a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/careers/">Careers </a></span></p>
+<p><span style="color: #ffffff;"><a style="color: #ffffff;" href="https://www.2ndquadrant.com/en/team-profile/">Team Profile</a></span></p>
+</div></section></div></p>
+</div></div></main><!-- close content main element --> <!-- section close by builder template -->		</div><!--end builder template--></div><!-- close default .container_wrap element -->
+
+
+			
+
+			
+				<footer class='container_wrap socket_color' id='socket' >
+                    <div class='container'>
+
+                        <span class='copyright'>© 2ndQuadrant Ltd. All rights reserved. | <a href="https://www.2ndquadrant.com/en/privacy-policy/">Privacy Policy</a></span>
+
+                        <ul class='noLightbox social_bookmarks icon_count_5'><li class='social_bookmarks_twitter av-social-link-twitter social_icon_1'><a target="_blank" aria-label="Link to Twitter" href='https://twitter.com/EDBPostgres' aria-hidden='false' data-av_icon='' data-av_iconfont='entypo-fontello' title='Twitter' rel="noopener noreferrer"><span class='avia_hidden_link_text'>Twitter</span></a></li><li class='social_bookmarks_linkedin av-social-link-linkedin social_icon_2'><a target="_blank" aria-label="Link to LinkedIn" href='https://www.linkedin.com/company/enterprisedb' aria-hidden='false' data-av_icon='' data-av_iconfont='entypo-fontello' title='LinkedIn' rel="noopener noreferrer"><span class='avia_hidden_link_text'>LinkedIn</span></a></li><li class='social_bookmarks_facebook av-social-link-facebook social_icon_3'><a target="_blank" aria-label="Link to Facebook" href='https://www.facebook.com/EDBpostgres' aria-hidden='false' data-av_icon='' data-av_iconfont='entypo-fontello' title='Facebook' rel="noopener noreferrer"><span class='avia_hidden_link_text'>Facebook</span></a></li><li class='social_bookmarks_youtube av-social-link-youtube social_icon_4'><a target="_blank" aria-label="Link to Youtube" href='https://www.youtube.com/user/EnterpriseDB' aria-hidden='false' data-av_icon='' data-av_iconfont='entypo-fontello' title='Youtube' rel="noopener noreferrer"><span class='avia_hidden_link_text'>Youtube</span></a></li><li class='social_bookmarks_mail av-social-link-mail social_icon_5'><a  aria-label="Link to Mail" href='/en/contact/' aria-hidden='false' data-av_icon='' data-av_iconfont='entypo-fontello' title='Mail'><span class='avia_hidden_link_text'>Mail</span></a></li></ul>
+                    </div>
+
+	            <!-- ####### END SOCKET CONTAINER ####### -->
+				</footer>
+
+
+					<!-- end main -->
+</div>		
+		
+		<!-- end wrap_all --></div>
+
+<a href='#top' title='Scroll to top' id='scroll-top-link' aria-hidden='true' data-av_icon='' data-av_iconfont='entypo-fontello'><span class="avia_hidden_link_text">Scroll to top</span></a>
+
+<div id="formBtnDiv">
+	<div class="toggle-icon">
+		<img src="/wp-content/uploads/2019/10/red-cross-1.png" id="hide-icon">
+	</div>
+	<button id="formBtn">Need Help?</button>
+</div>
+
+<!-- The Modal -->
+<div id="formModal" class="formModal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+   
+<!--[if lte IE 8]>
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2-legacy.js"></script>
+<![endif]-->
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2.js"></script>
+<script>
+	jQuery(document).ready(function(){
+		hbspt.forms.create({
+			portalId: "4984779",
+			formId: "cead2ad1-3687-4382-a072-2fc461f7543d"
+		});
+	});
+</script>
+	  
+  </div>
+
+</div>
+
+<script>
+var modal = document.getElementById("formModal");
+
+var btn = document.getElementById("formBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+	
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+var hideIcon = document.getElementById("hide-icon");
+	var formBtn = document.getElementById("formBtn");
+hideIcon.onclick = function(){
+	formBtn.style.transform = "translate(200%,0)";
+	formBtn.style.transition = "transform 0.7s ease-in-out";
+	hideIcon.style.display = "none";
+}
+
+
+</script>
+<script>
+	jQuery(document).ready(function(){
+	jQuery(document).on('mouseenter', '#formBtnDiv', function () {
+                   jQuery(this).find(".toggle-icon").show();
+                }).on('mouseleave', '#formBtnDiv', function () {
+                    jQuery(this).find(".toggle-icon").hide();
+                });
+	});
+</script>
+
+
+<div id="fb-root"></div>
+
+    <script type="text/javascript">
+        document.addEventListener('wpcf7mailsent', function(event) {
+            document.cookie = "downloadForm=Submitted;path=/;";
+            jQuery('#case-study-form').hide();
+            jQuery('#download-form-link').show();
+        }, false);
+    </script>
+
+ <script type='text/javascript'>
+ /* <![CDATA[ */  
+var avia_framework_globals = avia_framework_globals || {};
+    avia_framework_globals.frameworkUrl = 'https://www.2ndquadrant.com/wp-content/themes/enfold/framework/';
+    avia_framework_globals.installedAt = 'https://www.2ndquadrant.com/wp-content/themes/enfold/';
+    avia_framework_globals.ajaxurl = 'https://www.2ndquadrant.com/wp-admin/admin-ajax.php?lang=en';
+/* ]]> */ 
+</script>
+ 
+ <script type='text/javascript' id='clicktrack-adrotate-js-extra'>
+/* <![CDATA[ */
+var click_object = {"ajax_url":"https:\/\/www.2ndquadrant.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-content/plugins/adrotate/library/jquery.adrotate.clicktracker.js' id='clicktrack-adrotate-js'></script>
+<script type='text/javascript' id='leadin-script-loader-js-js-extra'>
+/* <![CDATA[ */
+var leadin_wordpress = {"userRole":"visitor","pageType":"page","leadinPluginVersion":"7.48.24"};
+/* ]]> */
+</script>
+<script async defer id="hs-script-loader" type='text/javascript' defer='defer' src='https://js.hs-scripts.com/4984779.js?integration=WordPress' id='leadin-script-loader-js-js'></script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-content/themes/enfold-child/js/custom.js?ver=1.112' id='custom-js'></script>
+<script type='text/javascript' id='mediaelement-core-js-before'>
+var mejsL10n = {"language":"en","strings":{"mejs.download-file":"Download File","mejs.install-flash":"You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https:\/\/get.adobe.com\/flashplayer\/","mejs.fullscreen":"Fullscreen","mejs.play":"Play","mejs.pause":"Pause","mejs.time-slider":"Time Slider","mejs.time-help-text":"Use Left\/Right Arrow keys to advance one second, Up\/Down arrows to advance ten seconds.","mejs.live-broadcast":"Live Broadcast","mejs.volume-help-text":"Use Up\/Down Arrow keys to increase or decrease volume.","mejs.unmute":"Unmute","mejs.mute":"Mute","mejs.volume-slider":"Volume Slider","mejs.video-player":"Video Player","mejs.audio-player":"Audio Player","mejs.captions-subtitles":"Captions\/Subtitles","mejs.captions-chapters":"Chapters","mejs.none":"None","mejs.afrikaans":"Afrikaans","mejs.albanian":"Albanian","mejs.arabic":"Arabic","mejs.belarusian":"Belarusian","mejs.bulgarian":"Bulgarian","mejs.catalan":"Catalan","mejs.chinese":"Chinese","mejs.chinese-simplified":"Chinese (Simplified)","mejs.chinese-traditional":"Chinese (Traditional)","mejs.croatian":"Croatian","mejs.czech":"Czech","mejs.danish":"Danish","mejs.dutch":"Dutch","mejs.english":"English","mejs.estonian":"Estonian","mejs.filipino":"Filipino","mejs.finnish":"Finnish","mejs.french":"French","mejs.galician":"Galician","mejs.german":"German","mejs.greek":"Greek","mejs.haitian-creole":"Haitian Creole","mejs.hebrew":"Hebrew","mejs.hindi":"Hindi","mejs.hungarian":"Hungarian","mejs.icelandic":"Icelandic","mejs.indonesian":"Indonesian","mejs.irish":"Irish","mejs.italian":"Italian","mejs.japanese":"Japanese","mejs.korean":"Korean","mejs.latvian":"Latvian","mejs.lithuanian":"Lithuanian","mejs.macedonian":"Macedonian","mejs.malay":"Malay","mejs.maltese":"Maltese","mejs.norwegian":"Norwegian","mejs.persian":"Persian","mejs.polish":"Polish","mejs.portuguese":"Portuguese","mejs.romanian":"Romanian","mejs.russian":"Russian","mejs.serbian":"Serbian","mejs.slovak":"Slovak","mejs.slovenian":"Slovenian","mejs.spanish":"Spanish","mejs.swahili":"Swahili","mejs.swedish":"Swedish","mejs.tagalog":"Tagalog","mejs.thai":"Thai","mejs.turkish":"Turkish","mejs.ukrainian":"Ukrainian","mejs.vietnamese":"Vietnamese","mejs.welsh":"Welsh","mejs.yiddish":"Yiddish"}};
+</script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-includes/js/mediaelement/mediaelement-and-player.min.js?ver=4.2.13-9993131' id='mediaelement-core-js'></script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-includes/js/mediaelement/mediaelement-migrate.min.js?ver=5.5.3' id='mediaelement-migrate-js'></script>
+<script type='text/javascript' id='mediaelement-js-extra'>
+/* <![CDATA[ */
+var _wpmejsSettings = {"pluginPath":"\/wp-includes\/js\/mediaelement\/","classPrefix":"mejs-","stretching":"responsive"};
+/* ]]> */
+</script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-includes/js/mediaelement/wp-mediaelement.min.js?ver=5.5.3' id='wp-mediaelement-js'></script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-includes/js/wp-embed.min.js?ver=5.5.3' id='wp-embed-js'></script>
+<script type='text/javascript' defer='defer' src='https://www.2ndquadrant.com/wp-content/uploads/dynamic_avia/avia-footer-scripts-51db0797f748fbbe1d3d07fc000edca6---5fd248bebacea.js' id='avia-footer-scripts-js'></script>
+
+<!-- This site is optimized with Phil Singleton's WP SEO Structured Data Plugin v2.6.15 - https://kcseopro.com/wordpress-seo-structured-data-schema-plugin/ -->
+<script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "Service",
+    "name": "PostgreSQL Services and Support - 2ndQuadrant | PostgreSQL",
+    "serviceType": "PostgreSQL Service",
+    "alternateName": "PostgreSQL Performance Tuning by 2ndQuadrant",
+    "image": "https://www.2ndquadrant.com/wp-content/uploads/2019/07/performance-postgresql-2ndquadrant.png",
+    "url": "https://www.2ndquadrant.com/en/services/postgresql-performance-tuning/"
+}</script>
+<!-- / WP SEO Structured Data Plugin. -->
+
+
+<!-- google webfont font replacement -->
+
+			<script type='text/javascript'>
+
+				(function() {
+					
+					/*	check if webfonts are disabled by user setting via cookie - or user must opt in.	*/
+					var html = document.getElementsByTagName('html')[0];
+					var cookie_check = html.className.indexOf('av-cookies-needs-opt-in') >= 0 || html.className.indexOf('av-cookies-can-opt-out') >= 0;
+					var allow_continue = true;
+					var silent_accept_cookie = html.className.indexOf('av-cookies-user-silent-accept') >= 0;
+
+					if( cookie_check && ! silent_accept_cookie )
+					{
+						if( ! document.cookie.match(/aviaCookieConsent/) || html.className.indexOf('av-cookies-session-refused') >= 0 )
+						{
+							allow_continue = false;
+						}
+						else
+						{
+							if( ! document.cookie.match(/aviaPrivacyRefuseCookiesHideBar/) )
+							{
+								allow_continue = false;
+							}
+							else if( ! document.cookie.match(/aviaPrivacyEssentialCookiesEnabled/) )
+							{
+								allow_continue = false;
+							}
+							else if( document.cookie.match(/aviaPrivacyGoogleWebfontsDisabled/) )
+							{
+								allow_continue = false;
+							}
+						}
+					}
+					
+					if( allow_continue )
+					{
+						var f = document.createElement('link');
+					
+						f.type 	= 'text/css';
+						f.rel 	= 'stylesheet';
+						f.href 	= '//fonts.googleapis.com/css?family=Metrophobic';
+						f.id 	= 'avia-google-webfont';
+
+						document.getElementsByTagName('head')[0].appendChild(f);
+					}
+				})();
+			
+			</script>
+			</body>
+</html>
+
+<!-- Dynamic page generated in 0.416 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2020-12-12 18:39:12 -->
+
+<!-- Compression = gzip -->

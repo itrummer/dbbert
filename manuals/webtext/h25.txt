@@ -1,0 +1,235 @@
+Performance Tuning and other random stuff...GroupsConversationsAll groups and messagesReport Google Groups BugHelpAccountSearchMapsYouTubePlayNewsGmailMeetContactsDriveCalendarTranslatePhotosDuoChromeShoppingFinanceDocsSheetsSlidesBooksBloggerHangoutsKeepJamboardEarthCollectionsArts and CultureGoogle AdsPodcastsStadiaMore from GoogleSign inGroupsH2 DatabaseConversationsAboutPrivacy • TermsPerformance Tuning and other random stuff... 143 viewsSkip to first unread messageDan Armbrustunread,Jul 24, 2009, 5:26:10 PM7/24/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto H2 DatabaseI have a fairly large, multi-threaded application which uses hibernate
+to interface with a database.
+Lots of transactions, foreign keys,
+constraints and a fairly high thru-put requirement.
+For my current
+testing, I have about 20 tables, most are small, but a few have 10,000
+rows.
+I currently support PostgreSQL and MS SQL Server - and I'm exploring
+adding support for an embedded database.
+<off-topic>
+First I tested Derby, and was impressed that it mostly just worked,
+when plugged into our app as a backend.
+However, the performance was
+dreadful.
+Then I tried out HSQL - but it appears that either Hibernate or HSQL
+has completely broken their support for each other - I thought things
+were going to work, until I started using the app and getting random
+failures all over.
+Poked around for a bit, thinking something simple
+was wrong, but that doesn't seem to be the case.
+</off-topic>
+So, now I tried out H2 - having never used it before - and I must say,
+I'm quite impressed with your documentation.
+It is the best, by far,
+of any of the offerings I tried.
+I had 0 issues what-so-ever trying
+to bring my app up, load in my schema, and make it run with H2.
+The performance of H2 is at least 4 or 5 times faster that Derby was
+in my use case.
+However, it still leaves quite a bit to be desired
+compared to PostgreSQL on the same hardware
+(something on the order
+of 15 times slower) - so I'm looking for tuning feedback.
+I'm currently using the following as my connection URL:
+jdbc:h2:file:/work/h2/test;CACHE_SIZE=131072;
+I have a connection pool which opens connections to the DB.
+In PostgreSQL, I typically run 26 processing threads, each using
+connections from the pool.
+For H2, I backed it down to 2 processing threads, which seemed to help
+the performance a little.
+I've tried the TQ and SOFT_LRU cache algorithms, neither seems to
+impact my performance.
+When I tried to look into the horrible performance of Derby, I
+discovered that it was doing table scans for a couple of my (more
+complex) queries, while PostgreSQL was able to use it's indexes for
+said queries.
+I suspect that the same is happening with H2 -
+PostgreSQL and SQLServer are able to plan a way to perform my ugly
+queries using indexes, while H2 must be reverting to a table scan at
+some point.
+Any suggestions of other things to try to speed it up?
+One other bit of info about my use case - I don't care if an option
+makes it more likely to lose a few seconds worth of "committed"
+transactions - so long as the DB doesn't corrupt itself during a power
+outage.
+Is there anyway to have H2 give me something similar to the "Explain"
+output on Postgres, so I can figure out which queries it is having
+issues with?
+Or even better yet, an option to log "slow" queries
+(where slow is a user defined variable)?
+Two other quick questions -
+First - I like your web-gui-console tool - however one feature I found
+missing was the ability to run a sql script on a command line.
+Something like:
+java -jar h2.jar 'jdbc:h2:~/test' superSQLScript.sql
+Maybe it exists, but I just didn't see how to run it?
+And Second, in the documentation where you describe the CACHE_SIZE
+option, you don't specify the units for the number that is to be
+passed in.
+I'm assuming that it treats the number as MB?
+But I'm
+just guessing....
+Thanks for all the work on H2,
+Dan
+bob mcgeeunread,Jul 27, 2009, 1:44:58 PM7/27/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto H2 DatabaseHi Dan,
+The best place for performance tuning information is the
+documentation.
+There are several sections that can help with performance problems --
+see below.
+Solving a slow query/operation:
+http://www.h2database.com/html/faq.html#query_slow
+EXPLAIN and showing the query plan:
+http://www.h2database.com/html/grammar.html#explain
+Using the trace file & ConvertTraceFile to profile the DB & locate
+performance problems:
+http://www.h2database.com/html/performance.html#database_profiling
+Setting trace options:
+http://www.h2database.com/html/features.html#trace_options
+General performance tuning/optimization:
+http://www.h2database.com/html/performance.html#database_performance_tuning
+Answers to specific questions below.
+On Jul 24, 5:26 pm, Dan Armbrust <daniel.armbrust.l...@gmail.com>
+wrote:
+> jdbc:h2:file:/work/h2/test;CACHE_SIZE=131072;
+[snip]
+> you don't specify the units for the number that is to be
+> passed in.
+I'm assuming that it treats the number as MB?
+But I'm
+> just guessing....
+As documented in the grammar, units are KiB, so this is ~131 MB.
+Plenty of cache, probably.
+> [excess table scans]
+Possible -- check the links above, and use EXPLAIN to check this.
+It
+can happen if ANALYZE hasn't been run recently or the indexes aren't
+usable for your query.
+> Any suggestions of other things to try to speed it up?
+Look for what the cause of the problem is using the tools above.
+If
+you find something, post it here with pertinent info about your
+DB structure (tables, indexes, data types & sizes).
+People are happy
+to work with you to help improve performance.
+In one case, we were able to more than double insert performance &
+increase query performance by an order of magnitude.
+See example (still ongoing):
+http://groups.google.com/group/h2-database/browse_frm/thread/1ebee8794e1720c7?hl=en
+> Is there anyway to have H2 give me something similar to the "Explain"
+H2 provides EXPLAIN -- see link above.
+> Or even better yet, an option to log "slow" queries
+> (where slow is a user defined variable)?
+Yes, via the trace file.
+See links above.
+ABOUT PERFORMANCE IN GENERAL:
+H2 is a relatively young DBMS, and quite precocious for its age.
+It
+still has some less polished areas due to its youth, but if you can
+help pinpoint specific problems, they will probably be fixed soon.
+Thomas Mueller has been regularly pumping out multiple daily commits
+and weekly releases.
+The new page store which was recently introduced should address
+overall performance problems.
+It's a major change, so it may be a bit
+before it has been fully debugged and optimized though.
+Cheers,
+Bob McGeeDan Armbrustunread,Jul 28, 2009, 11:15:00 AM7/28/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto h2-da...@googlegroups.comOn Mon, Jul 27, 2009 at 12:44 PM, bob mcgee<bucky...@gmail.com> wrote:...Thanks for the feedback and tips.Not sure how I overlooked the obviousness of the "EXPLAIN" keyword :)As expected, I mostly have issues with a couple of poorly designedqueries which are causing tablescans.If we decide to officially support H2 as a new database, I'll have toeither rework them in such a way that H2 can use the indexes, or diginto H2's code a bit, and try to figure out why it isn't using theindexes.Thanks,Danbob mcgeeunread,Jul 28, 2009, 11:53:20 AM7/28/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto H2 DatabaseDan,
+If you can give a little more info about the queries, indexes, and
+table structures, I may be able to suggest why the indexes aren't
+being used.
+The most likely culprits are:
+Not having updated selectivity statistics
+Solution: run ANALYZE; or ANALYZE SAMPLE_SIZE 0;
+Low Selectivity: index may not be used
+Solution: fake a better selectivity, if you're sure it will improve
+performance (test this)
+Use an ALTER TABLE ALTER COLUMN SELECTIVITY statement.
+Multi-column indices: can only be used in order specified.
+If first column not used in where, index won't be.
+Also: did improving queries bring H2 up to the same performance level
+as PostgreSQL?
+I'm looking to see if there are any hotspots or points where
+performance needs optimizations.
+I've already submitted a pair of patches to Thomas for when he returns
+from vacation --
+these may improve start-up time and index creation speed a little
+bit.
+The speed at which strings
+are stored/retrieved from disk can also be improved considerably by
+storing their byte size
+along with their character count, but this could break compatibility.
+Cheers,
+Bob McGeee
+On Jul 28, 11:15 am, Dan Armbrust <daniel.armbrust.l...@gmail.com>
+wrote:
+Dan Armbrustunread,Jul 28, 2009, 5:41:21 PM7/28/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto h2-da...@googlegroups.comOn Tue, Jul 28, 2009 at 10:53 AM, bob mcgee<bucky...@gmail.com> wrote:>> Dan,> If you can give a little more info about the queries, indexes, and> table structures, I may be able to suggest why the indexes aren't> being used.>> The most likely culprits are:> Not having updated selectivity statistics> Solution: run ANALYZE; or ANALYZE SAMPLE_SIZE 0;How or when does H2 decide to update it's own statistics?Do you need to manually update them after you create a new table,indexes, and populate the table?How frequently would one need rerun Analyze if the table is growing?>> Low Selectivity: index may not be used> Solution: fake a better selectivity, if you're sure it will improve> performance (test this)> Use an ALTER TABLE ALTER COLUMN SELECTIVITY statement.I've never understood the lengths that databases sometimes go to toavoid using the indexes in situations where (it thinks) the table issmall.
+If someone bothered to create the index, they probablyintended for the database to use the index where possible.
+I've hadthis issue with PostgreSQL in the past too... I used to have to changea setting that basically told PosgreSQL if the index exists, use it.Otherwise, it had a tendency to make bad decisions when it thought atable had 10 rows in it, but in reality, it now had 50,000 (but thestats were out of date).Or worse, if you created a prepared statement when a table had 10 rowsin it, then populated the table with thousands of rows, then used theprepared statement, PostgreSQL would use the query plan that wascreated at the time the prepared statement was made - which wouldconclude that a table scan was always the thing to do, since the tablewas small.>> Multi-column indices: can only be used in order specified.> If first column not used in where, index won't be.If a table has columns A, B, C,And the primary key is A, B - I assume it creates an index on A, B.If I then query on just A - will it be able to use this index?
+Orwill it only be used for a query on A, B (in that order)?>> Also: did improving queries bring H2 up to the same performance level> as PostgreSQL?I haven't been able to rework the queries yet... its an issue with alegacy schema design that doesn't handle the question being asked in avery straightforward way.
+Probably won't put to much more work intoit unless I get a go-ahead from management saying that we want toofficially support H2.My query looks something like this:select *from a, bwhere a.zz=b.zzand((a.xx='string' and a.yy<>'string' )or(a.yy='string' and a.xx<>'string' and b.qq='1'))There are indexes for:b.zza.zza.xx, a,yya.yyPostgres starts this query by doing index scans for each of half of the OR.H2 starts with a table scan on a.But this isn't a big deal to me at the moment.
+I'd like to replacethe query anyway, and it's likely going to be a while before I get thego-ahead to integrate support for H2.
+Until then, I don't have a lotof cycles to test alternatives.
+I was just doing a cursory test ofvarious embedded databases to see what is possible with our currentcode.Thanks,Danbob mcgeeunread,Jul 29, 2009, 10:06:32 AM7/29/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto H2 DatabaseDan,
+I've got a couple answers for now, and maybe more after source
+diving.
+On Jul 28, 5:41 pm, Dan Armbrust <daniel.armbrust.l...@gmail.com>
+wrote:
+> On Tue, Jul 28, 2009 at 10:53 AM, bob mcgee<buckyba...@gmail.com> wrote:
+> How or when does H2 decide to update it's own statistics?
+It doesn't... yet (it's in the Roadmap for future develipment).
+> Do you need to manually update them after you create a new table,
+> indexes, and populate the table?
+After index creation, you should run "ANALYZE;" to gather stats for
+the index.
+It might be enough to assign a selectivity b/w 2 and 99 to the column
+though.
+If data changes a lot, it's a good idea to run analyze periodically to
+ensure the best
+index is used.
+> How frequently would one need rerun Analyze if the table is growing?
+I believe just if you think another index might become better after
+updates?
+I'm not sure though -- the initial run to guarantee index use is
+probably most important.
+> I've never understood the lengths that databases sometimes go to to
+> avoid using the indexes in situations where (it thinks) the table is
+> small.
+IANTM (I Am Not Thomas Mueller) but my understanding is that this is
+actually desirable, assuming your DB has a join algorithm (besides
+nested loop join) which can operate without indices.
+In theory, table
+scans should be able to iterate through rows much faster than B-trees
+because of the data structures involved and opportunity for (more)
+sequential I/O patterns. Jumping through 2 useless items for every
+used one in table scan might actually be faster than using an index to
+cut the search space to 1/3 and then iterating (with the index).
+Heck if I know though, query planning is COMPLEX. The H2 planner is
+fancy enough to use genetic algorithms, and still doesn't optimize
+some things properly, such as IN(...) conditions.
+> PostgreSQL would use the query plan that was
+> created at the time the prepared statement was made
+Aww, be fair!
+The query planner should be smart, not psychic -- we
+wouldn't want Skynet level craziness happening, now would we?
+> If I then query on just A - will it be able to use this index?  Or
+> will it only be used for a query on A, B (in that order)?
+It should.
+> [Query]
+I think that should work fine with indices in H2 (in theory), once
+selectivity is set.
+You might try the following though, where the joins are more explicit
+--
+might make things easier on the other DBMSes too, depending.
+SELECT * FROM A INNER JOIN B ON A.zz=B.zz
+AND (A.xx='string' AND A.yy <> 'string')
+OR (A.yy='string' AND A.xx <>'string' AND B.qq='1');
+alternative:
+SELECT * FROM a INNER JOIN b ON a.zz=b.zz
+WHERE
+(a.xx='string' AND b.yy <> 'string')
+OR
+(a.xx <>'string'
+AND a.yy='string' AND b.qq='1');
+Cheers,
+Bob McGeeThomas Muellerunread,Aug 4, 2009, 2:43:45 PM8/4/09Reply to authorSign in to reply to authorForwardSign in to forwardDeleteYou do not have permission to delete messages in this groupLinkReport message as abuseSign in to report message as abuseShow original messageEither email addresses are anonymous for this group or you need the view member email addresses permission to view the original messageto h2-da...@googlegroups.comHi,>> I've never understood the lengths that databases sometimes go to to>> avoid using the indexes in situations where (it thinks) the table is>> small.Me neither. H2 uses an index, even if the table has no rows. I'm notsaying this is smart, but that's how it works. One reason is that thequery plan is re-used for prepared statements in most cases (there aresome exceptions, for example if you use LIKE).> from a, b where a.zz=b.zz and ((a.xx='string' and a.yy<>'string' ) or (a.yy='string' and a.xx<>'string' and b.qq='1'))H2 doesn't optimize this yet. If you want, you could rewrite the queryas a UNION:select * from a, b where a.zz=b.zz and a.xx='string' and a.yy<>'string'unionselect * from a, b where a.zz=b.zz and a.yy='string' anda.xx<>'string' and b.qq='1'Regards,ThomasReply allReply to authorForward0 new messagesSearchClear searchClose searchGoogle appsMain menu
