@@ -1,0 +1,48 @@
+
+MS to PG Statistics
+-------------------
+
+Epoch 10 of 10: 100%
+10/10 [06:33<00:00, 39.36s/it]
+
+Epoch 20 of 20: 100%
+20/20 [01:43<00:00, 5.19s/it]
+
+Evaluation for model detecting key sentences: 
+0.46875353754987636
+[[2929    5]
+ [  32   14]]
+
+Evaluation for model classifying tuning hints:
+0.035523428602599924
+[[ 2  0  0  0  2  0  0]
+ [ 2  0  0  0  7  0  0]
+ [ 1  0  0  0  6  0  0]
+ [ 0  0  0  0  4  0  0]
+ [ 4  1  0  0 17  0  0]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0]]
+
+PG to MS Statistics
+-------------------
+
+Epoch 10 of 10: 100%
+10/10 [04:08<00:00, 24.87s/it]
+
+Epoch 20 of 20: 100%
+20/20 [00:26<00:00, 1.33s/it]
+
+Evaluation for model detecting key sentences: 
+0.5060742269110091
+[[3009   12]
+ [  19   16]]
+
+Evaluation for model classifying tuning hints:
+0.358227240168704
+[[ 0  3  1  0  2  0  0]
+ [ 1  2  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  1  0  0]
+ [ 0  2  0  0 20  0  0]
+ [ 0  1  2  0  0  0  0]
+ [ 0  0  0  0  0  0  0]]
