@@ -1,0 +1,691 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
+<head>
+  <base href="http://iliachemodanov.ru/en/blog-en/21-databases/42-h2-performance-en" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="keywords" content="java programming" />
+  <meta name="rights" content="copyright (c) Ilia Chemodanov" />
+  <meta name="description" content="personal site of Ilia Chemodanov" />
+  <meta name="generator" content="Joomla! - Open Source Content Management" />
+  <title>H2 performance tuning - IliaChemodanov.ru</title>
+  <link rel="stylesheet" href="/media/com_finder/css/finder.css" type="text/css" />
+  <link rel="stylesheet" href="/media/mod_languages/css/template.css" type="text/css" />
+  <script src="/media/system/js/mootools-core.js" type="text/javascript"></script>
+  <script src="/media/system/js/core.js" type="text/javascript"></script>
+  <script src="/media/system/js/caption.js" type="text/javascript"></script>
+  <script src="/media/system/js/mootools-more.js" type="text/javascript"></script>
+  <script src="/media/com_finder/js/autocompleter.js" type="text/javascript"></script>
+  <script type="text/javascript">
+window.addEvent('load', function() {
+				new JCaption('img.caption');
+			});
+  </script>
+
+
+<link href="http://iliachemodanov.ru/templates/ic-design/images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+
+<style type="text/css">
+    .yjsquare h4, .button, .validate, a.pagenav, .pagenav_prev a, .pagenav_next a,
+    .pagenavbar a, .back_button a, #footer, a.readon:link, a.readon:visited {
+        background: #1166ff;
+    }
+</style>
+
+<script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/libraries/jquery.js"></script>
+<script type="text/javascript">jQuery.noConflict();</script>
+        <link href="http://iliachemodanov.ru/templates/ic-design/css/template.css" rel="stylesheet" type="text/css" />
+        <link href="http://iliachemodanov.ru/templates/ic-design/css/style1.css" rel="stylesheet" type="text/css" />
+        <link href="http://iliachemodanov.ru/templates/ic-design/css/rounded.css" rel="stylesheet" type="text/css" />
+
+
+
+                        
+     
+                    <script type="text/javascript"> var YJSG_topmenu_font = '12px'; </script>
+            <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/mouseover13.js"></script>
+            <script language="javascript" type="text/javascript">   
+            window.addEvent('domready', function(){
+                new SmoothDrop({
+                    'container':'horiznav', 
+                    contpoz: 0,
+                    horizLeftOffset: 14, // submenus, left offset
+                    horizRightOffset: -14, // submenus opening into the opposite direction
+                    horizTopOffset: 20, // submenus, top offset
+                    verticalTopOffset: 30, // main menus top offset
+                    verticalLeftOffset: 10, // main menus, left offset
+                    maxOutside: 50
+                });
+            });             
+            </script>   
+                    <style type="text/css">
+            .horiznav li li,.horiznav ul ul a, .horiznav li ul, .YJSG_listContainer {
+             width: 220px;
+        }
+            </style>
+                            <style type="text/css">
+              div.title h1,div.title h2,div.componentheading, h1,h2,h3,h4,h5,h6,.yjround h4,.yjsquare h4,.horiznav ul li a {
+                 font-family:"Courier New", Courier, monospace;              }
+            </style>
+    
+<style type="text/css">
+.horiznav li ul ul,.subul_main.group_holder ul.subul_main ul.subul_main, .subul_main.group_holder ul.subul_main ul.subul_main ul.subul_main, .subul_main.group_holder ul.subul_main ul.subul_main ul.subul_main ul.subul_main,.horiznav li li li:hover ul.dropline{
+    margin-top: -32px !important;
+    margin-left: 98%!important;
+}
+</style>
+
+
+
+
+
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shCore.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushJava.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushBash.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushCSharp.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushXml.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushJScript.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushCpp.js"></script>
+    <script type="text/javascript" src="http://iliachemodanov.ru/templates/ic-design/src/shBrushSql.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="http://iliachemodanov.ru/templates/ic-design/css/shCoreDefault.css"/>
+
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['toolbar'] = false;
+        SyntaxHighlighter.all();
+    </script>
+
+</head>
+			 	<script type="text/javascript">
+	                    function addTag()
+						{
+							var tag = $('ttnewtag').get('value');
+					 		var url = 'http://iliachemodanov.ru/index.php?option=com_tortags&task=addtag&tmpl=component&format=raw&tag='+ tag +'&id=42&comp=com_content';
+							var a = new Request.HTML({
+							         url: url,
+							         method: 'post',
+							         update   : $('tt-value'),
+							         onRequest: function(){
+	        							$('tt-status').set('text', 'loading...');
+	    							},
+							         onComplete:  function(response) 
+							            {
+							            	var result = $('tt-value').get('text');
+							            	var mess = '';
+							            	
+							            	if (result==-1)
+							            	{
+							            		mess ="<span class='tt_error'> Error: empty or wrong parameters </span>";
+							            	}else
+							            	if (result=='-2')
+							            	{
+							            		mess ="<span class='tt_notice'>Notice: This tag is already exist </span>";
+							            	}else
+							            	if (result=='-3')
+							            	{
+							            		mess ="<span class='tt_error'>Error: Insert DB error </span>";
+							            	}
+							            	else
+							            	{
+							            		mess ="<span class='tt_success'> Successfully added </span>";
+							            		var button = '<div id="tagid_'+ result +'" class="tt_button"><div class="tt_end"><span class="tt-2gtr"><a class="tt-del-link" href="javascript:void(0);" onclick="javascript:delTag('+ result +');"><img src="http://iliachemodanov.ru/administrator/components/com_tortags/assets/images/delete.png"/></a><span style="font-weight: normal;">'+ tag +'</span></span></div></div>';
+							            		$('tt-tags').set('html', $('tt-tags').get('html') + button);
+							            	}
+							            	
+							            	$('tt-status').set('html', mess);
+							            	$('ttnewtag').set('value','');
+							            	$('ttnewtag').focus();
+	
+							            }
+							        }); 
+							a.send(); 
+						}
+						function delTag(id)
+						{
+					 		var url = 'http://iliachemodanov.ru/index.php?option=com_tortags&task=deltag&tmpl=component&format=raw&tag_id='+ id+'&id=42&comp=com_content';
+							var d = new Request.HTML({
+							         url: url,
+							         method: 'post',
+							         update   : $('tt-value'),
+							         onRequest: function(){
+	        							$('tt-status').set('text', 'loading...');
+	    							},
+							         onComplete:  function(response) 
+							            {	
+							            	var namefield = 'tagid_'+ id;
+							            	$(namefield).destroy();
+							            	var result = $('tt-value').get('text');
+							            	var mess = '';
+							            	
+							            	if (result==-1)
+							            	{
+							            		mess ="<span class='tt_error'> Error: empty or wrong parameters </span>";
+							            	}else
+							            	{
+							            		mess ="<span class='tt_success'> Successfully deleted </span>";
+							            	}
+							            	$('tt-status').set('html', mess);
+							            }
+							        }); 
+							d.send(); 
+						}
+	 			</script>
+			 	<body id="stylef6" style="background: #00eedd">
+
+<div id="centertop" style="font-size:12px; width:960px;">
+                 <!-- header -->
+  <div id="header" style="min-height: 80px; background: #1166ff;">
+      <div id="logo" class="png" style="height: 80px; width: 55.5%;">
+           <a href="http://iliachemodanov.ru/" style="height:80px;"></a>
+          </div>
+    <!-- end logo -->
+   
+
+<div id="yjsgheadergrid" style="width:44.5%;">
+        <div id="header3" class="yjsgxhtml" style="width:100.00%;">
+        <div class="mod-languages">
+
+	<ul class="lang-inline">
+						<li class="" dir="ltr">
+			<a href="/ru/">
+							<img src="/media/mod_languages/images/ru.gif" alt="Русский" title="Русский" />						</a>
+			</li>
+								<li class="lang-active" dir="ltr">
+			<a href="/en/">
+							<img src="/media/mod_languages/images/en.gif" alt="English (UK)" title="English (UK)" />						</a>
+			</li>
+				</ul>
+
+</div>
+
+    </div>
+    </div>
+  
+    <!-- top menu -->
+<div id="top-menu-holder" style="margin-left: 555px; margin-top: 25px;">
+    <div class="top-menu" style="font-size:12px;">
+        <div id="horiznav" class="horiznav">    <ul class="menunav">
+    <li class="item101"><span class="mymarg"><a href="/en/"><span class="yjm_has_none"><span class="yjm_title">Home</span></span></a></span></li><li id="current" class="active haschild item109"><span class="child"><a href="/en/blog-en"><span class="yjm_has_none"><span class="yjm_title">Blog</span></span></a></span><ul class="subul_main level1"><li class="bl"></li><li class="tl"></li><li class="tr"></li><li class="item119"><span class="mymarg"><a href="/en/blog-en/blog-categories-en"><span class="yjm_has_none"><span class="yjm_title">By categories</span></span></a></span></li><li class="item120"><span class="mymarg"><a href="/en/blog-en/blog-archive-en"><span class="yjm_has_none"><span class="yjm_title">Archive</span></span></a></span></li><li class="right"></li><li class="br"></li></ul></li><li class="haschild item110"><span class="child"><a href="/en/about-en"><span class="yjm_has_none"><span class="yjm_title">About Author</span></span></a></span><ul class="subul_main level1"><li class="bl"></li><li class="tl"></li><li class="tr"></li><li class="item115"><span class="mymarg"><a href="/about-en#contacts"><span class="no_text"><span class="yjm_title">Contacts</span></span></a></span></li><li class="item116"><span class="mymarg"><a href="/about-en#certificates"><span class="no_text"><span class="yjm_title">Certificates</span></span></a></span></li><li class="item117"><span class="mymarg"><a href="/about-en#publications"><span class="no_text"><span class="yjm_title">Publications</span></span></a></span></li><li class="item118"><span class="mymarg"><a href="/about-en#education"><span class="no_text"><span class="yjm_title">Education</span></span></a></span></li><li class="right"></li><li class="br"></li></ul></li></ul></div>
+    </div>
+</div>
+    <!-- end top menu -->
+
+
+
+</div>
+  <!-- end header -->
+
+
+        
+
+                        </div>
+<!-- end centartop -->
+<div id="centerbottom" style="font-size:12px; width:960px;">
+       <!-- MAIN LAYOUT HOLDER -->
+<div id="holder">
+  <!-- messages -->
+  
+<div id="system-message-container">
+</div>
+  <!-- end messages -->
+    <!-- left block -->
+  <div id="leftblock" style="width:22.5%;">
+    <div class="inside">
+      <div class="yjroundout">
+<div class="yjround">
+ <div class="content">
+  <div class="t"></div>
+<div class="yjround_in">
+<script type="text/javascript">
+//<![CDATA[
+	window.addEvent('domready', function() {
+		var value;
+
+		// Set the input value if not already set.
+		if (!document.id('mod-finder-searchword').getProperty('value')) {
+			document.id('mod-finder-searchword').setProperty('value', 'Search...');
+		}
+
+		// Get the current value.
+		value = document.id('mod-finder-searchword').getProperty('value');
+
+		// If the current value equals the default value, clear it.
+		document.id('mod-finder-searchword').addEvent('focus', function() {
+			if (this.getProperty('value') == 'Search...') {
+				this.setProperty('value', '');
+			}
+		});
+
+		// If the current value is empty, set the previous value.
+		document.id('mod-finder-searchword').addEvent('blur', function() {
+			if (!this.getProperty('value')) {
+				this.setProperty('value', value);
+			}
+		});
+
+		document.id('mod-finder-searchform').addEvent('submit', function(e){
+			e = new Event(e);
+			e.stop();
+
+			// Disable select boxes with no value selected.
+			if (document.id('mod-finder-advanced') != null) {
+				document.id('mod-finder-advanced').getElements('select').each(function(s){
+					if (!s.getProperty('value')) {
+						s.setProperty('disabled', 'disabled');
+					}
+				});
+			}
+
+			document.id('mod-finder-searchform').submit();
+		});
+
+		/*
+		 * This segment of code sets up the autocompleter.
+		 */
+								var url = '/en/component/finder/?task=suggestions.display&format=json&tmpl=component';
+			var ModCompleter = new Autocompleter.Request.JSON(document.id('mod-finder-searchword'), url, {'postVar': 'q'});
+			});
+//]]>
+</script>
+
+<form id="mod-finder-searchform" action="/en/component/finder/search" method="get">
+	<div class="finder">
+		<input type="text" name="q" id="mod-finder-searchword" class="inputbox" size="25" value="" /><button class="button finder" type="submit">Go</button>
+				<input type="hidden" name="Itemid" value="109" />	</div>
+</form>
+</div>
+   </div>
+ <div class="b"><div class="bin"></div></div>
+</div>
+</div>
+<div class="yjroundout">
+<div class="yjround">
+ <div class="content">
+  <div class="t"></div>
+<div class="yjround_in"><ul class="categories-module">
+	<li >   <h4>
+		<a href="/en/blog-en/9-java">
+		Java</a>
+   </h4>
+
+		<ul>	<li >   <h5>
+		<a href="/en/blog-en/10-java/jaxb">
+		JAXB</a>
+   </h5>
+
+		 </li>
+	<li >   <h5>
+		<a href="/en/blog-en/11-java/jsf">
+		JSF</a>
+   </h5>
+
+		 </li>
+	<li >   <h5>
+		<a href="/en/blog-en/20-java/jax-ws">
+		JAX-WS</a>
+   </h5>
+
+		 </li>
+</ul> </li>
+	<li >   <h4>
+		<a href="/en/blog-en/12-tools">
+		Tools</a>
+   </h4>
+
+		<ul>	<li >   <h5>
+		<a href="/en/blog-en/13-tools/glassfish">
+		GlassFish</a>
+   </h5>
+
+		 </li>
+	<li >   <h5>
+		<a href="/en/blog-en/14-tools/maven">
+		Maven</a>
+   </h5>
+
+		 </li>
+	<li >   <h5>
+		<a href="/en/blog-en/15-tools/ant">
+		Ant</a>
+   </h5>
+
+		 </li>
+</ul> </li>
+	<li >   <h4>
+		<a href="/en/blog-en/21-databases">
+		Databases</a>
+   </h4>
+
+		 </li>
+	<li >   <h4>
+		<a href="/en/blog-en/16-c-sharp">
+		C#</a>
+   </h4>
+
+		 </li>
+	<li >   <h4>
+		<a href="/en/blog-en/17-cpp">
+		C++</a>
+   </h4>
+
+		 </li>
+	<li >   <h4>
+		<a href="/en/blog-en/18-web">
+		Web</a>
+   </h4>
+
+		<ul>	<li >   <h5>
+		<a href="/en/blog-en/19-web/joomla">
+		Joomla</a>
+   </h5>
+
+		 </li>
+</ul> </li>
+</ul>
+</div>
+   </div>
+ <div class="b"><div class="bin"></div></div>
+</div>
+</div>
+<div class="yjroundout">
+<div class="yjround">
+ <div class="content">
+  <div class="t"></div>
+<div class="yjround_in"><style type="text/css">
+#tortags-mod a.tag1 {
+    font-size: 90%;
+    font-weight: normal;
+}
+#tortags-mod a.tag2 {
+    font-size: 100%;
+    font-weight: normal;
+}
+#tortags-mod a.tag3 {
+    font-size: 125%;
+    font-weight: normal;
+}
+#tortags-mod a.tag4 {
+    font-size: 150%;
+    font-weight: normal;
+}
+#tortags-mod a.tag5 {
+    font-size: 175%;
+    font-weight: normal;
+}
+#tortags-mod a.tag6 {
+    font-size: 200%;
+    font-weight: bold;
+}
+#tortags-mod a.tag7 {
+    font-size: 225%;
+    font-weight: bold;
+}
+#tortags-mod a.tag8 {
+    font-size: 250%;
+    font-weight: bold;
+}
+#tortags-mod a.tag9 {
+    font-size: 265%;
+    font-weight: bold;
+}
+</style>
+<div class="tortags" id="tortags-mod">
+	<a class='tag1' href="/en/component/search/?searchword=ant&amp;areas[0]=tortags">ant</a> 	<a class='tag1' href="/en/component/search/?searchword=apache&amp;areas[0]=tortags">apache</a> 	<a class='tag1' href="/en/component/search/?searchword=bash&amp;areas[0]=tortags">bash</a> 	<a class='tag1' href="/en/component/search/?searchword=boost&amp;areas[0]=tortags">boost</a> 	<a class='tag1' href="/en/component/search/?searchword=c%20sharp&amp;areas[0]=tortags">c sharp</a> 	<a class='tag1' href="/en/component/search/?searchword=cpp&amp;areas[0]=tortags">cpp</a> 	<a class='tag1' href="/en/component/search/?searchword=css&amp;areas[0]=tortags">css</a> 	<a class='tag2' href="/en/component/search/?searchword=database&amp;areas[0]=tortags">database</a> 	<a class='tag2' href="/en/component/search/?searchword=glassfish&amp;areas[0]=tortags">glassfish</a> 	<a class='tag1' href="/en/component/search/?searchword=h2database&amp;areas[0]=tortags">h2database</a> 	<a class='tag1' href="/en/component/search/?searchword=hotspot&amp;areas[0]=tortags">hotspot</a> 	<a class='tag1' href="/en/component/search/?searchword=idea&amp;areas[0]=tortags">idea</a> 	<a class='tag9' href="/en/component/search/?searchword=java&amp;areas[0]=tortags">java</a> 	<a class='tag1' href="/en/component/search/?searchword=javascript&amp;areas[0]=tortags">javascript</a> 	<a class='tag1' href="/en/component/search/?searchword=jax-ws&amp;areas[0]=tortags">jax-ws</a> 	<a class='tag2' href="/en/component/search/?searchword=jaxb&amp;areas[0]=tortags">jaxb</a> 	<a class='tag1' href="/en/component/search/?searchword=joomla&amp;areas[0]=tortags">joomla</a> 	<a class='tag1' href="/en/component/search/?searchword=jquery&amp;areas[0]=tortags">jquery</a> 	<a class='tag4' href="/en/component/search/?searchword=jsf&amp;areas[0]=tortags">jsf</a> 	<a class='tag1' href="/en/component/search/?searchword=junit&amp;areas[0]=tortags">junit</a> 	<a class='tag4' href="/en/component/search/?searchword=maven&amp;areas[0]=tortags">maven</a> 	<a class='tag1' href="/en/component/search/?searchword=mongodb&amp;areas[0]=tortags">mongodb</a> 	<a class='tag1' href="/en/component/search/?searchword=netbeans&amp;areas[0]=tortags">netbeans</a> 	<a class='tag1' href="/en/component/search/?searchword=nosql&amp;areas[0]=tortags">nosql</a> 	<a class='tag1' href="/en/component/search/?searchword=oracle&amp;areas[0]=tortags">oracle</a> 	<a class='tag1' href="/en/component/search/?searchword=rich-faces&amp;areas[0]=tortags">rich-faces</a> 	<a class='tag1' href="/en/component/search/?searchword=rman&amp;areas[0]=tortags">rman</a> 	<a class='tag1' href="/en/component/search/?searchword=solaris&amp;areas[0]=tortags">solaris</a> 	<a class='tag1' href="/en/component/search/?searchword=sql&amp;areas[0]=tortags">sql</a> 	<a class='tag1' href="/en/component/search/?searchword=sqlplus&amp;areas[0]=tortags">sqlplus</a> 	<a class='tag9' href="/en/component/search/?searchword=tools&amp;areas[0]=tortags">tools</a> 	<a class='tag2' href="/en/component/search/?searchword=web&amp;areas[0]=tortags">web</a> 	<a class='tag1' href="/en/component/search/?searchword=wsdl&amp;areas[0]=tortags">wsdl</a> 	<a class='tag1' href="/en/component/search/?searchword=xml&amp;areas[0]=tortags">xml</a> 	<a class='tag1' href="/en/component/search/?searchword=zfs&amp;areas[0]=tortags">zfs</a> </div>
+</div>
+   </div>
+ <div class="b"><div class="bin"></div></div>
+</div>
+</div>
+
+    </div>
+  </div>
+  <!-- end left block -->
+    <!-- MID BLOCK -->
+  <div id="midblock" style="width: 77.5%;">
+    <div class="insidem">
+      <!-- path way -->
+<div id="path-way"> 
+  <span class="breadcrumbs-style">
+<a href="/en/blog-en" class="path-way">Blog</a><a href="/en/blog-en/21-databases" class="path-way">Databases</a>H2 performance tuning</span>
+
+</div>
+<!-- end path way -->
+
+                  <!-- component -->
+      
+<div class="news-item-a">
+        
+        
+    
+        <div class="title">
+        <h1>
+                        <a href="/en/blog-en/21-databases/42-h2-performance-en" class="content-page-title"> 
+                H2 performance tuning 
+            </a>
+                    </h1>
+    </div>
+                
+    
+        <div class="news-item-tools">
+        <div class="news-item-info">
+                        
+                        
+             
+            
+                        <div class="clr"></div>
+                        <span class="news-item-published" title="Published Date">
+                <img class="publish-date" src="/templates/ic-design/images/system/post-date-icon.png" />
+                18 November 2012            </span>
+             
+                    </div>
+        
+                <div class="button-heading">
+                                    <span class="print"> <a href="/en/blog-en/21-databases/42-h2-performance-en?tmpl=component&amp;print=1&amp;layout=default&amp;page=" title="Print" onclick="window.open(this.href,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no'); return false;" rel="nofollow"><img src="/templates/ic-design/images/system/printButton.png" alt="Print"  /></a> </span>
+                    </div>
+            </div>
+    
+    
+    <div class="news-item-text">
+            <p><a href="http://www.h2database.com/">H2</a> database engine is
+<a href="http://www.h2database.com/html/performance.html#performance_comparison">fast enough</a>. But in my case its
+performance was not as good as I wished. This article is about my experience of speed improvements of H2 (version 
+<span class="bold-text">1.3.169</span>).
+</p>
+<p>In an application where H2 was used, the database size was small (on the drive it takes about 100 MB), but it received a 
+quite large number of concurrent requests (about 10-15 queries per second).
+</p>
+<p>Of course, first I profiled the application and the database system (next I will call it just database for short) - 
+H2 has <a href="http://www.h2database.com/html/performance.html#database_profiling">a good tool for this</a>.
+</p>
+<p>The results showed that 50% of time database spends on executing a quite complex SELECT-query, which contains two subqueries, 
+where the first one joins 5 tables, and another - 7 tables. So I test ongoing optimizations, mostly on this query.</p>
+
+<h2>Indexes</h2>
+
+<p>This is the first thing advised to make by the 
+<a href="http://www.h2database.com/html/performance.html#database_performance_tuning">H2 documentation</a>.
+</p>
+<p>To Learn exactly which indexes are missing, you should use the keyword <span class="bold-text">EXPLAIN ANALYZE</span> before 
+the query: </p>
+
+<pre class="brush: sql;">
+EXPLAIN ANALYZE SELECT * FROM MY_TABLE WHERE NAME = 'Some Name';
+</pre>
+
+If an index is not used, the output contains the word <span class="bold-text">tableScan</span>:
+
+<pre class="brush: sql;">
+SELECT
+    MY_TABLE.ID,
+    MY_TABLE.NAME
+FROM PUBLIC.MY_TABLE
+    /* PUBLIC.MY_TABLE.tableScan */
+    /* WHERE NAME = 'Some Name' 
+    */
+    /* scanCount: 42 */
+WHERE NAME = 'Some Name'
+</pre>
+
+<p>After adding an index to the column <span class="bold-text">NAME</span>:</p>
+
+<pre class="brush: sql;">
+CREATE INDEX INDEX1 ON MY_TABLE(NAME);
+</pre>
+
+<p>Query execution plan has changed (now the index is applied):</p>
+
+<pre class="brush: sql;">
+SELECT
+    MY_TABLE.ID,
+    MY_TABLE.NAME
+FROM PUBLIC.MY_TABLE
+    /* PUBLIC.INDEX1: NAME = 'Some Name' */
+    /* WHERE NAME = 'Some Name'
+    */
+    /* scanCount: 3 */
+WHERE NAME = 'Some Name'
+</pre>
+
+<p>Usually indexes significantly improve the speed of data retrieval - in my case, the query (because of additional indexes) 
+became faster by 2-3 times.</p>
+
+<h2>H2 options</h2>
+
+<p>H2 has a number of settings that can improve performance (proposed by default). Almost all available options
+(except <span class="bold-text">CACHE_TYPE</span>) can be found 
+<a href="http://www.h2database.com/javadoc/org/h2/constant/DbSettings.html">here</a> or by the query:</p>
+
+<pre class="brush: sql;">
+select * from information_schema.settings
+</pre>
+
+<p>Some additional parameters can be found <a href="http://www.h2database.com/javadoc/org/h2/constant/SysProperties.html">there</a>, 
+and also <a href="http://www.h2database.com/html/grammar.html">there</a>.
+</p>
+<p>Depending on the option, it can be changed or when connecting to the database, such as:</p>
+
+<pre class="brush: java;">
+    Connection c = DriverManager.getConnection("jdbc:h2:mydatabase;CACHE_SIZE=8192");
+</pre>
+
+<p>Or by using the command <span class="bold-text">SET</span> (after connection to the database):</p>
+
+<pre class="brush: sql;">
+    SET CACHE_SIZE 8192
+</pre>
+
+<p>Both ways are available for the most settings.</p>
+
+<h3>Cache</h3>
+
+<p>As stated in the <a href="http://www.h2database.com/html/features.html#cache_settings">documentation</a> H2 caches most frequently 
+used data in the main memory. If the cache size is not sufficient to fulfill the request, the same data will be read from disk several 
+times. Therefore the size of cache also affects the first execution of a query (if processing requires reading large enough amount of data 
+from the disk).
+</p>
+<p>The cache size is set by the option <a href="http://www.h2database.com/html/grammar.html#set_cache_size">CACHE_SIZE</a> in kilobytes
+and defaults to 16384 (16MB). In my case, this was not enough - increasing the cache twice (up to 32 MB), I got the performance increment 
+in the area of 62%, which is more than 2 times faster.
+</p>
+<p>H2 also allows to choose the caching algorithm: <span class="bold-text">LRU</span> (is used by default), 
+<span class="bold-text">SOFT_LRU</span> or <span class="bold-text">TQ</span>. This can be done using the option
+<span class="bold-text">CACHE_TYPE</span>. As recommended in the documentation, I tried all three algorithms - and it turned out that
+<span class="bold-text">TQ</span> is a bit faster - about 2-4%.
+</p>
+<p>The number of cached queries for the session is specified using the option 
+<a href="http://www.h2database.com/javadoc/org/h2/constant/DbSettings.html#QUERY_CACHE_SIZE">QUERY_CACHE_SIZE</a>. The default value is 8, 
+which is not much, and probably it will require to increase.
+</p>
+<p>There are a number of options (<a href="http://www.h2database.com/html/grammar.html#set_max_memory_rows">MAX_MEMORY_ROWS</a>, 
+<a href="http://www.h2database.com/html/grammar.html#set_max_memory_undo">MAX_MEMORY_UNDO</a> and 
+<a href="http://www.h2database.com/html/grammar.html#set_max_operation_memory">MAX_OPERATION_MEMORY</a>) related to caching, which 
+can speed up the database, but in my case, the increase in their values did not improve the performance.
+</p>
+
+<h3>MVCC setting</h3>
+
+<p>This feature, as described in <a href="http://www.h2database.com/html/advanced.html#mvcc">documentation</a>, provides higher 
+concurrency for modification operations and is disabled by default.
+</p>
+<p>In my case, if you turn off this setting, the application stops working correctly because of the many queries 
+exceeded the timeout.
+</p>
+<p>On the other hand, if there are a small number of concurrent queries, then probably it is not necessary to turn on this option, because 
+when it is turned on, single queries start to run slower around 45%, as shown by my tests.</p>
+
+<h3>EARLY_FILTER option</h3>
+
+<p>Setting <a href="http://www.h2database.com/javadoc/org/h2/constant/DbSettings.html#EARLY_FILTER">EARLY_FILTER</a> allows table 
+implementations to apply filter conditions early on. By default this option is set to <span class="bold-text">false</span>.
+</p>
+<p>After the setting was enabled, the speed of SELECT-queries increased by approximately 53%.
+</p>
+
+<h3>Page and file sizes</h3>
+
+<p>As almost all databases, H2 divides memory into the pages. By default
+<a href="http://www.h2database.com/html/features.html#page_size">page size (option PAGE_SIZE)</a> is equal to 2 kilobytes, which at first
+glance seems to be insufficient (for instance, <a href="http://dev.mysql.com/doc/refman/5.0/en/innodb-restrictions.html">in MySQL</a> 
+the default page size is 16 KB), but increasing the <span class="bold-text">PAGE_SIZE</span> value (I tried 4, 8, 16 and 32 KB) does 
+not improve performance (and even makes it worse), as well as increases the size of the data files on disk. Thus, the default value of 
+this option unlikely will require changes.
+</p>
+<p>H2 provides possibility to select <a href="http://www.h2database.com/html/advanced.html#file_system"> file system implementation</a>. 
+In some cases, it can also improve performance. For example, under the operating system 
+<span class="bold-text">Microsoft Windows 7 (x64)</span> my tests showed that <span class="bold-text">nio</span> improves the database 
+performance by 3-4% compared to the default implementation of the file system (<span class="bold-text">RandomAccessFile</span>).
+At the same time, under <span class="bold-text">Oracle Solaris 11 (x64)</span> files with random access work as quickly as 
+<span class="bold-text">nio</span>.
+</p>
+<p>Yet another opportunity to influence on the database performance is 
+<a href="http://www.h2database.com/html/advanced.html#file_system_split">splitting it into multiple files</a> (by default all data is 
+stored in a single file). This can be done by using the following path to the database: 
+<span class="bold-text">jdbc:h2:split:n:fileName</span> - then the data will be splitted into the files with size 
+<span class="bold-text">2<sup>n</sup></span> bytes. My tests showed, that splitting all data on files with size of 16 MB 
+(<span class="bold-text">jdbc:h2:split:24:fileName</span>) improved its speed under <span class="bold-text">Microsoft Windows 7 (x64)</span> 
+by 4-7%, but under <span class="bold-text">Oracle Solaris 11 (x64)</span> on the contrary speed dropped to 5-6% compared to the default 
+setting (when the database is stored in a single file).
+</p>
+<p>Option <a href="http://www.h2database.com/html/grammar.html#set_write_delay">WRITE_DELAY</a> defines a maximum delay in milliseconds 
+between the end of a transaction and its recording to the disk. By default, its value is 500 ms - and it seems optimal (I tried
+200, 1000 and 2000 ms, but the speed of database has not improved).
+</p>
+
+<h2>Conclusion</h2>
+
+<p>H2 has enough options to improve its performance. They help to speed up the database by several times. It should be noted that specific 
+values of many options depend on the specifics of the application, used software and hardware - and therefore they should be picked up 
+using appropriate tests.
+</p>
+     
+        </div>
+    </div>
+<!--end news item -->
+
+      <!-- end component -->
+                </div>
+    <!-- end mid block insidem class -->
+  </div>
+  <!-- END MID BLOCK -->
+    </div>
+<!-- end holder div -->
+              </div>
+<!-- end centerbottom -->
+            <!-- footer -->
+<div id="footer" style="font-size: 12px; width: 960px; background: #1166ff;">
+  <div id="footer-content">
+               <div id="cp">
+          <div class="copyright">Copyright &copy; 2012-2020 Ilia Chemodanov. </div><div class="link-to-top"><a href="#stylef6"><img border="0" src="/templates/ic-design/images/top.png" width="50" height="22" title="Go to Top" alt="Go to Top" /></a></div><br />                              
+       </div>
+  </div>
+</div>
+<!-- end footer -->
+
+
+        
+
+</body>
+</html>

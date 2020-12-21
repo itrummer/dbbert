@@ -26,6 +26,150 @@ Evaluation for model classifying tuning hints:
 PG to MS Statistics
 -------------------
 
+Epoch 20 of 20: 100%
+20/20 [00:16<00:00, 1.18it/s]
+
+Evaluation for model detecting key sentences: 
+0.44152114078361765
+[[3007   14]
+ [  21   14]]
+
+100%
+5/5 [00:00<00:00, 30.67it/s]
+
+Evaluation for model classifying tuning hints:
+0.29773393627324735
+[[ 0  0  0  0  6  0  0]
+ [ 0  2  0  0  1  0  0]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  1  0  0]
+ [ 1  0  0  0 21  0  0]
+ [ 0  1  0  2  0  0  0]
+ [ 0  0  0  0  0  0  0]]
+
+--- Disk ---
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          69G   33G   36G  49% /
+tmpfs            64M     0   64M   0% /dev
+tmpfs           6.4G     0  6.4G   0% /sys/fs/cgroup
+shm             5.8G  448K  5.8G   1% /dev/shm
+tmpfs           6.4G   16K  6.4G   1% /var/colab
+/dev/sda1        75G   35G   41G  46% /opt/bin
+tmpfs           6.4G     0  6.4G   0% /proc/acpi
+tmpfs           6.4G     0  6.4G   0% /proc/scsi
+tmpfs           6.4G     0  6.4G   0% /sys/firmware
+drive            69G   35G   34G  51% /content/drive
+
+--- CPU ---
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 79
+model name	: Intel(R) Xeon(R) CPU @ 2.20GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2200.000
+cache size	: 56320 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa
+bogomips	: 4400.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 79
+model name	: Intel(R) Xeon(R) CPU @ 2.20GHz
+stepping	: 0
+microcode	: 0x1
+cpu MHz		: 2200.000
+cache size	: 56320 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 1
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ssbd ibrs ibpb stibp fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap xsaveopt arat md_clear arch_capabilities
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa
+bogomips	: 4400.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+
+--- Memory ---
+MemTotal:       13333636 kB
+MemFree:         2192072 kB
+MemAvailable:    9189956 kB
+Buffers:          170332 kB
+Cached:          5014272 kB
+SwapCached:            0 kB
+Active:          4433688 kB
+Inactive:        6170120 kB
+Active(anon):    3508956 kB
+Inactive(anon):    10780 kB
+Active(file):     924732 kB
+Inactive(file):  6159340 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:              1068 kB
+Writeback:             0 kB
+AnonPages:       5419280 kB
+Mapped:           952180 kB
+Shmem:             11652 kB
+Slab:             292928 kB
+SReclaimable:     238944 kB
+SUnreclaim:        53984 kB
+KernelStack:        4800 kB
+PageTables:        30448 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     6666816 kB
+Committed_AS:   13274244 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+Percpu:              952 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      185576 kB
+DirectMap2M:     5056512 kB
+DirectMap1G:    10485760 kB
+
+--- GPU ---
+GPU 0: Tesla T4 (UUID: GPU-a3793f00-b0f6-ae65-d317-59f210c8e3fc)
+
+*** Old run: 
+
 Epoch 10 of 10: 100%
 10/10 [04:08<00:00, 24.87s/it]
 

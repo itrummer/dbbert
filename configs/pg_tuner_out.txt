@@ -1,0 +1,106 @@
+postgresqltuner.pl version 1.0.1
+[32m[OK]      [0mI can invoke executables
+Connecting to /var/run/postgresql:5432 database tpchs1 as user 'postgres'...
+[37m[INFO]    [0mOS: linux Version: 4.9.0 Arch: x86_64-linux-gnu-thread-multi
+[32m[OK]      [0mThe user account used by me for reporting has superuser rights on this PostgreSQL instance
+[37m=====  OS information  =====[0m
+[37m[INFO]    [0mOS total memory: 31.36 GB
+[31m[BAD]     [0mMemory overcommitment is allowed on the system.  This may lead the OOM Killer to kill at least one PostgreSQL process, DANGER!
+[37m[INFO]    [0msysctl vm.overcommit_ratio=50
+[31m[BAD]     [0mvm.overcommit_ratio is too low, you will not be able to use more than (50/100)*RAM+SWAP for applications
+[37m[INFO]    [0mRunning under a xen hypervisor
+[37m[INFO]    [0mCurrently used I/O scheduler(s): mq-deadline
+[37m[INFO]    [0mService uptime: 2d 52m 09s
+[37m[INFO]    [0mDatabase count (except templates): 7
+[37m[INFO]    [0mDatabase list (except templates): postgres tpchs1 facts tpcc tpchs10 tpchs1oltp tpccs2
+[37m[INFO]    [0mNumber of activated extensions: 1
+[37m[INFO]    [0mActivated extensions: plpgsql
+[37m[INFO]    [0mmax_connections: 100
+[37m[INFO]    [0mCurrent used connections: 6 (6.00%)
+[37m[INFO]    [0m3 connections are reserved for super user (3.00%)
+[37m[INFO]    [0mAverage connection age: 1d 16h 43m 28s
+[37m[INFO]    [0mConfigured work_mem: 4.00 MB
+[37m[INFO]    [0mUsing an average ratio of work_mem buffers by connection of 150% (use --wmp to change it)
+[37m[INFO]    [0mTotal work_mem (per connection): 6.00 MB
+[37m[INFO]    [0mshared_buffers: 128.00 MB
+[37m[INFO]    [0mTrack activity reserved size: 111.00 KB
+[37m[INFO]    [0mMax memory usage:
+		  shared_buffers (128.00 MB)
+		+ max_connections * work_mem * average_work_mem_buffers_per_connection (100 * 4.00 MB * 150 / 100 = 600.00 MB)
+		+ autovacuum_max_workers * maintenance_work_mem (3 * 64.00 MB = 192.00 MB)
+		+ track activity size (111.00 KB)
+		= 920.11 MB
+[37m[INFO]    [0meffective_cache_size: 4.00 GB
+[37m[INFO]    [0mCumulated size of all databases: 3.54 GB
+[37m[INFO]    [0mPostgreSQL maximum amount of memory used: 2.86% of system RAM
+[37m[INFO]    [0mPostgreSQL will not use more than 60% of the amount of RAM.  On a dedicated host you may increase PostgreSQL shared_buffers, as it may improve performance
+[37m[INFO]    [0mmax memory usage + effective_cache_size - shared_buffers is 15.22% of the amount of RAM
+[33m[WARN]    [0mIf PostgreSQL runs in a virtual machine, I cannot know the underlying physical storage type. Use the --ssd arg if the VM only uses SSD storage
+[37m=====  General instance informations  =====[0m
+[37m-----  PostgreSQL version  -----[0m
+[33m[WARN]    [0mUpgrade to the latest stable PostgreSQL version
+[37m-----  Uptime  -----[0m
+[37m-----  Databases  -----[0m
+[37m-----  Extensions  -----[0m
+[33m[WARN]    [0mExtension pg_stat_statements is disabled in database tpchs1
+[37m-----  Users  -----[0m
+[32m[OK]      [0mNo user account will expire in less than 7 days
+[33m[WARN]    [0mSome user account password is the username: postgres
+[32m[OK]      [0mPassword encryption enabled
+[37m-----  Connection information  -----[0m
+[37m-----  Memory usage  -----[0m
+[33m[WARN]    [0mmaintenance_work_mem is less or equal to its default value.  Increase it to reduce maintenance tasks duration
+[33m[WARN]    [0mIncrease shared_buffers to let PostgreSQL directly use more memory, especially if the machine is dedicated to PostgreSQL
+[37m-----  Huge Pages  -----[0m
+[37m[INFO]    [0mautovacuum_max_workers: 3
+[37m[INFO]    [0mGiven those settings PostgreSQL may (depending on its workload) ask the kernel to write (to the storage) up to 1024.00 MB in a timeframe lasting 150 seconds <=> 6.83 MB bytes/second during this timeframe.  You may want to check that your storage is able to cope with this, along with all other I/O (non-writing queries, other software...) operations potentially active during this timeframe.  If this seems inadequate check max_wal_size, checkpoint_timeout and checkpoint_completion_target
+[37m[INFO]    [0mDatabase tpchs1 total size: 1.39 GB
+[37m[INFO]    [0mDatabase tpchs1 tables size: 1.26 GB (90.72%)
+[37m[INFO]    [0mDatabase tpchs1 indexes size: 131.67 MB (9.28%)
+[37m[INFO]    [0mshared_buffer_heap_hit_rate: 11.57%
+[37m[INFO]    [0mshared_buffer_toast_hit_rate: 67.58%
+[37m[INFO]    [0mshared_buffer_tidx_hit_rate: 75.94%
+[37m[INFO]    [0mshared_buffer_idx_hit_rate: 96.12%
+[33m[WARN]    [0mNo Huge Pages available on the system
+[37m-----  Logs  -----[0m
+[32m[OK]      [0mlog_hostname is off: no reverse DNS lookup latency
+[33m[WARN]    [0mLog of long queries deactivated.  It will be more difficult to optimize query performance
+[32m[OK]      [0mlog_statement=none
+[37m-----  Two-phase commit  -----[0m
+[32m[OK]      [0mCurrently there is no two-phase commit transaction
+[37m-----  Autovacuum  -----[0m
+[32m[OK]      [0mautovacuum is activated
+[37m-----  Checkpoint  -----[0m
+[33m[WARN]    [0mcheckpoint_completion_target (0.5) is low
+[37m-----  Storage  -----[0m
+[32m[OK]      [0mfsync is on
+[32m[OK]      [0msynchronize_seqscans is on
+[37m-----  WAL  -----[0m
+[37m-----  Planner  -----[0m
+[32m[OK]      [0mI/O cost settings are set at their default values
+[32m[OK]      [0mAll plan features are enabled
+[37m=====  Database information for database tpchs1  =====[0m
+[37m-----  Database size  -----[0m
+[37m-----  Tablespace location  -----[0m
+[32m[OK]      [0mNo tablespace in PGDATA
+[37m-----  Shared buffer hit rate  -----[0m
+[33m[WARN]    [0mThis is quite good.  Increase shared_buffer memory to increase hit rate
+[37m-----  Indexes  -----[0m
+[32m[OK]      [0mNo invalid index
+[32m[OK]      [0mNo unused indexes
+[37m-----  Procedures  -----[0m
+[32m[OK]      [0mNo procedures with default costs
+
+[37m=====  Configuration advice  =====[0m
+[37m-----  checkpoint  -----[0m
+[33m[MEDIUM] checkpoint_completion_target is low.  Some checkpoints may abruptly overload the storage with write commands for a long time, slowing running queries down.  To avoid such temporary overload you may balance checkpoint writes using a higher value
+[0m[37m-----  extension  -----[0m
+[35m[LOW] Enable pg_stat_statements in database tpchs1 to collect statistics on all queries (not only those longer than log_min_duration_statement)
+[0m[37m-----  storage  -----[0m
+[31m[HIGH] Use the --ssd arg if PostgreSQL only uses a SSD storage
+[0m[37m-----  system  -----[0m
+[31m[HIGH] set vm.overcommit_memory=2 in /etc/sysctl.conf and invoke  sysctl -p /etc/sysctl.conf  to enforce it.  This will disable memory overcommitment and avoid having a PostgreSQL process killed by the OOM killer
+[0m[37m-----  version  -----[0m
+[35m[LOW] Upgrade to the latest stable PostgreSQL version
+[LOW] Check https://www.postgresql.org/support/versioning/ for upstream support dates
+[0m
