@@ -45,36 +45,9 @@ class TuningEnv(gym.Env):
         self.dbms = Postgres.PgConfig()
         # Reset environment
         self.reset()
+        # Name environment
+        #self.name = 'Tuning Environment'
         
-    # def span_info(self, snippet, span_idx, spans, encoding):
-        # """ Returns information on text span. """
-        # span = spans[span_idx]
-        # start = span[0]
-        # end = span[1]
-        # token = snippet[start:end]
-        # bert = encoding['last_hidden_state'][0][span_idx]
-        # return token, bert
-        #
-    # def snippet_hints(self, snippet):
-        # """ Generates candidates hints for specific snippet. """
-        # tokens = nlp.tokenize(snippet)
-        # encoding = nlp.encode(snippet)
-        # word_ids = encoding.word_ids()
-        # nr_words = max(word_ids)
-        # spans = tokens['offset_mapping'].squeeze(0).tolist()
-        # # Iterate over pairs of spans
-        # candidates = []
-        # nr_spans = len(spans)
-        # for s_1 in range(nr_spans):
-            # for s_2 in range(nr_spans):
-                # if s_1 != s_2:
-                    # s_1_info = self.span_info(snippet, s_1, 
-                                              # spans, encoding)
-                    # s_2_info = self.span_info(snippet, s_2, 
-                                              # spans, encoding)
-                    # candidates.append((s_1_info, s_2_info))
-        # return candidates
-    
     def enrich_nlp(self, matches, tokens, encoding):
         """ Enrich matches using encoder results. """
         enriched = []
@@ -99,7 +72,7 @@ class TuningEnv(gym.Env):
     def snippet_hints(self, snippet):
         """ Generates candidate hints for a text snippet. """
         params = re.finditer(r'[a-z_]+_[a-z]+', snippet)
-        values = re.finditer(r'\d+', snippet)
+        values = re.finditer(r'\d+[a-zA-Z]*|on|off', snippet)
         # Enrich mentions with result of NLP analysis
         tokens = nlp.tokenize(snippet)
         encoding = nlp.encode(snippet)
@@ -108,7 +81,9 @@ class TuningEnv(gym.Env):
         # Iterate over parameters and values
         candidates = []
         for param, e_param in e_params:
+            print(param)
             for value, e_value in e_values:
+                print(value)
                 # observation associated with pair
                 obs = torch.cat((e_param, e_value))
                 candidates.append((param, value, obs))
@@ -128,14 +103,13 @@ class TuningEnv(gym.Env):
         # Initialize return values
         reward = 0
         done = False
-        obs = None
         # Check for end of episode
         if self.hint_idx >= self.nr_hints:
             done = True
         # Execute action
         if not done and action == 1:
-            p, v, obs = self.hints[self.hint_idx]
-            success = self.dbms.config(p[0], v[0])
+            p, v, _ = self.hints[self.hint_idx]
+            success = self.dbms.config(p, v)
             if success:
                 reward = 1
             else:
@@ -144,8 +118,15 @@ class TuningEnv(gym.Env):
         # Next step unless episode end
         if not done:
             self.hint_idx += 1
-            p, v, obs = self.hints[self.hint_idx]
-        return obs, reward, done, {}
+        return self.observe(), reward, done, {}
+        
+    def observe(self):
+        """ Returns an observation. """
+        if self.hint_idx >= self.nr_hints:
+            return torch.zeros(1536)
+        else:
+            _, _, obs = self.hints[self.hint_idx]
+            return obs
         
     def reset(self):
         """ Initializes for new tuning document. """
@@ -156,6 +137,7 @@ class TuningEnv(gym.Env):
         # Initialize DBMS connection
         self.dbms.close_conn()
         self.dbms.create_conn()
+        return self.observe()
 
 # pg = Postgres.PgConfig()
 # pg.create_conn()
@@ -173,14 +155,62 @@ class TuningEnv(gym.Env):
 # print(nlp.word_info(s, t, e))
 
 env = TuningEnv('../../manuals/AllSentences2.csv')
-for i_episode in range(20):
-    observation = env.reset()
-    for t in range(100):
-        print(t)
-        action = env.action_space.sample()
-        observation, reward, done, info = env.step(action)
-        if done:
-            print("Episode finished after {} timesteps".format(t+1))
-            break
-#env.snippet_hints2('Set shared_buffers to 10')
-env.dbms.close_conn()
+
+from all.agents import VQN
+from all.approximation import QNetwork
+from all.environments import GymEnvironment
+from all.experiments import run_experiment
+from all.logging import DummyWriter
+from all.policies.greedy import GreedyPolicy
+from torch.optim import Adam
+from torch import nn
+from all.presets.classic_control import dqn, a2c
+from all.environments import GymEnvironment
+
+env = GymEnvironment(env)
+
+# set device
+device = 'cpu'
+
+# set writer
+writer = DummyWriter()
+
+def make_model(env):
+    return nn.Sequential(
+        nn.Linear(env.observation_space.shape[0], 128),
+        nn.ReLU(),
+        nn.Linear(128, env.action_space.n),
+    )
+
+model = make_model(env)
+#print(model.summary())
+    
+# create a Pytorch optimizer for the model
+optimizer = Adam(model.parameters(), lr=0.01)
+
+# create an Approximation of the Q-function
+q = QNetwork(model, optimizer, writer=writer)
+
+# create a Policy object derived from the Q-function
+policy = GreedyPolicy(q, env.action_space.n, epsilon=0.1)
+
+# instantiate the agent
+vqn = VQN(q, policy, discount_factor=0.99)
+
+# start experiment
+run_experiment(dqn(model_constructor=make_model), env, 15000)
+
+#env.dbms.close_conn()
+env.close()
+#
+# for i_episode in range(20):
+    # observation = env.reset()
+    # for t in range(100):
+        # print(t)
+        # action = env.action_space.sample()
+        # observation, reward, done, info = env.step(action)
+        # if done:
+            # print("Episode finished after {} timesteps".format(t+1))
+            # break
+# #env.snippet_hints2('Set shared_buffers to 10')
+# env.dbms.close_conn()

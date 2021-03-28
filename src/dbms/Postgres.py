@@ -27,10 +27,12 @@ class PgConfig:
         success = True
         with self.connection as connection:
             try:
+                print(f'Trying setting {param} to {value}')
                 connection.autocommit = True
                 cursor = connection.cursor()
                 query = f'set {param} to {value};'
                 cursor.execute(query)
+                print(f'Set {param} to {value}!')
             except Exception:
                 success = False
         return success
