@@ -5,9 +5,9 @@ Created on Sep 6, 2020
 '''
 """ Optimizes database configuration using NLP. """
 
-import Configurations
-import Gibbs
-import Greedy
+from configuration import Configurations
+from deprecated import Gibbs
+from deprecated import Greedy
 
 # Prepare tuning and perform NLP analysis
 print("About to create tuning config")

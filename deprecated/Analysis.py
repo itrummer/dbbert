@@ -6,7 +6,7 @@ Created on Nov 11, 2020
 """ Analyze impact of tuning parameters. """
 
 import configparser
-import Evaluate
+from evaluation import Evaluate
 import re
 import sys
 

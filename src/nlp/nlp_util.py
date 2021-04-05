@@ -3,43 +3,60 @@ Created on Mar 23, 2021
 
 @author: immanueltrummer
 '''
-import torch
 from transformers.models.bert import BertTokenizerFast
 from transformers import BertModel
+import torch
 
 # Initialize model and associated tokenizer
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-cased")
 model = BertModel.from_pretrained("bert-base-cased")
 
-# Auxiliary functions for natural language processing
+# Initialize caching for natural language analysis
+use_cache = True
+cached_encodings = {}
+
+# Store cache statistics
+cache_hits = 0
+cache_misses = 0
+
+def print_cache_stats():
+    """ Print statistics for encoding cache. """
+    print(f'Nr. cache hits: {cache_hits}')
+    print(f'Nr. cache misses: {cache_misses}')
+
 def tokenize(text):
-    """ Tokenize using default settings """
-    return tokenizer.encode_plus(text, return_offsets_mapping=True, 
-                                 return_tensors="pt")
+    """ Tokenizes input text using default settings. """
+    return tokenizer.encode_plus(
+            text, return_offsets_mapping=True, 
+            return_tensors="pt", truncation=True)
     
 def encode(text):
-    """ Bidirectional encoding using default settings """
-    return model(tokenize(text)['input_ids'])
+    """ Generates bidirectional encoding using default settings. """
+    global cache_hits
+    global cache_misses
+    if use_cache and text in cached_encodings:
+        encoding = cached_encodings[text]
+        cache_hits += 1
+    else:
+        encoding = model(tokenize(text)['input_ids'])
+        cached_encodings[text] = encoding
+        cache_misses += 1
+    return encoding
 
-def word_info(snippet, tokenization, encoded):
-    """ Retrieves words with associated encoding. """
-    word_ids = [i for i in tokenization.word_ids() if i != None]
-    print(word_ids)
-    nr_words = max(word_ids) + 1
-    h_states = encoded['last_hidden_state'][0]
-    # Collect info about each word
-    word_info = []
-    for word_idx in range(nr_words):
-        word_span = tokenization.word_to_chars(word_idx)
-        print(word_span)
-        word = snippet[word_span[0]:word_span[1]]
-        token_idx = tokenization.word_to_tokens(word_idx)
-        print(token_idx)
-        tokens = h_states[token_idx[0]:token_idx[1]]
-        word_info.append((word, tokens))
-    return word_info
-
-# s = "Set shared-buffers to 10."
-# t = tokenize(s)
-# e = encode(s)
-# print(word_info(s, t, e))
+def mean_encoding(tokens, encoding, start, end):
+    """ Returns mean encoding for given character span. """
+    # Collect relevant states
+    last_states = encoding['last_hidden_state'].squeeze(0).tolist()
+    offsets = tokens['offset_mapping'].squeeze(0).tolist()
+    m_states = []
+    for o, s in zip(offsets, last_states):
+        o_start = o[0]
+        o_end = o[1]
+        if max(start, o_start) <= min(end, o_end):
+            m_states.append(s)
+    # Truncation may lead to empty states
+    if not m_states:
+        return None
+    else:
+        stacked = torch.Tensor(m_states)
+        return torch.mean(stacked, dim=0)
