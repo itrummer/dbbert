@@ -10,6 +10,7 @@ from gym.spaces import Box
 from gym.spaces import Discrete
 import torch
 from random import randint
+from termcolor import cprint
 from doc.collection import DocCollection, TuningHint
 from dbms.generic_dbms import ConfigurableDBMS
 
@@ -24,6 +25,7 @@ class TuningEnv(gym.Env):
         self.docs = docs
         self.dbms = dbms
         self.obs_cache = {}
+        self.p_vals = set()
         self.reset()
         
     def step(self, action):
@@ -40,9 +42,11 @@ class TuningEnv(gym.Env):
             param = hint.param.group()
             value = hint.value.group()
             success = self.dbms.can_set(param, value, 1)
-            #print(f'Set {param} to {value}: {success}')
             if success:
-                print(f'Set {param} to {value}!')
+                #quoted_value = '\'' + value + '\'' if hint.quotes else value
+                output = f'Set {param} to {value}!'
+                self.p_vals.add((param, value))
+                print(output)
                 reward = 5
             else:
                 reward = -10
@@ -83,4 +87,6 @@ class TuningEnv(gym.Env):
         self.nr_hints = len(self.hints)
         self.hint_idx = 0
         self.dbms.reset_config()
+        for p_val in self.p_vals:
+            print(f'{p_val}\n')
         return self.observe()

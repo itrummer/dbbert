@@ -54,9 +54,11 @@ class DocCollection():
         passage = []
         p_length = 0
         for snippet in snippets:
-            s_length = len(nlp.nlp_util.tokenize(snippet)['input_ids'])
+            s_length = nlp.nlp_util.tokenize(snippet)['input_ids'].shape[1]
+            print(snippet)
+            print(s_length)
             p_length += s_length
-            if p_length > 128:
+            if p_length > 512:
                 # Start new passage
                 passages.append(" ".join(passage))
                 passage = [snippet]

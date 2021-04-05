@@ -19,6 +19,9 @@ from doc.collection import DocCollection
 # Create environment
 dbms = PgConfig()
 docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
+# for p in docs.passages_by_doc[1]:
+    # print(f'{p}\n')
+
 env = TuningEnv(docs, dbms)
 env = GymEnvironment(env)
 
