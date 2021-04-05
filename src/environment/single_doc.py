@@ -29,7 +29,7 @@ class TuningEnv(gym.Env):
     def step(self, action):
         """ Potentially apply hint and proceed to next one. """
         # Initialize return values
-        reward = 0
+        reward = 1
         done = False
         # Check for end of episode
         if self.hint_idx >= self.nr_hints:
@@ -42,9 +42,10 @@ class TuningEnv(gym.Env):
             success = self.dbms.can_set(param, value, 1)
             #print(f'Set {param} to {value}: {success}')
             if success:
-                reward = 1
+                print(f'Set {param} to {value}!')
+                reward = 5
             else:
-                reward = -1
+                reward = -10
                 done = True
         # Next step unless episode end
         if not done:
