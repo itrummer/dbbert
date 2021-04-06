@@ -11,26 +11,35 @@ import os
 import psycopg2
 import subprocess
 import time
-from dbms.configurable_dbms import ConfigurableDBMS
+from dbms.generic_dbms import ConfigurableDBMS
 
 class Benchmark(ABC):
     """ Runs a benchmark to evaluate database configuration. """
     
     @abstractmethod
-    def evaluate(self):
+    def evaluate(self, dbms: ConfigurableDBMS = None):
         """ Evaluates performance for benchmark and returns reward. """
         pass
     
-class TpcH(Benchmark):
-    """ Runs the TPC-H benchmark. """
+    @abstractmethod
+    def print_stats(self):
+        """ Prints out some benchmark statistics. """
+        pass
     
-    def __init__(self, dbms: ConfigurableDBMS, queries):
-        """ Initialize with DBMS engine and IDs of queries to consider. """
-        self.dbms = dbms
-        self.queries = queries
+class OLAP(Benchmark):
+    """ Runs an OLAP style benchmark with single queries stored in files. """
     
-    def evaluate(self):
-        """ Run selected TPC-H queries. 
+    def __init__(self, db, query_path):
+        """ Initialize with database name and path to queries. """
+        self.db = db
+        self.query_path = query_path
+        self.min_time = float('inf')
+        self.max_time = 0
+        self.min_conf = {}
+        self.max_conf = {}
+    
+    def evaluate(self, dbms: ConfigurableDBMS = None):
+        """ Run all benchmark queries. 
         
         Returns:
             Boolean error flag and time in milliseconds
@@ -38,11 +47,7 @@ class TpcH(Benchmark):
         error = True
         start_ms = time.time() * 1000.0
         try:
-            # Iterate over selected queries
-            for q in self.queries:
-                with open(f'queries/pg/{q+1}.sql') as q_file:
-                    query = q_file.read()
-                    self.dbms.query(query)
+            os.system(f'/opt/homebrew/bin/psql {self.db} -f {self.query_path}')
             # Set error flag to False
             error = False
         except Exception as e:
@@ -50,7 +55,22 @@ class TpcH(Benchmark):
         # Measure total time in milliseconds
         end_ms = time.time() * 1000.0
         millis = end_ms - start_ms
+        # Update statistics
+        if not error:
+            if millis < self.min_time:
+                self.min_time = millis
+                self.min_conf = dbms.get_config() if dbms else None
+            if millis > self.max_time:
+                self.max_time = millis
+                self.max_conf = dbms.get_config() if dbms else None 
         return error, millis
+    
+    def print_stats(self):
+        """ Print out benchmark statistics. """
+        print(f'Minimal time (ms): {self.min_time}')
+        print(f'Achieved with configuration: {self.min_conf}')
+        print(f'Maximal time (ms): {self.max_time}')
+        print(f'Achieved with configuration: {self.max_conf}')
     
 # TODO: replace hard-coded paths and database names
 class TpcC(Benchmark):

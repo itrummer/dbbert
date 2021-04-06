@@ -3,28 +3,37 @@ Created on Apr 2, 2021
 
 @author: immanueltrummer
 '''
+import copy
+import os
 import psycopg2
+import time
 
 from dbms.generic_dbms import ConfigurableDBMS
 
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db='tpcc', user='immanueltrummer'):
+    def __init__(self, db, user):
         """ Initialize DB connection with given credentials. """
         self.db = db
         self.user = user
+        self.config = {}
         self._connect()
         
     def __del__(self):
         """ Close DBMS connection if any. """
-        if self.connection:
-            self.connection.close()
+        self._disconnect()
             
     def _connect(self):
         """ Establish connection to database. """
-        self.connection = psycopg2.connect(
-            database = self.db, user = self.user, host = "localhost")
+        print(f'Trying to connect to {self.db} with user {self.user}')
+        self.connection = psycopg2.connect(database = self.db, user = self.user, host = "localhost")
+        
+    def _disconnect(self):
+        """ Disconnect from database. """
+        if self.connection:
+            print('Disconnecting ...')
+            self.connection.close()
             
     def query(self, sql):
         """ Executes query and returns first result table cell or None. """
@@ -33,7 +42,8 @@ class PgConfig(ConfigurableDBMS):
             cursor = self.connection.cursor()
             cursor.execute(sql)
             return cursor.fetchone()[0]
-        except Exception:
+        except Exception as e:
+            print(e)
             return None
         
     def update(self, sql):
@@ -68,15 +78,30 @@ class PgConfig(ConfigurableDBMS):
     def set_param(self, param, value, factor):
         """ Set given parameter to scaled value. """
         scaled_value = self._scale(value, factor)
-        query = f'set {param} to {scaled_value}'
-        return self.update(query)
+        query = f'alter system set {param} to {scaled_value}'
+        success = self.update(query)
+        if success:
+            self.config[param] = scaled_value
+            return True
+        else:
+            query = f'alter system set {param} to \'{scaled_value}\''
+            return self.update(query)
     
     def reset_config(self):
         """ Reset all parameters to default values. """
-        self.connection.close()
-        self._connect()
+        self.update('alter system reset all')
+        self.config = {}
     
     def reconfigure(self):
         """ Makes parameter settings take effect. """
-        # TODO: Still need to implement
-        pass
+        self._disconnect()
+        # TODO: this should not be hardcoded
+        os.system('/opt/homebrew/bin/brew services restart postgresql')
+        time.sleep(3)
+        #os.system(r'/opt/homebrew/bin/pg_ctl -D /opt/homebrew/var/postgres restart')
+        self._connect()
+        
+    def get_config(self):
+        """ Return assignments for all parameters. """
+        #return copy.deepcopy(self.config)
+        return self.config

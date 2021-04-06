@@ -6,24 +6,25 @@ Created on Mar 22, 2021
 import gym
 import nlp.nlp_util as nlp
 import numpy as np
+from benchmark.evaluate import Benchmark
 from gym.spaces import Box
 from gym.spaces import Discrete
 import torch
 from random import randint
-from termcolor import cprint
 from doc.collection import DocCollection, TuningHint
 from dbms.generic_dbms import ConfigurableDBMS
 
 class TuningEnv(gym.Env):
     """ Trains agents in understanding tuning hints via NLP. """
 
-    def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS):
-        """ Initialize from given tuning documents. """
+    def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark):
+        """ Initialize from given tuning documents, database, and benchmark. """
         self.observation_space = Box(low=-10, high=10, 
                                      shape=(1536,), dtype=np.float32)
         self.action_space = Discrete(2)
         self.docs = docs
         self.dbms = dbms
+        self.benchmark = benchmark
         self.obs_cache = {}
         self.p_vals = set()
         self.reset()
@@ -35,13 +36,22 @@ class TuningEnv(gym.Env):
         done = False
         # Check for end of episode
         if self.hint_idx >= self.nr_hints:
+            # Run benchmark if new settings tried
+            if self.dbms.get_config():
+                # Benchmark current configuration, then reset
+                self.dbms.reconfigure()
+                error, millis = self.benchmark.evaluate(self.dbms)
+                #self.dbms.reset_config()
+                #self.dbms.reconfigure()
+                # Calculate reward
+                reward = 100 if not error and millis < 10000 else 1
             done = True
         # Execute action
         if not done and action == 1:
             hint: TuningHint = self.hints[self.hint_idx]
             param = hint.param.group()
             value = hint.value.group()
-            success = self.dbms.can_set(param, value, 1)
+            success = self.dbms.set_param(param, value, 1)
             if success:
                 #quoted_value = '\'' + value + '\'' if hint.quotes else value
                 output = f'Set {param} to {value}!'
@@ -87,6 +97,7 @@ class TuningEnv(gym.Env):
         self.nr_hints = len(self.hints)
         self.hint_idx = 0
         self.dbms.reset_config()
+        self.benchmark.print_stats()
         for p_val in self.p_vals:
             print(f'{p_val}\n')
         return self.observe()

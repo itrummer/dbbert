@@ -68,3 +68,8 @@ class ConfigurableDBMS(ABC):
     def reconfigure(self):
         """ Makes all parameter changes take effect (may require restart). """
         pass
+    
+    @abstractmethod
+    def get_config(self):
+        """ Returns all configuration parameter settings as dictionary. """
+        pass

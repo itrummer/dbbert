@@ -13,16 +13,18 @@ from torch.optim import Adam
 from torch import nn
 from all.presets.classic_control import dqn
 from environment.single_doc import TuningEnv
+from benchmark.evaluate import OLAP
 from dbms.postgres import PgConfig
 from doc.collection import DocCollection
 
 # Create environment
-dbms = PgConfig()
+dbms = PgConfig(db='tpch', user='immanueltrummer')
 docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
+benchmark = OLAP('tpch', '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q1.sql')
 # for p in docs.passages_by_doc[1]:
     # print(f'{p}\n')
-
-env = TuningEnv(docs, dbms)
+    
+env = TuningEnv(docs, dbms, benchmark)
 env = GymEnvironment(env)
 
 # set device
@@ -54,7 +56,10 @@ policy = GreedyPolicy(q, env.action_space.n, epsilon=0.1)
 vqn = VQN(q, policy, discount_factor=0.99)
 
 # start experiment
-run_experiment(dqn(model_constructor=make_model), env, 50000)
+run_experiment(dqn(model_constructor=make_model), env, 5000)
+
+# print out benchmark statistics
+benchmark.print_stats()
 
 #env.dbms.close_conn()
-env.close()
+#env.close()
