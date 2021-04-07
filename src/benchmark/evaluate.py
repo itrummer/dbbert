@@ -29,9 +29,9 @@ class Benchmark(ABC):
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
     
-    def __init__(self, db, query_path):
-        """ Initialize with database name and path to queries. """
-        self.db = db
+    def __init__(self, dbms: ConfigurableDBMS, query_path):
+        """ Initialize with database and path to queries. """
+        self.dbms = dbms
         self.query_path = query_path
         self.min_time = float('inf')
         self.max_time = 0
@@ -44,25 +44,18 @@ class OLAP(Benchmark):
         Returns:
             Boolean error flag and time in milliseconds
         """
-        error = True
         start_ms = time.time() * 1000.0
-        try:
-            os.system(f'/opt/homebrew/bin/psql {self.db} -f {self.query_path}')
-            # Set error flag to False
-            error = False
-        except Exception as e:
-            print(f'Exception: {e}')
-        # Measure total time in milliseconds
+        error = self.dbms.exec_file(self.query_path)
         end_ms = time.time() * 1000.0
         millis = end_ms - start_ms
         # Update statistics
         if not error:
             if millis < self.min_time:
                 self.min_time = millis
-                self.min_conf = dbms.get_config() if dbms else None
+                self.min_conf = dbms.changed() if dbms else None
             if millis > self.max_time:
                 self.max_time = millis
-                self.max_conf = dbms.get_config() if dbms else None 
+                self.max_conf = dbms.changed() if dbms else None 
         return error, millis
     
     def print_stats(self):

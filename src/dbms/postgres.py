@@ -3,9 +3,9 @@ Created on Apr 2, 2021
 
 @author: immanueltrummer
 '''
-import copy
 import os
 import psycopg2
+import re
 import time
 
 from dbms.generic_dbms import ConfigurableDBMS
@@ -13,21 +13,28 @@ from dbms.generic_dbms import ConfigurableDBMS
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user):
+    def __init__(self, db, user, password=None):
         """ Initialize DB connection with given credentials. """
-        self.db = db
-        self.user = user
-        self.config = {}
-        self._connect()
+        super().__init__(db, user, password)
         
     def __del__(self):
         """ Close DBMS connection if any. """
-        self._disconnect()
+        super().__del__()
             
     def _connect(self):
-        """ Establish connection to database. """
+        """ Establish connection to database, returns success flag. """
         print(f'Trying to connect to {self.db} with user {self.user}')
-        self.connection = psycopg2.connect(database = self.db, user = self.user, host = "localhost")
+        # Need to recover in case of bad configuration
+        try:            
+            self.connection = psycopg2.connect(
+                database = self.db, user = self.user, 
+                password = self.password, host = "localhost")
+            return True
+        except Exception:
+            # Delete changes to default configuration and restart
+            os.system('rm /opt/homebrew/var/postgres/postgresql.auto.conf')
+            self.reconfigure()
+            return False
         
     def _disconnect(self):
         """ Disconnect from database. """
@@ -46,6 +53,17 @@ class PgConfig(ConfigurableDBMS):
             print(e)
             return None
         
+    def exec_file(self, path):
+        """ Executes all SQL queries in given file. """
+        error = True
+        try:
+            # TODO: this should not be hard-coded
+            os.system(f'/opt/homebrew/bin/psql {self.db} -f {path}')
+            error = False
+        except Exception as e:
+            print(f'Exception: {e}')
+        return error
+        
     def update(self, sql):
         """ Executes update and returns true iff the update succeeds. """
         try:
@@ -59,33 +77,25 @@ class PgConfig(ConfigurableDBMS):
     def is_param(self, param):
         """ Returns True iff given parameter exists. """
         return self.can_query(f'show {param}')
-    
-    def can_set(self, param, value, factor):
-        """ Returns True iff we can set parameter to scaled value. """
-        current_value = self.get_value(param)
-        # Try setting to new value
-        try:
-            valid = self.set_param(param, value, factor)
-            self.set_param(param, current_value, 1)
-            return valid
-        except Exception:
-            return False
         
     def get_value(self, param):
         """ Get current value of given parameter. """
         return self.query(f'show {param}')
         
-    def set_param(self, param, value, factor):
-        """ Set given parameter to scaled value. """
-        scaled_value = self._scale(value, factor)
-        query = f'alter system set {param} to {scaled_value}'
-        success = self.update(query)
-        if success:
-            self.config[param] = scaled_value
-            return True
+    def set_param(self, param, value):
+        """ Set given parameter to given value. """
+        query = f'alter system set {param} to {value}'
+        return self.update(query)
+        
+    def _transform_val(self, value: str):
+        """ Transforms parameter values using heuristic. """
+        if re.match('\d+%', value):
+            # Assume percentage refers to main memory
+            percentage = int(re.sub('(\d+)(%)', '\g<1>', value))
+            memory = 16 * percentage/100
+            return str(memory) + 'GB'
         else:
-            query = f'alter system set {param} to \'{scaled_value}\''
-            return self.update(query)
+            return value
     
     def reset_config(self):
         """ Reset all parameters to default values. """
@@ -93,15 +103,11 @@ class PgConfig(ConfigurableDBMS):
         self.config = {}
     
     def reconfigure(self):
-        """ Makes parameter settings take effect. """
+        """ Makes parameter settings take effect. Returns true if successful. """
         self._disconnect()
         # TODO: this should not be hardcoded
         os.system('/opt/homebrew/bin/brew services restart postgresql')
         time.sleep(3)
         #os.system(r'/opt/homebrew/bin/pg_ctl -D /opt/homebrew/var/postgres restart')
-        self._connect()
-        
-    def get_config(self):
-        """ Return assignments for all parameters. """
-        #return copy.deepcopy(self.config)
-        return self.config
+        success = self._connect()
+        return success

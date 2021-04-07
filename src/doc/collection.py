@@ -20,7 +20,7 @@ class TuningHint():
         self.passage = passage
         self.param = param
         self.value = value
-
+            
 class DocCollection():
     """ Represents a collection of documents. """
     
@@ -84,7 +84,7 @@ class DocCollection():
             for passage in passages:
                 params = re.finditer(r'[a-z_]+_[a-z]+', passage)
                 #values = re.finditer(r'\d+[a-zA-Z]*|on|off', passage)
-                values = re.finditer(r'\d+[a-zA-Z]*', passage)
+                values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', passage)
                 for param in params:
                     for value in values:
                         hint = TuningHint(passage, param, value)

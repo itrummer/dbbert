@@ -20,7 +20,8 @@ from doc.collection import DocCollection
 # Create environment
 dbms = PgConfig(db='tpch', user='immanueltrummer')
 docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
-benchmark = OLAP('tpch', '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q1.sql')
+benchmark = OLAP(
+    dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q2rep.sql')
 # for p in docs.passages_by_doc[1]:
     # print(f'{p}\n')
     
@@ -56,7 +57,7 @@ policy = GreedyPolicy(q, env.action_space.n, epsilon=0.1)
 vqn = VQN(q, policy, discount_factor=0.99)
 
 # start experiment
-run_experiment(dqn(model_constructor=make_model), env, 5000)
+run_experiment(dqn(model_constructor=make_model), env, 10000)
 
 # print out benchmark statistics
 benchmark.print_stats()
