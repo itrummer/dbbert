@@ -5,7 +5,6 @@ Created on Apr 2, 2021
 '''
 import os
 import psycopg2
-import re
 import time
 
 from dbms.generic_dbms import ConfigurableDBMS
@@ -15,7 +14,7 @@ class PgConfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password=None):
         """ Initialize DB connection with given credentials. """
-        super().__init__(db, user, password)
+        super().__init__(db, user, password, 16000000000, {})
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -86,16 +85,6 @@ class PgConfig(ConfigurableDBMS):
         """ Set given parameter to given value. """
         query = f'alter system set {param} to {value}'
         return self.update(query)
-        
-    def _transform_val(self, value: str):
-        """ Transforms parameter values using heuristic. """
-        if re.match('\d+%', value):
-            # Assume percentage refers to main memory
-            percentage = int(re.sub('(\d+)(%)', '\g<1>', value))
-            memory = 16 * percentage/100
-            return str(memory) + 'GB'
-        else:
-            return value
     
     def reset_config(self):
         """ Reset all parameters to default values. """

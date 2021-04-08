@@ -24,7 +24,8 @@ class TuningEnv(gym.Env):
         self.dbms = dbms
         self.benchmark = benchmark
         self.obs_cache = {}
-        self.asg_count = Counter()
+        self.good_asg_count = Counter()
+        self.bad_asg_count = Counter()
         _, self.def_millis = benchmark.evaluate(dbms)
         self.observation_space = Box(
             low=-10, high=10, shape=(1536,), dtype=np.float32)
@@ -83,14 +84,17 @@ class TuningEnv(gym.Env):
         """
         param = hint.param.group()
         value = hint.value.group()
+        assignment = (param, value)
+        print(f'Trying to set {param} to {value} (passage: {hint.passage})')
         success = self.dbms.set_param_smart(param, value, 1)
         if success:
             output = f'Set {param} to {value}!'
             print(output)
-            self.asg_count.update([(param, value)])
+            self.good_asg_count.update([assignment])
             reward = 5
             done = False
         else:
+            self.bad_asg_count.update([assignment])
             reward = -10
             done = True
         return reward, done
@@ -136,7 +140,8 @@ class TuningEnv(gym.Env):
         #self.dbms.reconfigure()
         self.benchmark.print_stats()
         print(f'Default time: {self.def_millis}')
-        print(self.asg_count)
-        # for p_val in self.asg_count:
-            # print(f'{p_val}\n')
+        print('Good assignments:')
+        print(self.good_asg_count)
+        print('Bad assignments:')
+        print(self.bad_asg_count)
         return self._observe()

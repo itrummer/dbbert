@@ -10,11 +10,21 @@ import re
 class ConfigurableDBMS(ABC):
     """ Represents a configurable database management system. """
     
-    def __init__(self, db, user, password):
-        """ Initialize DB connection with given credentials. """
+    def __init__(self, db, user, password, main_memory, unit_to_size):
+        """ Initialize DB connection with given credentials. 
+        
+        Args:
+            db: name of database to connect to
+            user: name of database login
+            password: password for database access
+            main_memory: main memory size in bytes
+            unit_to_size: maps size units to byte size
+        """
         self.db = db
         self.user = user
         self.password = password
+        self.main_memory = main_memory
+        self.unit_to_size = unit_to_size
         self.config = {}
         self.connection = None
         self._connect()
@@ -72,6 +82,19 @@ class ConfigurableDBMS(ABC):
         else:
             # No scaling possible
             return value
+            
+    def _transform_val(self, value: str):
+        """ Transforms parameter values using heuristic. """
+        if re.match('\d+%', value):
+            # Assume percentage refers to main memory
+            percentage = int(re.sub('(\d+)(%)', '\g<1>', value))
+            memory = int(self.main_memory * percentage/100)
+            return str(memory)
+        else:
+            for unit in self.unit_to_size:
+                size = self.unit_to_size[unit]
+                value = value.replace(unit, size)
+            return value
       
     def can_set(self, param, value, factor):
         """ Returns True iff we can set parameter to scaled value. """
@@ -94,11 +117,11 @@ class ConfigurableDBMS(ABC):
         scaled_value = self._scale(value, factor)
         trans_value = self._transform_val(scaled_value)
         success = self.set_param(param, trans_value)
+        if not success: 
+            success = self.set_param(param, '\'' + trans_value + '\'')
         if success:
             self.config[param] = scaled_value
-            return True
-        else:
-            return self.set_param(param, '\'' + trans_value + '\'')
+        return success
     
     @abstractmethod
     def set_param(self, param, value):
