@@ -15,7 +15,7 @@ import torch
 from random import randint, choices
 from doc.collection import DocCollection, TuningHint
 from dbms.generic_dbms import ConfigurableDBMS
-from _collections import defaultdict
+#from _collections import defaultdict
 
 class TuningEnv(gym.Env):
     """ Trains agents in understanding tuning hints via NLP. """

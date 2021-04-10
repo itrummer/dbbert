@@ -23,7 +23,7 @@ dbms = PgConfig(db='tpch', user='immanueltrummer')
 # docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
 #dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
 #docs = DocCollection('../../manuals/AllSentences2.csv', dbms='ms')
-docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres1')
+docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100')
 benchmark = OLAP(
     dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
 
