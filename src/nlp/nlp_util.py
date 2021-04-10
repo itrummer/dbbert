@@ -12,7 +12,7 @@ tokenizer = BertTokenizerFast.from_pretrained("bert-base-cased")
 model = BertModel.from_pretrained("bert-base-cased")
 
 # Initialize caching for natural language analysis
-use_cache = True
+use_cache = False
 cached_encodings = {}
 
 # Store cache statistics

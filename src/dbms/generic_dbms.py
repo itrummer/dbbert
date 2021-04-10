@@ -98,13 +98,16 @@ class ConfigurableDBMS(ABC):
       
     def can_set(self, param, value, factor):
         """ Returns True iff we can set parameter to scaled value. """
+        print('Start can_set')
         current_value = self.get_value(param)
         # Try setting to new value
         try:
             valid = self.set_param_smart(param, value, factor)
             self.set_param_smart(param, current_value, 1)
+            print('End can_set')
             return valid
         except Exception:
+            print('End can_set')
             return False
     
     @abstractmethod

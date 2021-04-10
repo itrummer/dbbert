@@ -19,12 +19,13 @@ from dbms.postgres import PgConfig
 from doc.collection import DocCollection
 
 # Create environment
-#dbms = PgConfig(db='tpch', user='immanueltrummer')
-#docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
-dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
-docs = DocCollection('../../manuals/AllSentences2.csv', dbms='ms')
+dbms = PgConfig(db='tpch', user='immanueltrummer')
+# docs = DocCollection('../../manuals/AllSentences2.csv', dbms='pg')
+#dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
+#docs = DocCollection('../../manuals/AllSentences2.csv', dbms='ms')
+docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres1')
 benchmark = OLAP(
-    dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q1.sql')
+    dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
 
 # with open('/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q2rep.sql', 'r') as file:
     # content: str = file.read()
@@ -35,7 +36,7 @@ benchmark = OLAP(
 # for p in docs.passages_by_doc[1]:
     # print(f'{p}\n')
     
-env = TuningEnv(docs, dbms, benchmark)
+env = TuningEnv(docs, dbms, benchmark, doc_weights=False, try_configs=False)
 env = GymEnvironment(env)
 
 # set device
@@ -67,7 +68,7 @@ policy = GreedyPolicy(q, env.action_space.n, epsilon=0.1)
 vqn = VQN(q, policy, discount_factor=0.99)
 
 # start experiment
-run_experiment(dqn(model_constructor=make_model), env, 10000)
+run_experiment(dqn(model_constructor=make_model), env, 20000)
 
 # print out benchmark statistics
 benchmark.print_stats()
