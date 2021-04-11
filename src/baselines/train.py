@@ -8,8 +8,8 @@ Reimplements supervised learning baseline from VLDB'21 vision paper.
 import argparse
 import pandas as pd
 import random as rand
-import re
 import torch.cuda
+from baselines.common import clean_sentence
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 
 def label_formula_ops(row):
@@ -29,10 +29,6 @@ def label_formula_ops(row):
         return 5 # Set
     else:
         return 6 # "NA"
-
-def clean_sentence(row):
-    """ Clean up sentence by separating lower and upper case letters. """
-    return re.sub(r'([a-z])([A-Z])', r'\1 \2', str(row['sentence']))
 
 def has_param(sentences, i):
     """ True iff i-th sentence is likely to contain a parameter name. """

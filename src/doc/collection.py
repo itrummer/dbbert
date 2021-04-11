@@ -9,14 +9,16 @@ import nlp.nlp_util
 
 class TuningHint():
     """ Represents a single tuning hint. """
-    def __init__(self, passage, param, value):
+    def __init__(self, doc_id, passage, param, value):
         """ Initializes tuning hint for given passage. 
         
         Args:
+            doc_id: document from which hint was extracted
             passage: A text passage containing the hint.
             param: match object referencing parameter in passage.
             value: match object referencing value in passage.
         """
+        self.doc_id = doc_id
         self.passage = passage
         self.param = param
         self.value = value
@@ -87,7 +89,7 @@ class DocCollection():
                 values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', passage)
                 for param in params:
                     for value in values:
-                        hint = TuningHint(passage, param, value)
+                        hint = TuningHint(doc_id, passage, param, value)
                         hints.append(hint)
             self.doc_to_hints[doc_id] = hints
             return hints

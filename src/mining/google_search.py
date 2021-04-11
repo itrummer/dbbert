@@ -21,8 +21,8 @@ def google_query(query, api_key, cse_id):
     for start in range(1, 100, 10):
         print(f'Retrieving results starting from index {start}')
         query_results = query_service.cse().list(
-            q=query, cx=cse_id, start=start, 
-            dateRestrict='y1', fileType='.html').execute()
+            q=query, cx=cse_id, start=start, lr='lang_en', 
+            dateRestrict='y1').execute()
         all_results += query_results['items']
     return all_results
 
@@ -47,9 +47,14 @@ def get_web_text(url):
         for line in lines:
             clean_lines += [part.strip() for part in line.split("  ")]
         clean_lines = [line for line in clean_lines if len(line)>2]
+        print(f'Extracted {len(clean_lines)} lines')
         return clean_lines
     except:
         return []
+
+def can_parse(result):
+    """ Returns true iff the search result can be used. """
+    return True if not '.pdf' in result['link'] else False
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Retrieve results of Google query')
@@ -66,8 +71,12 @@ rows = []
 for docid, result in enumerate(items):
     url = result['link']
     print(url)
-    lines = get_web_text(url)
-    for line in lines:
-        rows.append([docid, line])
+    if can_parse(result):
+        print('Processing document')
+        lines = get_web_text(url)
+        for line in lines:
+            rows.append([docid, line])
+    else:
+        print('Did not process document')
 data = pd.DataFrame(rows, columns=['filenr', 'sentence'])
 data.to_csv(args.out_path, index=False)
