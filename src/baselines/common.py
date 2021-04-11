@@ -34,7 +34,14 @@ def read_hints(docs_path):
     data = pd.read_csv(docs_path)
     data.fillna('', inplace=True)
     return data.groupby('filenr')['sentence'].apply(list)
-    #return data['sentence'].to_list()
+
+def print_assignments(asg_to_doc):
+    """ Prints out information on assignments with associated source documents. """
+    print('Extracted assignments with corresponding source document IDs:')
+    print('\n'.join(f'{k}, {v}' for k, v in asg_to_doc.items()))
+    print('The following assignments are proposed by at least two sources:')
+    verified_asgs = [k for k, v in asg_to_doc.items() if len(v)>=2]
+    print('\n'.join(f'{k}, {v}' for k, v in verified_asgs))
 
 def aggregate_asg_hints(assignments):
     """ Aggregate hints on value assignments from different sources. """

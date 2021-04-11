@@ -7,9 +7,9 @@ Re-implementation of the simple baseline used in the VLDB'21 vision paper.
 '''
 import argparse
 from random import choice
-from baselines.common import get_parameters, get_values, read_hints
+from baselines.common import get_parameters, get_values, read_hints,\
+    print_assignments
 from collections import defaultdict
-from _collections import defaultdict
 
 def detect_base(sentence):
     """ Detects key sentences using a simple heuristic. 
@@ -49,9 +49,5 @@ for doc_id, sentences in doc_sentences.iteritems():
                     assignment = (param, value)
                     asg_to_doc[assignment].add(doc_id)
 
-print('Extracted assignments with corresponding source document IDs:')
-print('\n'.join(f'{k}, {v}' for k, v in asg_to_doc.items()))
-
-print('The following assignments are proposed by at least two sources:')
-verified_asgs = [k for k, v in asg_to_doc.items() if len(v)>=2]
-print('\n'.join(f'{k}, {v}' for k, v in verified_asgs))
+# Print out information on assignments
+print_assignments(asg_to_doc)
