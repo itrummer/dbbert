@@ -49,7 +49,6 @@ class PgConfig(ConfigurableDBMS):
             cursor.execute(sql)
             return cursor.fetchone()[0]
         except Exception as e:
-            print(e)
             return None
         
     def exec_file(self, path):

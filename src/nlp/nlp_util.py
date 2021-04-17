@@ -39,8 +39,9 @@ def encode(text):
         cache_hits += 1
     else:
         encoding = model(tokenize(text)['input_ids'])
-        cached_encodings[text] = encoding
         cache_misses += 1
+        if use_cache:
+            cached_encodings[text] = encoding
     return encoding
 
 def mean_encoding(tokens, encoding, start, end):
@@ -60,3 +61,14 @@ def mean_encoding(tokens, encoding, start, end):
     else:
         stacked = torch.Tensor(m_states)
         return torch.mean(stacked, dim=0)
+    
+# def preprocess(doc: DocCollection):
+    # """ Encode and cache all passages in the document collection. """
+    # for doc_id, passages in enumerate(doc.passages_by_doc):
+        # print(f'Treating document nr. {doc_id}')
+        # if doc_id != 61:
+            # nr_passages = len(passages)
+            # for p_id, passage in enumerate(passages):
+                # print(f'Encoding passage {p_id}/{nr_passages} (doc. {doc_id})')
+                # print(passage)
+                # encode(passage)
