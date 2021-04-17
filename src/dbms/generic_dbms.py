@@ -116,6 +116,7 @@ class ConfigurableDBMS(ABC):
         """ Set parameter to scaled value, trying different versions if needed. """
         scaled_value = self._scale(value, factor)
         trans_value = self._transform_val(scaled_value)
+        print(f'Trying to set {param} to {trans_value}')
         success = self.set_param(param, trans_value)
         if not success: 
             success = self.set_param(param, '\'' + trans_value + '\'')

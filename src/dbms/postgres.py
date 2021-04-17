@@ -14,7 +14,7 @@ class PgConfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password=None):
         """ Initialize DB connection with given credentials. """
-        super().__init__(db, user, password, 16000000000, {})
+        super().__init__(db, user, password, 2000000, {})
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -56,7 +56,7 @@ class PgConfig(ConfigurableDBMS):
         error = True
         try:
             # TODO: this should not be hard-coded
-            os.system(f'/opt/homebrew/bin/psql {self.db} -f {path}')
+            os.system(f'/opt/homebrew/bin/psql {self.db} -f {path} > query_results.txt')
             error = False
         except Exception as e:
             print(f'Exception: {e}')

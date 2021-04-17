@@ -6,14 +6,12 @@ Created on Apr 2, 2021
 import gym
 import nlp.nlp_util as nlp
 import numpy as np
-from search.search_with_hints import search_improvements
+from search.search_with_hints import ParameterExplorer
 from benchmark.evaluate import Benchmark
-from collections import Counter
 from collections import defaultdict
 from gym.spaces import Box
 from gym.spaces import Discrete
 import torch
-from random import randint, choices
 from doc.collection import DocCollection, TuningHint
 from dbms.generic_dbms import ConfigurableDBMS
 
@@ -39,7 +37,7 @@ class MultiDocTuning(gym.Env):
         self.nr_rereads = nr_rereads
         self.nr_evals = nr_evals
         self.ordered_hints = self._ordered_hints()
-        self.hint_to_weight = defaultdict(lambda: 0)
+        self.explorer = ParameterExplorer(dbms, benchmark)
         self.observation_space = Box(low=-10, high=10, 
                                      shape=(1536,), dtype=np.float32)
         self.action_space = Discrete(5)
@@ -63,12 +61,14 @@ class MultiDocTuning(gym.Env):
             _, hint = self.ordered_hints[self.hint_ctr]
             param = hint.param.group()
             value = hint.value.group()
+            print(f'Trying to set {param} to {value} ...')
             success = self.dbms.can_set(param, value, 1)
             if success:
                 reward = 10
                 weight = pow(2, action)
                 assignment = (param, value)
                 self.hint_to_weight[assignment] += weight
+                print(f'Success! Choosing weight {weight}.')
             else:
                 reward = -10
         return reward
@@ -86,8 +86,9 @@ class MultiDocTuning(gym.Env):
 
     def _benchmark(self):
         """ Return optimal benchmark time when using weighted hints. """
-        return search_improvements(self.dbms, self.benchmark, 
-                                   self.hint_to_weight, self.nr_evals)
+        savings, config = self.explorer.explore(self.hint_to_weight, self.nr_evals)
+        print(f'Achieved maximal savings of {savings} millis using {config}')
+        return savings
 
     def _observe(self):
         """ Generates observations based on current hint. """
@@ -130,4 +131,6 @@ class MultiDocTuning(gym.Env):
         """ Initializes for new tuning episode. """
         self.hint_ctr = 0
         self.reread_ctr = 0
+        self.hint_to_weight = defaultdict(lambda: 0)
+        self.benchmark.print_stats()
         return self._observe()
