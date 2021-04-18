@@ -24,7 +24,7 @@ from doc.collection import DocCollection
 
 #
 # Create environment
-dbms = PgConfig(db='tpch', user='immanueltrummer')
+dbms = PgConfig(db='tpch', user='immanueltrummer', hardware=[2000000, 2000000, 8])
 docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
 benchmark = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
 print('Preprocessing finished!')

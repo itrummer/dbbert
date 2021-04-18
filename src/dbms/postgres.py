@@ -14,7 +14,7 @@ class PgConfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password=None):
         """ Initialize DB connection with given credentials. """
-        super().__init__(db, user, password, 2000000, {})
+        super().__init__(db, user, password, {})
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -82,6 +82,7 @@ class PgConfig(ConfigurableDBMS):
         
     def set_param(self, param, value):
         """ Set given parameter to given value. """
+        self.config[param] = value
         query = f'alter system set {param} to {value}'
         return self.update(query)
     

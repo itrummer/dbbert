@@ -41,6 +41,8 @@ class ParameterExplorer():
         print(f'Weighted hints: {hint_to_weight}')
         configs = self._select_configs(hint_to_weight, nr_evals)
         print(f'Selected configurations: {configs}')
+        # Update default time
+        self.def_millis = self._def_conf_millis()
         # Identify best configuration
         max_savings = 0
         best_config = {}
@@ -95,9 +97,9 @@ class ParameterExplorer():
         self.dbms.reset_config()
         print(f'Trying configuration: {config}')
         for param, value in config.items():
-            self.dbms.set_param_smart(param, value, 1)
+            self.dbms.set_param(param, value)
         self.dbms.reconfigure()
         error, millis = self.benchmark.evaluate(self.dbms)
-        savings = millis - self.def_millis
+        savings = self.def_millis - millis
         print(f'Saved {savings} millis with {config}')
         return savings if not error else -10000

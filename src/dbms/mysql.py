@@ -14,7 +14,7 @@ class MySQLconfig(ConfigurableDBMS):
         """ Initialize DB connection with given credentials. """
         unit_to_size={'K':'000', 'M':'000000', 'G':'000000000',
                       'KB':'000', 'MB':'000000', 'GB':'000000000'}
-        super().__init__(db, user, password, 16000000000, unit_to_size)
+        super().__init__(db, user, password, unit_to_size)
         
     def __del__(self):
         """ Close DBMS connection if any. """

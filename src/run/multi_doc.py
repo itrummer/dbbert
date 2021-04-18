@@ -37,7 +37,7 @@ print('Preprocessing finished!')
 # for p in docs.passages_by_doc[1]:
     # print(f'{p}\n')
     
-env = MultiDocTuning(docs, dbms, benchmark, 10, 2, 2)
+env = MultiDocTuning(docs, dbms, benchmark, [2000000, 2000000, 8], 10, 50, 2)
 env = GymEnvironment(env)
 
 # set device
