@@ -59,6 +59,8 @@ class DocCollection():
         self.asg_counts, self.param_counts = self._assignment_stats()
         # Sort hints by parameter
         self.param_to_hints = self._hints_by_param()
+        # Extract reference labels if any
+        self.doc_to_labels = self._get_labels()
         # Output a summary of data read
         print('Sample of tuning hints:')
         print(self.docs.sample())
@@ -66,6 +68,7 @@ class DocCollection():
         print(f'Nr. passages by doc: {self.nr_passages}')
         print(f'Nr. mentions per assignment: {self.asg_counts.most_common()}')
         print(f'Nr. documents per parameter: {self.param_counts.most_common()}')
+        print(f'Labeled hints per doc: {self.doc_to_labels}')
 
     def _doc_passages(self, doc_id):
         """ Extract text snippets from given document. """ 
@@ -148,3 +151,15 @@ class DocCollection():
                 param = hint.param.group()
                 param_to_hints[param].add((doc_id, hint))
         return param_to_hints
+    
+    def _get_labels(self):
+        """ Extract hint labels if specified in the input document. """
+        if 'Parameter' in self.docs.columns:
+            def label(row):
+                return row['Parameter'], row['Formula']
+            relevant_docs = self.docs[self.docs['KeySentence']==1]
+            relevant_docs['label'] = relevant_docs.apply(label, axis=1)
+            print(f'Read {relevant_docs.shape[0]} labels')
+            return relevant_docs.groupby('filenr')['label'].apply(list)
+        else:
+            return None

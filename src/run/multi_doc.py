@@ -12,7 +12,7 @@ from all.policies.greedy import GreedyPolicy
 from torch.optim import Adam
 from torch import nn
 from all.presets.classic_control import dqn
-from environment.multi_doc import MultiDocTuning
+from environment.multi_doc_2 import MultiDocTuning
 from benchmark.evaluate import OLAP
 from dbms.mysql import MySQLconfig
 from dbms.postgres import PgConfig
@@ -26,6 +26,7 @@ from doc.collection import DocCollection
 # Create environment
 dbms = PgConfig(db='tpch', user='immanueltrummer')
 docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
+#docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg10docs.csv', dbms)
 benchmark = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
 print('Preprocessing finished!')
 # with open('/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/q2rep.sql', 'r') as file:
@@ -37,7 +38,7 @@ print('Preprocessing finished!')
 # for p in docs.passages_by_doc[1]:
     # print(f'{p}\n')
     
-env = MultiDocTuning(docs, dbms, benchmark, [2000000, 2000000, 8], 10, 50, 2)
+env = MultiDocTuning(docs, dbms, benchmark, [2000000, 2000000, 8], 50, 50, 2)
 env = GymEnvironment(env)
 
 # set device
@@ -69,7 +70,7 @@ policy = GreedyPolicy(q, env.action_space.n, epsilon=0.1)
 vqn = VQN(q, policy, discount_factor=0.99)
 
 # start experiment
-run_experiment(dqn(model_constructor=make_model), env, 100)
+run_experiment(dqn(model_constructor=make_model), env, 100000)
 
 # print out benchmark statistics
 benchmark.print_stats()

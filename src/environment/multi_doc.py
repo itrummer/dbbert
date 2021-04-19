@@ -22,7 +22,7 @@ class MultiDocTuning(gym.Env):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
     def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark,
-                 hardware, nr_hints, nr_rereads, nr_evals):
+                 hardware, nr_hints, nr_rereads, nr_evals, use_labels):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -33,6 +33,7 @@ class MultiDocTuning(gym.Env):
             nr_hints: how many hints to consider
             nr_rereads: how often to read the hints
             nr_evals: how many evaluations with extracted hints
+            use_labels: whether to use labels provided in document
         """
         self.docs = docs
         self.dbms = dbms
@@ -41,21 +42,23 @@ class MultiDocTuning(gym.Env):
         self.nr_hints = nr_hints
         self.nr_rereads = nr_rereads
         self.nr_evals = nr_evals
+        self.use_labels = use_labels
         self.ordered_hints = self._ordered_hints()
         self.factors = [0.25, 0.5, 1, 2, 4]
-        self.explorer = ParameterExplorer(dbms, benchmark)
         self.observation_space = Box(low=-10, high=10, 
                                      shape=(1537,), dtype=np.float32)
         self.action_space = Discrete(5)
         self.def_obs = torch.zeros(1537)
         self.obs_cache = {}
+        if not self.use_labels:
+            self.explorer = ParameterExplorer(dbms, benchmark)
         self.reset()
         
     def step(self, action):
         """ Potentially apply hint and proceed to next one. """
         reward = self._take_action(action)
         done = self._next_state(action)
-        if done:
+        if done and not self.use_labels:
             reward += self._benchmark()
         return self._observe(), reward, done, {}
 
@@ -68,13 +71,40 @@ class MultiDocTuning(gym.Env):
             if action <= 2 and hint.float_val < 1.0:
                 # Multiply given value with hardware properties
                 self.base = float(self.hardware[action]) * hint.float_val
+                self.label = str(hint.float_val) + ' * ' + \
+                    ['memory', 'disk', 'cores'][action]
             else:
                 # Use provided value as is
                 self.base = hint.float_val
+                self.label = hint.value.group()
         elif self.decision == DecisionType.PICK_FACTOR:
             self.factor = float(self.factors[action])
+            if self.factor > 1:
+                self.label = 'P > ' + self.label
+            elif self.factor < 1:
+                self.label = 'P < ' + self.label
+            else:
+                self.label = 'P = ' + self.label
         else:
-            param = hint.param.group()
+            reward = self._process_hint(hint, action)
+        return reward
+    
+    def _process_hint(self, hint, action):
+        """ Finishes processing current hint and returns direct reward. """
+        param = hint.param.group()
+        if self.use_labels:
+            doc_id = hint.doc_id
+            doc_to_labels = self.docs.doc_to_labels
+            ref_labels = doc_to_labels[doc_id] if doc_id in doc_to_labels else []
+            full_label = (param, self.label)
+            alt_label = (param, self.label.replace('P1', 'P'))
+            #print(f'Comparing {full_label} to reference ({ref_labels})')
+            if full_label in ref_labels or alt_label in ref_labels:
+                print(f'Assignment {full_label} matches reference!')
+                reward = 10
+            else:
+                reward = -10
+        else:
             value = '\'' + str(int(self.base * self.factor)) + hint.val_unit + '\''
             print(f'Trying to set {param} to {value} ...')
             success = self.dbms.can_set(param, value)
@@ -86,20 +116,7 @@ class MultiDocTuning(gym.Env):
                 print(f'Success! Choosing weight {weight} for {assignment}.')
             else:
                 reward = -10
-        return reward
-    #
-    # def _get_number(self, value):
-        # """ Extract number from parameter value string. """
-        # if re.match('\d+$', value):
-            # return int(value)
-        # elif re.match('\d+%$', value):
-            # percentage = int(re.sub('(\d+)(%)', '\g<1>', value))
-            # return percentage/100.0
-        # elif re.match('\d+\w+$', value):
-            # number = int(re.sub('(\d+)(\w+)', '\g<1>', value))
-            # return number
-        # else:
-            # return int(1)
+        return reward        
 
     def _next_state(self, action):
         """ Advance to next state in MDP and return termination flag. """
@@ -175,6 +192,7 @@ class MultiDocTuning(gym.Env):
         self.hint_ctr = 0
         self.decision = DecisionType.PICK_BASE
         self.base = None
+        self.label = None
         self.factor = None
         self.hint_to_weight = defaultdict(lambda: 0)
         self.benchmark.print_stats()
