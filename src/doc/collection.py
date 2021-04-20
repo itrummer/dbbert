@@ -4,7 +4,8 @@ Created on Apr 3, 2021
 @author: immanueltrummer
 '''
 from collections import Counter, defaultdict
-from doc.util import get_parameters, get_values, decompose_val
+from doc.util import get_parameters, get_values
+from parameters.util import decompose_val
 import pandas as pd
 import re
 import nlp.nlp_util
@@ -31,7 +32,7 @@ class TuningHint():
 class DocCollection():
     """ Represents a collection of documents with tuning hints. """
     
-    def __init__(self, docs_path, dbms:ConfigurableDBMS=None):
+    def __init__(self, docs_path, dbms:ConfigurableDBMS=None, size_threshold=512):
         """ Reads tuning passages from a file. 
         
         Reads passages containing tuning hints from a text. Tries
@@ -41,8 +42,10 @@ class DocCollection():
         Args:
             docs_path: path to document with tuning hints.
             dbms: database management system (optional).
+            size_threshold: start new passage after so many tokens.
         """
         self.dbms = dbms
+        self.size_threshold = size_threshold
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
         self.nr_docs = self.docs['filenr'].max()
@@ -59,8 +62,6 @@ class DocCollection():
         self.asg_counts, self.param_counts = self._assignment_stats()
         # Sort hints by parameter
         self.param_to_hints = self._hints_by_param()
-        # Extract reference labels if any
-        self.doc_to_labels = self._get_labels()
         # Output a summary of data read
         print('Sample of tuning hints:')
         print(self.docs.sample())
@@ -68,7 +69,6 @@ class DocCollection():
         print(f'Nr. passages by doc: {self.nr_passages}')
         print(f'Nr. mentions per assignment: {self.asg_counts.most_common()}')
         print(f'Nr. documents per parameter: {self.param_counts.most_common()}')
-        print(f'Labeled hints per doc: {self.doc_to_labels}')
 
     def _doc_passages(self, doc_id):
         """ Extract text snippets from given document. """ 
@@ -81,7 +81,7 @@ class DocCollection():
         for snippet in snippets:
             s_length = nlp.nlp_util.tokenize(snippet)['input_ids'].shape[1]
             p_length += s_length
-            if p_length > 512:
+            if p_length > self.size_threshold:
                 # Start new passage
                 passages.append(" ".join(passage))
                 passage = [snippet]
@@ -118,6 +118,7 @@ class DocCollection():
                 params = re.finditer(r'[a-z_]+_[a-z]+', passage)
                 values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', passage)
                 for param in params:
+                    print(f'Param: {param}')
                     if not self.dbms or self.dbms.is_param(param.group()):
                         for value in values:
                             hint = TuningHint(doc_id, passage, param, value)
@@ -151,15 +152,3 @@ class DocCollection():
                 param = hint.param.group()
                 param_to_hints[param].add((doc_id, hint))
         return param_to_hints
-    
-    def _get_labels(self):
-        """ Extract hint labels if specified in the input document. """
-        if 'Parameter' in self.docs.columns:
-            def label(row):
-                return row['Parameter'], row['Formula']
-            relevant_docs = self.docs[self.docs['KeySentence']==1]
-            relevant_docs['label'] = relevant_docs.apply(label, axis=1)
-            print(f'Read {relevant_docs.shape[0]} labels')
-            return relevant_docs.groupby('filenr')['label'].apply(list)
-        else:
-            return None

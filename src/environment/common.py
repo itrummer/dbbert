@@ -79,7 +79,7 @@ class DocTuning(Env, ABC):
         obs = self.def_obs
         if self.hint_ctr < self.nr_hints:
             if self.hint_ctr in self.obs_cache:
-                return self.obs_cache[self.hint_ctr]
+                obs = self.obs_cache[self.hint_ctr]
             else:
                 _, hint = self.hints[self.hint_ctr]
                 hint_obs = self._hint_to_obs(hint)
@@ -122,4 +122,5 @@ class DocTuning(Env, ABC):
         self.base = None
         self.factor = None
         self._reset()
-        return self._observe()
+        obs = self._observe()
+        return obs

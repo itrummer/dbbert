@@ -8,10 +8,16 @@ from dbms.postgres import PgConfig
 from dbms.mysql import MySQLconfig
 from collections import Counter
 
-dbms = PgConfig(db='tpch', user='immanueltrummer')
-#dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
+#dbms = PgConfig(db='tpch', user='immanueltrummer')
+dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
 
-docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
+
+#dbms.update('set global innodb_buffer_pool_size=2000000000')
+print(dbms.get_value('innodb_buffer_pool_size'))
+success = dbms.set_param_smart('innodb_buffer_pool_size', '2GB')
+print(success)
+
+#docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
 
 #print('\n'.join(f'{k}, {v}' for k, v in asg_stats.items()))
 #

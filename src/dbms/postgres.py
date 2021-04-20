@@ -48,7 +48,7 @@ class PgConfig(ConfigurableDBMS):
             cursor = self.connection.cursor()
             cursor.execute(sql)
             return cursor.fetchone()[0]
-        except Exception as e:
+        except Exception:
             return None
         
     def exec_file(self, path):
@@ -83,7 +83,7 @@ class PgConfig(ConfigurableDBMS):
     def set_param(self, param, value):
         """ Set given parameter to given value. """
         self.config[param] = value
-        query = f'alter system set {param} to {value}'
+        query = f'alter system set {param} to \'{value}\''
         return self.update(query)
     
     def reset_config(self):

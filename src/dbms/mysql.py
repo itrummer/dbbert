@@ -12,8 +12,8 @@ class MySQLconfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password):
         """ Initialize DB connection with given credentials. """
-        unit_to_size={'K':'000', 'M':'000000', 'G':'000000000',
-                      'KB':'000', 'MB':'000000', 'GB':'000000000'}
+        unit_to_size={'KB':'000', 'MB':'000000', 'GB':'000000000',
+                      'K':'000', 'M':'000000', 'G':'000000000'}
         super().__init__(db, user, password, unit_to_size)
         
     def __del__(self):
@@ -45,8 +45,7 @@ class MySQLconfig(ConfigurableDBMS):
             cursor = self.connection.cursor(buffered=True)
             cursor.execute(sql)
             return cursor.fetchone()[0]
-        except Exception as e:
-            print(e)
+        except Exception:
             return None
     
     def exec_file(self, path):
@@ -78,14 +77,16 @@ class MySQLconfig(ConfigurableDBMS):
     
     def is_param(self, param):
         """ Returns True iff the given parameter can be configured. """
-        return True if self.query(f'show variables like \'{param}\'') else False
+        return self.can_query(f'show variables like \'{param}\'')
     
     def get_value(self, param):
         """ Returns current value for given parameter. """
-        return self.query(f'@@{param}')
+        return self.query(f'select @@{param}')
     
     def set_param(self, param, value):
         """ Set parameter to given value. """
+        print(f'set_param: {param} to {value}')
+        self.config[param] = value
         return self.update(f'set global {param}={value}')
     
     def reset_config(self):

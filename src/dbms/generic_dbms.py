@@ -5,7 +5,6 @@ Created on Apr 2, 2021
 '''
 from abc import ABC, abstractmethod
 import copy
-from parameters.util import scale
 
 class ConfigurableDBMS(ABC):
     """ Represents a configurable database management system. """
@@ -65,28 +64,25 @@ class ConfigurableDBMS(ABC):
         """ Returns True iff the given parameter can be configured. """
         pass
             
-    # def _transform_val(self, value: str):
-        # """ Transforms parameter values using heuristic. """
-        # # if re.match('\d+%', value):
-            # # # Assume percentage refers to main memory
-            # # percentage = int(re.sub('(\d+)(%)', '\g<1>', value))
-            # # memory = int(self.main_memory * percentage/100)
-            # # return str(memory)
-        # # else:
-        # for unit in self.unit_to_size:
-            # size = self.unit_to_size[unit]
-            # value = value.replace(unit, size)
-        # return value
+    def _transform_val(self, value: str):
+        """ Transforms parameter values using heuristic. """
+        value = str(value)
+        for unit in self.unit_to_size:
+            size = self.unit_to_size[unit]
+            value = value.replace(unit, size)
+        return value
       
     def can_set(self, param, value):
         """ Returns True iff we can set parameter to value. """
         current_value = self.get_value(param)
+        print(f'can_set current value: {current_value}')
         # Try setting to new value
         try:
-            valid = self.set_param(param, value)
-            self.set_param(param, current_value)
+            valid = self.set_param_smart(param, value)
+            self.set_param_smart(param, current_value)
             return valid
-        except Exception:
+        except Exception as e:
+            print(f'can_set exception: {e}')
             return False
     
     @abstractmethod
@@ -94,16 +90,12 @@ class ConfigurableDBMS(ABC):
         """ Returns current value for given parameter. """
         pass
     
-    def set_param_smart(self, param, value, factor):
-        """ Set parameter to scaled value, trying different versions if needed. """
-        scaled_value = scale(value, factor)
-        trans_value = self._transform_val(scaled_value)
-        print(f'Trying to set {param} to {trans_value}')
+    def set_param_smart(self, param, value):
+        """ Set parameter to value, using simple transformations. """
+        trans_value = self._transform_val(value)
+        print(f'set_param_smart: Trying to set {param} to {trans_value}')
         success = self.set_param(param, trans_value)
-        if not success: 
-            success = self.set_param(param, '\'' + trans_value + '\'')
-        if success:
-            self.config[param] = scaled_value
+        print(f'set_param_smart: {success}')
         return success
     
     @abstractmethod
