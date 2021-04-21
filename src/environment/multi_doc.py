@@ -38,7 +38,7 @@ class MultiDocTuning(DocTuning):
         print('All hints considered for multi-doc tuning:')
         for i in range(self.nr_hints):
             _, hint = self.hints[i]
-            print(f'Hint nr. {i}: {hint.param} -> {hint.value}')
+            print(f'Hint nr. {i}: {hint.param.group()} -> {hint.value.group()}')
         self.explorer = ParameterExplorer(dbms, benchmark)
         self.reset()
         
@@ -72,17 +72,15 @@ class MultiDocTuning(DocTuning):
         """ Finishes processing current hint and returns direct reward. """
         param = hint.param.group()
         value = str(int(self.base * self.factor)) + hint.val_unit 
-        print(f'Trying to set {param} to {value} ...')
         success = self.dbms.can_set(param, value)
         assignment = (param, value)
         if success:
             reward = 10
             weight = pow(2, action)
             self.hint_to_weight[assignment] += weight
-            print(f'Success! Choosing weight {weight} for {assignment}.')
+            print(f'Adding assignment {assignment} with weight {weight}')
         else:
             reward = -10
-            print(f'Failed assignment: {assignment}.')
         return reward        
 
     def _finalize_episode(self):

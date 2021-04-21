@@ -49,12 +49,9 @@ class LabeledDocTuning(DocTuning):
                           (df['parameter']==param) & \
                           (df['value']==value)]
             nr_labels = labels.shape[0]
-            print(f'Found {nr_labels} matching labels')
             if nr_labels == 1:
                 ok_actions[(i, 0)] = [int(labels['base'].iloc[0])]
                 ok_actions[(i, 1)] = [int(a) for a in labels['operators'].iloc[0].split(';')]
-            else:
-                print(f'{param}, {value}, {passage}')
         return ok_actions
 
     def _take_action(self, action):
@@ -68,7 +65,6 @@ class LabeledDocTuning(DocTuning):
             desirable = [4]
         # Reward taken action accordingly
         if action in desirable:
-            print(f'Correct action: {action} (decision: {self.decision})')
             return 1
         else:
             return -1

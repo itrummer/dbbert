@@ -23,16 +23,17 @@ from environment.hybrid import HybridDocTuning
 from benchmark.evaluate import OLAP
 
 # Initialize supervised hint extraction environment
-labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg10docsLabels.csv'
+labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/ms10docsLabels.csv'
+#labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg10docsLabels.csv'
 labeled_docs = DocCollection(docs_path=labeled_path, dbms=None, size_threshold=0)
 supervised_env = LabeledDocTuning(docs=labeled_docs, nr_hints=500, label_path=labeled_path)
 
 # Initialize unsupervised hint extraction environment
-dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
+#dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
+dbms = PgConfig(db='tpch', user='immanueltrummer')
 
-#dbms = PgConfig(db='tpch', user='immanueltrummer')
-#unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
-unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/mysql100', dbms)
+unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
+#unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/mysql100', dbms)
 benchmark = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
 unsupervised_env = MultiDocTuning(docs=unlabeled_docs, dbms=dbms, benchmark=benchmark, 
                                   hardware=[2000000, 2000000, 8], nr_hints=100, nr_rereads=50, 
@@ -40,6 +41,7 @@ unsupervised_env = MultiDocTuning(docs=unlabeled_docs, dbms=dbms, benchmark=benc
 
 # Initialize hybrid hint extraction environment
 hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 100)
+#hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 0)
 hybrid_env = GymEnvironment(hybrid_env)
 
 # set device

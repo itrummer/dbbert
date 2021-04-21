@@ -75,14 +75,12 @@ class ConfigurableDBMS(ABC):
     def can_set(self, param, value):
         """ Returns True iff we can set parameter to value. """
         current_value = self.get_value(param)
-        print(f'can_set current value: {current_value}')
         # Try setting to new value
         try:
             valid = self.set_param_smart(param, value)
             self.set_param_smart(param, current_value)
             return valid
-        except Exception as e:
-            print(f'can_set exception: {e}')
+        except Exception:
             return False
     
     @abstractmethod
@@ -93,9 +91,9 @@ class ConfigurableDBMS(ABC):
     def set_param_smart(self, param, value):
         """ Set parameter to value, using simple transformations. """
         trans_value = self._transform_val(value)
-        print(f'set_param_smart: Trying to set {param} to {trans_value}')
+        #print(f'set_param_smart: Trying to set {param} to {trans_value}')
         success = self.set_param(param, trans_value)
-        print(f'set_param_smart: {success}')
+        #print(f'set_param_smart: {success}')
         return success
     
     @abstractmethod

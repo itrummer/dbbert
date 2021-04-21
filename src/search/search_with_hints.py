@@ -24,9 +24,13 @@ class ParameterExplorer():
         
     def _def_conf_millis(self):
         """ Returns milliseconds for running benchmark with default configuration. """
-        self.dbms.reset_config()
-        self.dbms.reconfigure()
-        _, def_millis = self.benchmark.evaluate(self.dbms)
+        if self.dbms and self.benchmark:
+            self.dbms.reset_config()
+            self.dbms.reconfigure()
+            _, def_millis = self.benchmark.evaluate(self.dbms)
+        else:
+            print('Warning: no DBMS or benchmark specified for parameter exploration.')
+            def_millis = 0
         return def_millis
         
     def explore(self, hint_to_weight, nr_evals):
@@ -84,7 +88,7 @@ class ParameterExplorer():
         config = {}
         for p, w_vals in param_to_w_vals.items():
             ref_vals = [c[p] for c in configs]
-            vals = [v for _, v in w_vals]
+            vals = [v for v, _ in w_vals]
             min_dist = float('inf')
             best_val = vals[0]
             for val in vals:
@@ -149,12 +153,15 @@ class ParameterExplorer():
         Returns:
             Improvement over default configuration in milliseconds.
         """
-        self.dbms.reset_config()
-        print(f'Trying configuration: {config}')
-        for param, value in config.items():
-            self.dbms.set_param_smart(param, value)
-        self.dbms.reconfigure()
-        error, millis = self.benchmark.evaluate(self.dbms)
-        savings = self.def_millis - millis
-        print(f'Saved {savings} millis with {config}')
-        return savings if not error else -10000
+        if self.dbms:
+            self.dbms.reset_config()
+            print(f'Trying configuration: {config}')
+            for param, value in config.items():
+                self.dbms.set_param_smart(param, value)
+            self.dbms.reconfigure()
+            error, millis = self.benchmark.evaluate(self.dbms)
+            savings = self.def_millis - millis
+            print(f'Saved {savings} millis with {config}')
+            return savings if not error else -10000
+        else:
+            return 0

@@ -7,7 +7,7 @@ import re
 
 def is_numerical(value):
     """ Returns true iff value is number, optionally followed by unit. """
-    return True if re.match(r'\d+%$', value) else False
+    return True if re.match(r'\d+%$', str(value)) else False
 
 def decompose_val(value: str):
     """ Decomposes parameter value into float value and unit. 
