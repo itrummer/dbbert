@@ -8,6 +8,7 @@ from abc import abstractmethod
 import glob
 import json
 import os
+import pandas as pd
 import psycopg2
 import subprocess
 import time
@@ -17,7 +18,7 @@ class Benchmark(ABC):
     """ Runs a benchmark to evaluate database configuration. """
     
     @abstractmethod
-    def evaluate(self, dbms: ConfigurableDBMS = None):
+    def evaluate(self):
         """ Evaluates performance for benchmark and returns reward. """
         pass
     
@@ -38,12 +39,13 @@ class OLAP(Benchmark):
         self.min_conf = {}
         self.max_conf = {}
     
-    def evaluate(self, dbms: ConfigurableDBMS = None):
+    def evaluate(self):
         """ Run all benchmark queries. 
         
         Returns:
-            Boolean error flag and time in milliseconds
+            Dictionary containing error flag and time in milliseconds
         """
+        self.print_stats()
         start_ms = time.time() * 1000.0
         error = self.dbms.exec_file(self.query_path)
         end_ms = time.time() * 1000.0
@@ -52,11 +54,11 @@ class OLAP(Benchmark):
         if not error:
             if millis < self.min_time:
                 self.min_time = millis
-                self.min_conf = dbms.changed() if dbms else None
+                self.min_conf = self.dbms.changed() if self.dbms else None
             if millis > self.max_time:
                 self.max_time = millis
-                self.max_conf = dbms.changed() if dbms else None 
-        return error, millis
+                self.max_conf = self.dbms.changed() if self.dbms else None 
+        return {'error': error, 'time': millis}
     
     def print_stats(self):
         """ Print out benchmark statistics. """
@@ -69,61 +71,76 @@ class OLAP(Benchmark):
 class TpcC(Benchmark):
     """ Runs the TPC-C benchmark. """
     
+    def __init__(self, oltp_path, config_path, result_path, 
+                 dbms, template_db, target_db):
+        """ Initialize with given paths. 
+        
+        Args:
+            oltp_path: path to OLTP benchmark runner
+            config_path: path to configuration file
+            result_path: store benchmark results here
+            dbms: configurable DBMS
+            template_db: used as template to re-initialize DB
+            target_db: used for running the benchmark
+        """
+        self.oltp_path = oltp_path
+        self.config_path = config_path
+        self.result_path = result_path
+        self.dbms = dbms
+        self.template_db = template_db
+        self.target_db = target_db
+        self.min_throughput = float('inf')
+        self.min_config = {}
+        self.max_throughput = 0
+        self.max_config = {}
+    
     def _remove_oltp_results(self):
         """ Removes old result files from OLTP benchmark. """
-        files = glob.glob('/home/ubuntu/oltpbench/oltpbench/results/paramtest*')
+        files = glob.glob(f'{self.result_path}/*')
         for f in files:
             try:
                 os.remove(f)
             except OSError as e:
                 print("Error: %s : %s" % (f, e.strerror))
 
-    def _copy_db(self, source_db, target_db):
+    def _reset_db(self):
         """ Reload TPC-C database from template database. """
-        connection = psycopg2.connect(database = 'postgres', 
-                user = 'postgres', password = 'postgres',
-                host = 'localhost')
-        connection.autocommit = True
-        cursor = connection.cursor()
-        cursor.execute(f'drop database if exists {target_db};')
-        cursor.execute(f'create database {target_db} ' \
-                       f'with template {source_db};')
-        connection.close()
+        self.dbms.update(f'drop database if exists {self.target_db}')
+        self.dbms.update(f'create database {self.target_db} with template {self.template_db}')
 
     def evaluate(self):
         """ Evaluates current configuration on TPC-C benchmark.
         
         Returns:
-            Boolean error flag and throughput
+            Dictionary containing error flag and throughput
          """
         self._remove_oltp_results()
+        self._reset_db()
         throughput = -1
         had_error = True
         try:
-            # Change to configuration to evaluate
-            self.change_config()
-            print('Changed configuration', flush=True)
-            # Reload database
-            self._copy_db('tpcc', 'tpccs2')
-            print('Reloaded database', flush=True)
             # Run benchmark
             return_code = subprocess.run(\
-                ['./oltpbenchmark', \
-                '-b', 'tpcc', '-c', \
-                'firsttest/sample_tpcc_config.xml', \
-                '--execute=true', '-s', '5', \
-                '-o', 'paramtest'],\
-                cwd = '/home/ubuntu/oltpbench/oltpbench')                
+                ['./oltpbenchmark', '-b', 'tpcc', '-c', self.config_path,
+                '--execute=true', '-s', '5', '-o', 'tuningtest'],
+                cwd = self.oltp_path)
             print(f'Benchmark return code: {return_code}')
             # Extract throughput from generated files
-            with open('/home/ubuntu/oltpbench/oltpbench/results'\
-                      '/paramtest.summary') as result_file:
-                result_data = json.load(result_file)
-                throughput = result_data[
-                    'Throughput (requests/second)']
-                print(f'Throughput: {throughput}', flush=True)
-                result_file.close()
+            df = pd.read_csv(f'{self.result_path}/tuningtest.res')
+            throughput = df[' throughput(req/sec)'].mean()
             had_error = False
+            # Update statistics
+            if throughput > self.max_throughput:
+                self.max_throughput = throughput
+                self.max_config = self.dbms.changed()
+            if throughput < self.min_throughput:
+                self.min_throughput = throughput
+                self.min_config = self.dbms.changed()
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
-        return had_error, throughput
+        return {'error': had_error, 'throughput': throughput}
+    
+    def print_stats(self):
+        """ Print out benchmark statistics. """
+        print(f'Minimal throughput {self.min_throughput} with configuration {self.min_config}')
+        print(f'Maximal throughput {self.max_throughput} with configuration {self.max_config}')

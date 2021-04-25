@@ -15,7 +15,7 @@ class MultiDocTuning(DocTuning):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
     def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark,
-                 hardware, nr_hints, nr_rereads, nr_evals):
+                 hardware, nr_hints, nr_rereads, nr_evals, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -26,6 +26,7 @@ class MultiDocTuning(DocTuning):
             nr_hints: how many hints to consider
             nr_rereads: how often to read the hints
             nr_evals: how many evaluations with extracted hints
+            objective: describes the optimization goal
         """
         super().__init__(docs)
         self.dbms = dbms
@@ -39,7 +40,7 @@ class MultiDocTuning(DocTuning):
         for i in range(self.nr_hints):
             _, hint = self.hints[i]
             print(f'Hint nr. {i}: {hint.param.group()} -> {hint.value.group()}')
-        self.explorer = ParameterExplorer(dbms, benchmark)
+        self.explorer = ParameterExplorer(dbms, benchmark, objective)
         self.reset()
         
     def _ordered_hints(self):
@@ -84,10 +85,10 @@ class MultiDocTuning(DocTuning):
         return reward        
 
     def _finalize_episode(self):
-        """ Return optimal benchmark time when using weighted hints. """
-        savings, config = self.explorer.explore(self.hint_to_weight, self.nr_evals)
-        print(f'Achieved maximal savings of {savings} millis using {config}')
-        return savings
+        """ Return optimal benchmark reward when using weighted hints. """
+        reward, config = self.explorer.explore(self.hint_to_weight, self.nr_evals)
+        print(f'Achieved maximal reward of {reward} using {config}')
+        return reward
 
     def _reset(self):
         """ Initializes for new tuning episode. """

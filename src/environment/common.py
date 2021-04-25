@@ -31,6 +31,7 @@ class DocTuning(Env, ABC):
             low=-10, high=10, shape=(1537,), dtype=np.float32)
         self.action_space = Discrete(5)
         self.def_obs = torch.zeros(1537)
+        self.def_hint_obs = torch.zeros(1536)
         self.obs_cache = {}
         self.nr_rereads = 1
         self.factors = [0.25, 0.5, 1, 2, 4]
@@ -99,7 +100,7 @@ class DocTuning(Env, ABC):
                 nlp.mean_encoding(
                     tokens, encoding, item.start(), item.end()))
         # Use zeros in case of missing vectors
-        obs = self.def_obs
+        obs = self.def_hint_obs
         if not (obs_parts[0] is None or obs_parts[1] is None):
             obs = torch.cat((obs_parts[0], obs_parts[1]))
         return obs

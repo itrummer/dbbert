@@ -63,6 +63,7 @@ class DocCollection():
         # Sort hints by parameter
         self.param_to_hints = self._hints_by_param()
         # Output a summary of data read
+        print(f'Initializing documents from file {docs_path} ...')
         print('Sample of tuning hints:')
         print(self.docs.sample())
         print(f'Nr. documents read: {self.nr_docs}')

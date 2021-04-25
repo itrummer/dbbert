@@ -3,11 +3,33 @@ Created on Apr 17, 2021
 
 @author: immanueltrummer
 '''
+import configparser
 import re
 
 def is_numerical(value):
     """ Returns true iff value is number, optionally followed by unit. """
-    return True if re.match(r'\d+%$', str(value)) else False
+    return True if re.match(r'\d+(\.\d+){0,1}(%|\w*)$', str(value)) else False
+
+def read_numerical(file_path):
+    """ Reads all numerical parameters from a configuration file. 
+    
+    Args:
+        file_path: path to configuration file to read
+    
+    Returns:
+        List of numerical parameters read from file
+    """
+    config = configparser.ConfigParser()
+    with open(file_path) as stream:
+        # Make sure we integrate parameters into section
+        config.read_string("[dummysection]\n" + stream.read())
+    num_params = []
+    for section in config.sections():
+        for param in config[section]:
+            value = config[section][param].split()[0]
+            if is_numerical(value):
+                num_params.append(param)
+    return num_params
 
 def decompose_val(value: str):
     """ Decomposes parameter value into float value and unit. 
@@ -18,28 +40,13 @@ def decompose_val(value: str):
     Returns:
         Tuple containing float value and unit (string)
     """
-    if re.match(r'\d+%$', value):
-        raw_float_val = float(re.sub(r'(\d+)%', r'\g<1>', value))
+    str_value = str(value)
+    if re.match(r'\d+%$', str_value):
+        raw_float_val = float(re.sub(r'(\d+)%', r'\g<1>', str_value))
         float_val = raw_float_val/100.0
         val_unit = ''
     else:
-        val_regex = r'(\d+)(\w+)'
-        float_val = float(re.sub(val_regex, r'\g<1>', value))
-        val_unit = re.sub(val_regex, r'\g<2>', value)
+        val_regex = r'(\d+)(\.\d+){0,1}(\w*)'
+        float_val = float(re.sub(val_regex, r'\g<1>\g<2>', str_value))
+        val_unit = re.sub(val_regex, r'\g<3>', str_value)
     return float_val, val_unit
-#
-# def scale(value, factor):
-    # """ Scales given parameter value. """
-    # # Return original value for scaling factor 1
-    # if factor == 1:
-        # return value
-    # # Is it numerical parameter, followed by unit?
-    # if re.match(r'\d+[a-zA-Z]*', value):
-        # # Separate number from unit, scale number
-        # digits = re.sub(r'(\d+)([a-zA-Z]*)', r'\g<1>', value)
-        # units = re.sub(r'(\d+)([a-zA-Z]*)', r'\g<1>', value)
-        # scaled = int(digits) * factor
-        # return str(scaled) + units
-    # else:
-        # # No scaling possible
-        # return value

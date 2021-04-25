@@ -20,7 +20,8 @@ from all.presets.classic_control import dqn
 from environment.multi_doc import MultiDocTuning
 from environment.supervised import LabeledDocTuning
 from environment.hybrid import HybridDocTuning
-from benchmark.evaluate import OLAP
+from benchmark.evaluate import OLAP, TpcC
+from search.objectives import Objective
 
 # Initialize supervised hint extraction environment
 labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/ms10docsLabels.csv'
@@ -34,14 +35,18 @@ dbms = PgConfig(db='tpch', user='immanueltrummer')
 
 unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
 #unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/mysql100', dbms)
-benchmark = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
-unsupervised_env = MultiDocTuning(docs=unlabeled_docs, dbms=dbms, benchmark=benchmark, 
+tpc_h = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
+tpc_c = TpcC('/Users/immanueltrummer/benchmarks/oltpbench', 
+            '/Users/immanueltrummer/benchmarks/oltpbench/config/tpcc_config_postgres.xml', 
+            '/Users/immanueltrummer/benchmarks/oltpbench/results', dbms, 'tpccsf20', 'tpcc')
+
+unsupervised_env = MultiDocTuning(docs=unlabeled_docs, dbms=dbms, benchmark=tpc_c, 
                                   hardware=[2000000, 2000000, 8], nr_hints=100, nr_rereads=50, 
-                                  nr_evals=2)
+                                  nr_evals=2, objective=Objective.THROUGHPUT)
 
 # Initialize hybrid hint extraction environment
-hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 100)
-#hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 0)
+#hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 100)
+hybrid_env = HybridDocTuning(supervised_env, unsupervised_env, 0)
 hybrid_env = GymEnvironment(hybrid_env)
 
 # set device

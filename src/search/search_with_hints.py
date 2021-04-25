@@ -7,31 +7,34 @@ from collections import defaultdict
 from dbms.generic_dbms import ConfigurableDBMS
 from benchmark.evaluate import Benchmark
 from parameters.util import is_numerical, decompose_val
+from search.objectives import calculate_reward
 
 class ParameterExplorer():
     """ Explores the parameter space using previously collected tuning hints. """
 
-    def __init__(self, dbms: ConfigurableDBMS, benchmark: Benchmark):
+    def __init__(self, dbms: ConfigurableDBMS, benchmark: Benchmark, objective):
         """ Initializes for given benchmark and database system. 
         
         Args:
             dbms: explore parameters of this database system.
             benchmark: optimize parameters for this benchmark.
+            objective: goal of parameter optimization.
         """
         self.dbms = dbms
         self.benchmark = benchmark
-        self.def_millis = self._def_conf_millis()
+        self.def_metrics = self._def_conf_metrics()
+        self.objective = objective
         
-    def _def_conf_millis(self):
-        """ Returns milliseconds for running benchmark with default configuration. """
+    def _def_conf_metrics(self):
+        """ Returns metrics for running benchmark with default configuration. """
         if self.dbms and self.benchmark:
             self.dbms.reset_config()
             self.dbms.reconfigure()
-            _, def_millis = self.benchmark.evaluate(self.dbms)
+            def_metrics = self.benchmark.evaluate()
         else:
             print('Warning: no DBMS or benchmark specified for parameter exploration.')
-            def_millis = 0
-        return def_millis
+            def_metrics = {'error': False, 'time': 0}
+        return def_metrics
         
     def explore(self, hint_to_weight, nr_evals):
         """ Explore parameters to improve benchmark performance.
@@ -46,18 +49,16 @@ class ParameterExplorer():
         print(f'Weighted hints: {hint_to_weight}')
         configs = self._select_configs(hint_to_weight, nr_evals)
         print(f'Selected configurations: {configs}')
-        # Update default time
-        #self.def_millis = self._def_conf_millis()
         # Identify best configuration
-        max_savings = 0
+        max_reward = 0
         best_config = {}
         for config in configs:
-            savings = self._evaluate_config(config)
-            if savings > max_savings:
-                max_savings = savings
+            reward = self._evaluate_config(config)
+            if reward > max_reward:
+                max_reward = reward
                 best_config = config
-        print(f'Obtained {max_savings} by configuration {best_config}')
-        return max_savings, best_config
+        print(f'Obtained {max_reward} by configuration {best_config}')
+        return max_reward, best_config
 
     def _select_configs(self, hint_to_weight, nr_evals):
         """ Returns set of interesting configurations, based on hints. 
@@ -75,13 +76,6 @@ class ParameterExplorer():
             config = self._next_config(configs, param_to_w_vals)
             configs.append(config)
         return configs
-        # # Sort hints by their weight (decreasing)
-        # sorted_hints = dict(sorted(hint_to_weight.items(), key=lambda item: -item[1]))
-        # nr_hints = len(sorted_hints)
-        # if nr_hints <= nr_evals:
-            # return [{k[0]: k[1]} for k, _ in sorted_hints.items()]
-        # else:
-            # return [{k[0]: k[1]} for k, _ in list(sorted_hints.items())[:nr_evals]]
          
     def _next_config(self, configs, param_to_w_vals):
         """ Select most interesting configuration to try next. """
@@ -159,9 +153,9 @@ class ParameterExplorer():
             for param, value in config.items():
                 self.dbms.set_param_smart(param, value)
             self.dbms.reconfigure()
-            error, millis = self.benchmark.evaluate(self.dbms)
-            savings = self.def_millis - millis
-            print(f'Saved {savings} millis with {config}')
-            return savings if not error else -10000
+            metrics = self.benchmark.evaluate()
+            reward = calculate_reward(metrics, self.def_metrics, self.objective)
+            print(f'Reward {reward} with {config}')
+            return reward
         else:
             return 0

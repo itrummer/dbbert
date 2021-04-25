@@ -12,7 +12,7 @@ from all.policies.greedy import GreedyPolicy
 from torch.optim import Adam
 from torch import nn
 from all.presets.classic_control import dqn
-from environment.multi_doc_2 import MultiDocTuning
+from environment.multi_doc import MultiDocTuning
 from benchmark.evaluate import OLAP
 from dbms.mysql import MySQLconfig
 from dbms.postgres import PgConfig
