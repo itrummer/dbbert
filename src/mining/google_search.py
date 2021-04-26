@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 from googleapiclient.discovery import build
 from urllib.request import urlopen
 
-def google_query(query, api_key, cse_id):
-    """ Uses specified search engine to query, returns results. 
+def google_query(query_one, api_key, cse_id):
+    """ Uses specified search engine to query_one, returns results. 
     
     Returns:
         A list of search result items.
@@ -21,7 +21,7 @@ def google_query(query, api_key, cse_id):
     for start in range(1, 100, 10):
         print(f'Retrieving results starting from index {start}')
         query_results = query_service.cse().list(
-            q=query, cx=cse_id, start=start, lr='lang_en', 
+            q=query_one, cx=cse_id, start=start, lr='lang_en', 
             dateRestrict='y1').execute()
         all_results += query_results['items']
     return all_results
@@ -57,16 +57,16 @@ def can_parse(result):
     return True if not '.pdf' in result['link'] else False
 
 # Parse command line arguments
-parser = argparse.ArgumentParser(description='Retrieve results of Google query')
-parser.add_argument('query', type=str, help='Specify Google search query')
+parser = argparse.ArgumentParser(description='Retrieve results of Google query_one')
+parser.add_argument('query_one', type=str, help='Specify Google search query_one')
 parser.add_argument('key', type=str, help='Specify the Google API key')
 parser.add_argument('cse', type=str, help='Specify SE ID (https://programmablesearchengine.google.com/)')
 parser.add_argument('out_path', type=str, help='Specify path to output file')
 args = parser.parse_args()
 print(args)
 
-# Write Google query results into file
-items = google_query(args.query, args.key, args.cse)
+# Write Google query_one results into file
+items = google_query(args.query_one, args.key, args.cse)
 rows = []
 for docid, result in enumerate(items):
     url = result['link']

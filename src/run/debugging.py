@@ -24,21 +24,25 @@ from benchmark.evaluate import OLAP, TpcC
 from search.objectives import Objective
 
 # Initialize supervised hint extraction environment
-labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/ms10docsLabels.csv'
-#labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg10docsLabels.csv'
+#labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/ms10docsLabels.csv'
+labeled_path = '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg10docsLabels.csv'
 labeled_docs = DocCollection(docs_path=labeled_path, dbms=None, size_threshold=0)
 supervised_env = LabeledDocTuning(docs=labeled_docs, nr_hints=500, label_path=labeled_path)
 
 # Initialize unsupervised hint extraction environment
-#dbms = MySQLconfig('tpch', 'root', 'mysql1234-')
-dbms = PgConfig(db='tpch', user='immanueltrummer')
+dbms = MySQLconfig('tpch', 'root', 'mysql1234-', '/usr/local/mysql/bin')
+#dbms = PgConfig(db='tpch', user='immanueltrummer')
 
-unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
-#unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/mysql100', dbms)
+#unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/postgres100', dbms)
+unlabeled_docs = DocCollection('/Users/immanueltrummer/git/literateDBtuners/tuning_docs/mysql100', dbms)
 tpc_h = OLAP(dbms, '/Users/immanueltrummer/git/literateDBtuners/benchmarking/tpch/queries.sql')
+# tpc_c = TpcC('/Users/immanueltrummer/benchmarks/oltpbench', 
+            # '/Users/immanueltrummer/benchmarks/oltpbench/config/tpcc_config_postgres.xml', 
+            # '/Users/immanueltrummer/benchmarks/oltpbench/results', dbms, 'tpccsf20', 'tpcc', 1)
 tpc_c = TpcC('/Users/immanueltrummer/benchmarks/oltpbench', 
-            '/Users/immanueltrummer/benchmarks/oltpbench/config/tpcc_config_postgres.xml', 
-            '/Users/immanueltrummer/benchmarks/oltpbench/results', dbms, 'tpccsf20', 'tpcc')
+            '/Users/immanueltrummer/benchmarks/oltpbench/config/tpcc_config_mysql.xml', 
+            '/Users/immanueltrummer/benchmarks/oltpbench/results', dbms, 'tpccsf20', 'tpcc', 10)
+
 
 unsupervised_env = MultiDocTuning(docs=unlabeled_docs, dbms=dbms, benchmark=tpc_c, 
                                   hardware=[2000000, 2000000, 8], nr_hints=100, nr_rereads=50, 

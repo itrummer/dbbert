@@ -6,7 +6,6 @@ Created on Apr 2, 2021
 from abc import ABC
 from abc import abstractmethod
 import glob
-import json
 import os
 import pandas as pd
 import psycopg2
@@ -26,6 +25,28 @@ class Benchmark(ABC):
     def print_stats(self):
         """ Prints out some benchmark statistics. """
         pass
+    
+    def reset(self, log_path):
+        """ Reset timestamps for logging. 
+        
+        Args:
+            log_path: path for logging output
+        """
+        self.start_ms = time.time() * 1000.0
+        self.log_path = log_path
+        with open(self.log_path, 'w') as file:
+            file.write('millis,quality\n')
+        
+    def _log(self, quality):
+        """ Write quality and timestamp to log file. 
+        
+        Args:
+            quality: quality of best current solution (e.g., w.r.t. throughput)
+        """
+        with open(self.log_path, 'a') as file:
+            cur_ms = time.time() * 1000.0
+            total_ms = cur_ms - self.start_ms
+            file.write(f'{total_ms},{quality}\n')
     
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
@@ -57,7 +78,9 @@ class OLAP(Benchmark):
                 self.min_conf = self.dbms.changed() if self.dbms else None
             if millis > self.max_time:
                 self.max_time = millis
-                self.max_conf = self.dbms.changed() if self.dbms else None 
+                self.max_conf = self.dbms.changed() if self.dbms else None
+        # Logging
+        self._log(self.min_time)
         return {'error': error, 'time': millis}
     
     def print_stats(self):
@@ -67,21 +90,21 @@ class OLAP(Benchmark):
         print(f'Maximal time (ms): {self.max_time}')
         print(f'Achieved with configuration: {self.max_conf}')
     
-# TODO: replace hard-coded paths and database names
 class TpcC(Benchmark):
     """ Runs the TPC-C benchmark. """
     
     def __init__(self, oltp_path, config_path, result_path, 
-                 dbms, template_db, target_db):
+                 dbms, template_db, target_db, reset_every):
         """ Initialize with given paths. 
         
         Args:
             oltp_path: path to OLTP benchmark runner
             config_path: path to configuration file
             result_path: store benchmark results here
-            dbms: configurable DBMS
+            dbms: configurable DBMS (not the benchmark database)
             template_db: used as template to re-initialize DB
             target_db: used for running the benchmark
+            reset_every: reset database every i-th evaluation
         """
         self.oltp_path = oltp_path
         self.config_path = config_path
@@ -89,10 +112,12 @@ class TpcC(Benchmark):
         self.dbms = dbms
         self.template_db = template_db
         self.target_db = target_db
+        self.reset_every = reset_every
         self.min_throughput = float('inf')
         self.min_config = {}
         self.max_throughput = 0
         self.max_config = {}
+        self.evals_since_reset = 0
     
     def _remove_oltp_results(self):
         """ Removes old result files from OLTP benchmark. """
@@ -105,9 +130,8 @@ class TpcC(Benchmark):
 
     def _reset_db(self):
         """ Reload TPC-C database from template database. """
-        self.dbms.update(f'drop database if exists {self.target_db}')
-        self.dbms.update(f'create database {self.target_db} with template {self.template_db}')
-
+        self.dbms.copy_db(self.template_db, self.target_db)
+        
     def evaluate(self):
         """ Evaluates current configuration on TPC-C benchmark.
         
@@ -115,7 +139,10 @@ class TpcC(Benchmark):
             Dictionary containing error flag and throughput
          """
         self._remove_oltp_results()
-        self._reset_db()
+        self.evals_since_reset += 1
+        if self.evals_since_reset > self.reset_every:
+            self._reset_db()
+            self.evals_since_reset = 0
         throughput = -1
         had_error = True
         try:
@@ -138,6 +165,8 @@ class TpcC(Benchmark):
                 self.min_config = self.dbms.changed()
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
+        # Logging
+        self._log(self.max_throughput)
         return {'error': had_error, 'throughput': throughput}
     
     def print_stats(self):

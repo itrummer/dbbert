@@ -6,19 +6,41 @@ Created on Apr 7, 2021
 from dbms.generic_dbms import ConfigurableDBMS
 
 import mysql.connector
+import os
 
 class MySQLconfig(ConfigurableDBMS):
     """ Represents configurable MySQL database. """
     
-    def __init__(self, db, user, password):
-        """ Initialize DB connection with given credentials. """
+    def __init__(self, db, user, password, bin_dir):
+        """ Initialize DB connection with given credentials. 
+        
+        Args:
+            db: name of MySQL database
+            user: name of MySQL user
+            password: password for database
+            bin_dir: directory containing MySQL binaries (no trailing slash)
+        """
         unit_to_size={'KB':'000', 'MB':'000000', 'GB':'000000000',
                       'K':'000', 'M':'000000', 'G':'000000000'}
         super().__init__(db, user, password, unit_to_size)
+        self.bin_dir = bin_dir
         
     def __del__(self):
         """ Close DBMS connection if any. """
         super().__del__()
+        
+    def copy_db(self, source_db, target_db):
+        """ Copy source to target database. """
+        ms_clc_prefix = f'{self.bin_dir}/mysql -u{self.user} -p{self.password} '
+        ms_dump_prefix = f'{self.bin_dir}/mysqldump -u{self.user} -p{self.password} '
+        os.system(ms_dump_prefix + f' {source_db} > copy_db_dump')
+        print('Dumped old database')
+        os.system(ms_clc_prefix + f" -e 'drop database if exists {target_db}'")
+        print('Dropped old database')
+        os.system(ms_clc_prefix + f" -e 'create database {target_db}'")
+        print('Created new database')
+        os.system(ms_clc_prefix + f" {target_db} < copy_db_dump")
+        print('Initialized new database')
             
     def _connect(self):
         """ Establish connection to database, returns success flag. """
@@ -39,8 +61,8 @@ class MySQLconfig(ConfigurableDBMS):
             print('Disconnecting ...')
             self.connection.close()
     
-    def query(self, sql):
-        """ Runs SQL query and returns result if query succeeds. """
+    def query_one(self, sql):
+        """ Runs SQL query_one and returns one result if it succeeds. """
         try:
             cursor = self.connection.cursor(buffered=True)
             cursor.execute(sql)
@@ -55,7 +77,7 @@ class MySQLconfig(ConfigurableDBMS):
             with open(path, 'r') as file:
                 queries = file.read().split(';')
                 for query in queries:
-                    self.query(query)
+                    self.query_one(query)
             error = False
         except Exception as e:
             print(f'Exception: {e}')
@@ -63,17 +85,17 @@ class MySQLconfig(ConfigurableDBMS):
     
     def update(self, sql):
         """ Runs an SQL update and returns true iff the update succeeds. """
-        print(f'Trying update {sql}')
+        #print(f'Trying update {sql}')
+        self.connection.autocommit = True
+        cursor = self.connection.cursor(buffered=True)
         try:
-            self.connection.autocommit = True
-            cursor = self.connection.cursor(buffered=True)
             cursor.execute(sql)
-            #self.connection.commit()
-            cursor.close()
-            return True
+            success = True
         except Exception as e:
-            print(f'Exception during update: {e}')
-            return False
+            #print(f'Exception during update: {e}')
+            success = False
+        cursor.close()
+        return success
     
     def is_param(self, param):
         """ Returns True iff the given parameter can be configured. """
@@ -81,18 +103,25 @@ class MySQLconfig(ConfigurableDBMS):
     
     def get_value(self, param):
         """ Returns current value for given parameter. """
-        return self.query(f'select @@{param}')
+        return self.query_one(f'select @@{param}')
     
     def set_param(self, param, value):
         """ Set parameter to given value. """
-        print(f'set_param: {param} to {value}')
+        #print(f'set_param: {param} to {value}')
         self.config[param] = value
         return self.update(f'set global {param}={value}')
     
     def reset_config(self):
         """ Reset all parameters to default values. """
-        for param in self.changed():
-            self.set_param(param, 'DEFAULT')
+        cursor = self.connection.cursor(buffered=True)
+        cursor.execute('show global variables where variable_name != \'keyring_file_data\'')
+        var_vals = cursor.fetchall()
+        for var_val in var_vals:
+            var, _ = var_val
+            success = self.set_param(var, 'default')
+            # if not success:
+                # print(f'Warning: cannot reset parameter {var}')
+        cursor.close()
         self.config = {}
     
     def reconfigure(self):

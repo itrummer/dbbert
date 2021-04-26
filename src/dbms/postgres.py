@@ -19,6 +19,11 @@ class PgConfig(ConfigurableDBMS):
     def __del__(self):
         """ Close DBMS connection if any. """
         super().__del__()
+        
+    def copy_db(self, source_db, target_db):
+        """ Copy source to target database. """
+        self.dbms.update(f'drop database if exists {target_db}')
+        self.dbms.update(f'create database {target_db} with template {source_db}')
             
     def _connect(self):
         """ Establish connection to database, returns success flag. """
@@ -40,9 +45,9 @@ class PgConfig(ConfigurableDBMS):
         if self.connection:
             print('Disconnecting ...')
             self.connection.close()
-            
-    def query(self, sql):
-        """ Executes query and returns first result table cell or None. """
+                        
+    def query_one(self, sql):
+        """ Executes query_one and returns first result table cell or None. """
         try:
             self.connection.autocommit = True
             cursor = self.connection.cursor()
@@ -78,13 +83,13 @@ class PgConfig(ConfigurableDBMS):
         
     def get_value(self, param):
         """ Get current value of given parameter. """
-        return self.query(f'show {param}')
+        return self.query_one(f'show {param}')
         
     def set_param(self, param, value):
         """ Set given parameter to given value. """
         self.config[param] = value
-        query = f'alter system set {param} to \'{value}\''
-        return self.update(query)
+        query_one = f'alter system set {param} to \'{value}\''
+        return self.update(query_one)
     
     def reset_config(self):
         """ Reset all parameters to default values. """
