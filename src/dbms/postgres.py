@@ -22,8 +22,8 @@ class PgConfig(ConfigurableDBMS):
         
     def copy_db(self, source_db, target_db):
         """ Copy source to target database. """
-        self.dbms.update(f'drop database if exists {target_db}')
-        self.dbms.update(f'create database {target_db} with template {source_db}')
+        self.update(f'drop database if exists {target_db}')
+        self.update(f'create database {target_db} with template {source_db}')
             
     def _connect(self):
         """ Establish connection to database, returns success flag. """

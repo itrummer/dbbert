@@ -50,3 +50,28 @@ def decompose_val(value: str):
         float_val = float(re.sub(val_regex, r'\g<1>\g<2>', str_value))
         val_unit = re.sub(val_regex, r'\g<3>', str_value)
     return float_val, val_unit
+
+def convert_to_bytes(value):
+    """ Try converting value with unit into byte value. 
+    
+    Args:
+        value: a number followed by a unit
+        
+    Returns:
+        byte size if successful or None
+    """
+    if is_numerical(value):
+        number, unit = decompose_val(value)
+        low_unit = unit.lower()
+        if len(low_unit) == 0:
+            return number
+        elif 'g' in low_unit:
+            return number * 1000000000
+        elif 'm' in low_unit:
+            return number * 1000000
+        elif 'k' in low_unit:
+            return number * 1000
+        else:
+            return None
+    else:
+        return None

@@ -111,17 +111,20 @@ class MySQLconfig(ConfigurableDBMS):
         self.config[param] = value
         return self.update(f'set global {param}={value}')
     
-    def reset_config(self):
-        """ Reset all parameters to default values. """
+    def all_params(self):
+        """ Returns list of tuples, containing configuration parameters and values. """
         cursor = self.connection.cursor(buffered=True)
         cursor.execute('show global variables where variable_name != \'keyring_file_data\'')
         var_vals = cursor.fetchall()
+        cursor.close()
+        return var_vals
+    
+    def reset_config(self):
+        """ Reset all parameters to default values. """
+        var_vals = self.all_params()
         for var_val in var_vals:
             var, _ = var_val
-            success = self.set_param(var, 'default')
-            # if not success:
-                # print(f'Warning: cannot reset parameter {var}')
-        cursor.close()
+            self.set_param(var, 'default')
         self.config = {}
     
     def reconfigure(self):

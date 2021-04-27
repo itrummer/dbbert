@@ -27,26 +27,39 @@ class Benchmark(ABC):
         pass
     
     def reset(self, log_path):
-        """ Reset timestamps for logging. 
+        """ Reset timestamps for logging and reset statistics. 
         
         Args:
             log_path: path for logging output
         """
+        # Initialize timestamps and logging
         self.start_ms = time.time() * 1000.0
         self.log_path = log_path
         with open(self.log_path, 'w') as file:
-            file.write('millis,quality\n')
-        
-    def _log(self, quality):
+            file.write('millis\tquality\tconfiguration\n')
+        # Initialize stats with default configuration
+        self._init_stats()
+        self.evaluate()
+            
+    @abstractmethod
+    def _init_stats(self):
+        """ Initializes benchmark statistics. """
+        pass
+            
+    def _log(self, quality, config):
         """ Write quality and timestamp to log file. 
+        
+        Note: this method has no effect if no log file path was specified.
         
         Args:
             quality: quality of best current solution (e.g., w.r.t. throughput)
+            config: description of associated configuration (as dictionary)
         """
-        with open(self.log_path, 'a') as file:
-            cur_ms = time.time() * 1000.0
-            total_ms = cur_ms - self.start_ms
-            file.write(f'{total_ms},{quality}\n')
+        if self.log_path:
+            with open(self.log_path, 'a') as file:
+                cur_ms = time.time() * 1000.0
+                total_ms = cur_ms - self.start_ms
+                file.write(f'{total_ms}\t{quality}\t{config}\n')
     
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
@@ -55,10 +68,8 @@ class OLAP(Benchmark):
         """ Initialize with database and path to queries. """
         self.dbms = dbms
         self.query_path = query_path
-        self.min_time = float('inf')
-        self.max_time = 0
-        self.min_conf = {}
-        self.max_conf = {}
+        self.log_path = None
+        self._init_stats()
     
     def evaluate(self):
         """ Run all benchmark queries. 
@@ -80,7 +91,7 @@ class OLAP(Benchmark):
                 self.max_time = millis
                 self.max_conf = self.dbms.changed() if self.dbms else None
         # Logging
-        self._log(self.min_time)
+        self._log(self.min_time, self.min_conf)
         return {'error': error, 'time': millis}
     
     def print_stats(self):
@@ -89,6 +100,13 @@ class OLAP(Benchmark):
         print(f'Achieved with configuration: {self.min_conf}')
         print(f'Maximal time (ms): {self.max_time}')
         print(f'Achieved with configuration: {self.max_conf}')
+        
+    def _init_stats(self):
+        """ Initialize minimal and maximal time and configurations. """
+        self.min_time = float('inf')
+        self.max_time = 0
+        self.min_conf = {}
+        self.max_conf = {}
     
 class TpcC(Benchmark):
     """ Runs the TPC-C benchmark. """
@@ -113,24 +131,9 @@ class TpcC(Benchmark):
         self.template_db = template_db
         self.target_db = target_db
         self.reset_every = reset_every
-        self.min_throughput = float('inf')
-        self.min_config = {}
-        self.max_throughput = 0
-        self.max_config = {}
+        self._init_stats()
         self.evals_since_reset = 0
-    
-    def _remove_oltp_results(self):
-        """ Removes old result files from OLTP benchmark. """
-        files = glob.glob(f'{self.result_path}/*')
-        for f in files:
-            try:
-                os.remove(f)
-            except OSError as e:
-                print("Error: %s : %s" % (f, e.strerror))
-
-    def _reset_db(self):
-        """ Reload TPC-C database from template database. """
-        self.dbms.copy_db(self.template_db, self.target_db)
+        self.log_path = None
         
     def evaluate(self):
         """ Evaluates current configuration on TPC-C benchmark.
@@ -166,10 +169,35 @@ class TpcC(Benchmark):
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
         # Logging
-        self._log(self.max_throughput)
+        self._log(self.max_throughput, self.max_config)
         return {'error': had_error, 'throughput': throughput}
     
     def print_stats(self):
         """ Print out benchmark statistics. """
         print(f'Minimal throughput {self.min_throughput} with configuration {self.min_config}')
         print(f'Maximal throughput {self.max_throughput} with configuration {self.max_config}')
+        
+    def reset(self, log_path):
+        """ Reset database along with logging and statistics. """
+        self._reset_db()
+        super().reset(log_path)
+        
+    def _init_stats(self):
+        """ Reset minimal and maximal throughput (and configurations). """
+        self.min_throughput = float('inf')
+        self.min_config = {}
+        self.max_throughput = 0
+        self.max_config = {}
+        
+    def _remove_oltp_results(self):
+        """ Removes old result files from OLTP benchmark. """
+        files = glob.glob(f'{self.result_path}/*')
+        for f in files:
+            try:
+                os.remove(f)
+            except OSError as e:
+                print("Error: %s : %s" % (f, e.strerror))
+
+    def _reset_db(self):
+        """ Reload TPC-C database from template database. """
+        self.dbms.copy_db(self.template_db, self.target_db)

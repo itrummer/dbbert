@@ -6,7 +6,7 @@ Created on Apr 16, 2021
 from collections import defaultdict
 from dbms.generic_dbms import ConfigurableDBMS
 from benchmark.evaluate import Benchmark
-from parameters.util import is_numerical, decompose_val
+from parameters.util import is_numerical, convert_to_bytes
 from search.objectives import calculate_reward
 
 class ParameterExplorer():
@@ -115,10 +115,10 @@ class ParameterExplorer():
         if value_1 == value_2:
             return 0
         elif is_numerical(value_1) and is_numerical(value_2):
-            float_1, unit_1 = decompose_val(value_1)
-            float_2, unit_2 = decompose_val(value_2)
-            if unit_1 == unit_2:
-                return abs(float_1 - float_2)
+            bytes_1 = convert_to_bytes(value_1)
+            bytes_2 = convert_to_bytes(value_2)
+            if bytes_1 is not None and bytes_2 is not None:
+                return abs(bytes_1 - bytes_2)
             else:
                 return 1000
         else:
