@@ -28,10 +28,10 @@ class DocTuning(Env, ABC):
         """
         self.docs = docs
         self.observation_space = Box(
-            low=-10, high=10, shape=(1537,), dtype=np.float32)
+            low=-10, high=10, shape=(1538,), dtype=np.float32)
         self.action_space = Discrete(5)
-        self.def_obs = torch.zeros(1537)
-        self.def_hint_obs = torch.zeros(1536)
+        self.def_obs = torch.zeros(1538)
+        self.def_hint_obs = torch.zeros(1537)
         self.obs_cache = {}
         self.nr_rereads = 1
         self.factors = [0.25, 0.5, 1, 2, 4]
@@ -102,7 +102,8 @@ class DocTuning(Env, ABC):
         # Use zeros in case of missing vectors
         obs = self.def_hint_obs
         if not (obs_parts[0] is None or obs_parts[1] is None):
-            obs = torch.cat((obs_parts[0], obs_parts[1]))
+            doc_obs = torch.tensor([int(hint.doc_id)])
+            obs = torch.cat((obs_parts[0], obs_parts[1], doc_obs))
         return obs
     
     @abstractmethod
