@@ -8,8 +8,10 @@ from environment.common import DocTuning
 from environment.common import DecisionType
 import pandas as pd
 from random import shuffle
+from environment.bert_tuning import TuningBertFine
 
-class LabeledDocTuning(DocTuning):
+#class LabeledDocTuning(DocTuning):
+class LabeledDocTuning(TuningBertFine):
     """ Supervised training for extracting tuning hints. """
 
     def __init__(self, docs: DocCollection, nr_hints, label_path):

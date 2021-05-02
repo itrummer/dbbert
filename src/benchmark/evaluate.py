@@ -157,7 +157,7 @@ class TpcC(Benchmark):
             print(f'Benchmark return code: {return_code}')
             # Extract throughput from generated files
             df = pd.read_csv(f'{self.result_path}/tuningtest.res')
-            throughput = df[' throughput(req/sec)'].mean()
+            throughput = df[' throughput(req/sec)'].median()
             had_error = False
             # Update statistics
             if throughput > self.max_throughput:

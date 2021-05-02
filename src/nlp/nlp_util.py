@@ -61,14 +61,3 @@ def mean_encoding(tokens, encoding, start, end):
     else:
         stacked = torch.Tensor(m_states)
         return torch.mean(stacked, dim=0)
-    
-# def preprocess(doc: DocCollection):
-    # """ Encode and cache all passages in the document collection. """
-    # for doc_id, passages in enumerate(doc.passages_by_doc):
-        # print(f'Treating document nr. {doc_id}')
-        # if doc_id != 61:
-            # nr_passages = len(passages)
-            # for p_id, passage in enumerate(passages):
-                # print(f'Encoding passage {p_id}/{nr_passages} (doc. {doc_id})')
-                # print(passage)
-                # encode(passage)

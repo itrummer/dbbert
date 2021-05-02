@@ -109,7 +109,6 @@ def run_dbms_benchmarks(labeled_path, unlabeled_path, dbms,
             run_ddpg(dbms, bench, objective, all_params, 
                      change_factor, LITERATE_TIMEOUT_S)
 
-
 # Run experiments for MySQL
 mysql = MySQLconfig('tpch', 'root', 'mysql1234-', '/usr/local/mysql/bin')
 ms_p_vals = mysql.all_params()

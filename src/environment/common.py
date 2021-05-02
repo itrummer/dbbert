@@ -27,12 +27,7 @@ class DocTuning(Env, ABC):
             docs: collection of documents with tuning hints
         """
         self.docs = docs
-        self.observation_space = Box(
-            low=-10, high=10, shape=(1538,), dtype=np.float32)
         self.action_space = Discrete(5)
-        self.def_obs = torch.zeros(1538)
-        self.def_hint_obs = torch.zeros(1537)
-        self.obs_cache = {}
         self.nr_rereads = 1
         self.factors = [0.25, 0.5, 1, 2, 4]
     
@@ -42,7 +37,9 @@ class DocTuning(Env, ABC):
         done = self._next_state(action)
         if done:
             reward += self._finalize_episode()
-        return self._observe(), reward, done, {}
+        obs = self._observe()
+        print(f'DocTuning.step: {obs.dtype}')
+        return obs, reward, done, {}
     
     @abstractmethod
     def _take_action(self, action):
@@ -75,36 +72,10 @@ class DocTuning(Env, ABC):
             done = True
         return done
     
+    @abstractmethod
     def _observe(self):
-        """ Generates observations based on current hint. """
-        obs = self.def_obs
-        if self.hint_ctr < self.nr_hints:
-            if self.hint_ctr in self.obs_cache:
-                obs = self.obs_cache[self.hint_ctr]
-            else:
-                _, hint = self.hints[self.hint_ctr]
-                hint_obs = self._hint_to_obs(hint)
-                decision_obs = torch.tensor([int(self.decision)])
-                obs = torch.cat((hint_obs, decision_obs))
-                self.obs_cache[self.hint_ctr] = obs
-        return obs
-
-    def _hint_to_obs(self, hint: TuningHint):
-        """ Maps tuning hint to an observation vector. """
-        tokens = nlp.tokenize(hint.passage)
-        encoding = nlp.encode(hint.passage)
-        # Map parameter and value to vector
-        obs_parts = []
-        for item in [hint.param, hint.value]:
-            obs_parts.append(
-                nlp.mean_encoding(
-                    tokens, encoding, item.start(), item.end()))
-        # Use zeros in case of missing vectors
-        obs = self.def_hint_obs
-        if not (obs_parts[0] is None or obs_parts[1] is None):
-            doc_obs = torch.tensor([int(hint.doc_id)])
-            obs = torch.cat((obs_parts[0], obs_parts[1], doc_obs))
-        return obs
+        """ Generates observations based on current state. """
+        pass
     
     @abstractmethod
     def _reset(self):
