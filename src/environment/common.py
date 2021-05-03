@@ -38,7 +38,6 @@ class DocTuning(Env, ABC):
         if done:
             reward += self._finalize_episode()
         obs = self._observe()
-        print(f'DocTuning.step: {obs.dtype}')
         return obs, reward, done, {}
     
     @abstractmethod

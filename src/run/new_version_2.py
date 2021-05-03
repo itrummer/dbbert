@@ -21,16 +21,10 @@ class NNtest(torch.nn.Module):
         self.model = BertForMultipleChoice.from_pretrained('bert-base-uncased')
         
     def forward(self, observations):
-        print(f'Forward shape: {observations.shape}')
-        print(f'Forward type: {observations.dtype}')
-        print(observations)
         permuted_obs = observations.permute(1, 0, 2, 3).contiguous()
-        print(f'Forward shape 2: {permuted_obs.shape}')
         return self.model(input_ids=permuted_obs[0], 
                           token_type_ids=permuted_obs[1],
                           attention_mask=permuted_obs[2]).logits
-        # print(observations)
-        # return self.model(observations).logits
 
 from all.agents import VQN
 from all.approximation import QNetwork

@@ -52,5 +52,4 @@ class TuningBertFine(DocTuning):
         result = torch.stack(
             (encoding['input_ids'], encoding['token_type_ids'], encoding['attention_mask']),
             dim=0)
-        print(f'_observe result shape: {result.shape}')
         return result
