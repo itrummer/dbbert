@@ -12,9 +12,10 @@ from dbms.generic_dbms import ConfigurableDBMS
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user, password=None, restart_cmd=""):
+    def __init__(self, db, user, password=None, restart_cmd="", data_dir=""):
         """ Initialize DB connection with given credentials. """
         self.restart_cmd = restart_cmd
+        self.data_dir = data_dir
         super().__init__(db, user, password, {})
         
     def __del__(self):
@@ -38,7 +39,8 @@ class PgConfig(ConfigurableDBMS):
         except Exception as e:
             # Delete changes to default configuration and restart
             print(f'Exception while trying to connect: {e}')
-            os.system('rm /opt/homebrew/var/postgres/postgresql.auto.conf')
+            #/opt/homebrew/var/postgres
+            os.system(f'rm {self.data_dir}/postgresql.auto.conf')
             self.reconfigure()
             return False
         
