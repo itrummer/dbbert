@@ -33,7 +33,9 @@ class MultiDocTuning(TuningBertFine):
         self.hardware = hardware
         self.hints_per_episode = hints_per_episode
         self.nr_evals = nr_evals
-        self.hints = self._ordered_hints()
+        self.docs.doc_to_hints
+        #self.hints = self._ordered_hints()
+        self.hints = self._hints()
         self.nr_hints = len(self.hints)
         print('All hints considered for multi-doc tuning:')
         for i in range(self.nr_hints):
@@ -41,6 +43,13 @@ class MultiDocTuning(TuningBertFine):
             print(f'Hint nr. {i}: {hint.param.group()} -> {hint.value.group()}')
         self.explorer = ParameterExplorer(dbms, benchmark, objective)
         self.reset()
+        
+    def _hints(self):
+        """ Returns hints in document collection order. """
+        hints = []
+        for doc_id in range(self.docs.nr_docs):
+            hints += self.docs.get_hints(doc_id)
+        return hints
         
     def _ordered_hints(self):
         """ Prioritize hints in tuning document collection. """

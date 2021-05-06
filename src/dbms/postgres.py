@@ -40,7 +40,7 @@ class PgConfig(ConfigurableDBMS):
             # Delete changes to default configuration and restart
             print(f'Exception while trying to connect: {e}')
             #/opt/homebrew/var/postgres
-            os.system(f'rm {self.data_dir}/postgresql.auto.conf')
+            os.system(f'sudo rm {self.data_dir}/postgresql.auto.conf')
             self.reconfigure()
             return False
         
