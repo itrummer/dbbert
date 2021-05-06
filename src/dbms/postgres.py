@@ -63,7 +63,7 @@ class PgConfig(ConfigurableDBMS):
         error = True
         try:
             # TODO: this should not be hard-coded
-            os.system(f'/opt/homebrew/bin/psql {self.db} -f {path} > query_results.txt')
+            os.system(f'psql {self.db} -f {path} > query_results.txt')
             error = False
         except Exception as e:
             print(f'Exception: {e}')
