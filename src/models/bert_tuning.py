@@ -6,7 +6,7 @@ Created on May 5, 2021
 Agent models, based on BERT.
 '''
 from transformers import BertForMultipleChoice
-import torch.nn.Module
+import torch.nn
 
 class BertFineTuning(torch.nn.Module):
     """ Used for Q learning in the fine-tuning environment. """

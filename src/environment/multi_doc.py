@@ -27,7 +27,7 @@ class MultiDocTuning(TuningBertFine):
             nr_evals: how many evaluations with extracted hints
             objective: describes the optimization goal
         """
-        super().__init__(docs)
+        super().__init__(docs, hints_per_episode)
         self.dbms = dbms
         self.benchmark = benchmark
         self.hardware = hardware

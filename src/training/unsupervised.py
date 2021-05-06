@@ -8,20 +8,37 @@ Train interpreting tuning documents without supervision.
 from all.environments.gym import GymEnvironment
 from all.experiments import run_experiment
 from all.presets.classic_control import dqn
+from argparse import ArgumentParser
 from benchmark.evaluate import OLAP
 from dbms.postgres import PgConfig
+from doc.collection import DocCollection
 from environment.multi_doc import MultiDocTuning
 from models.bert_tuning import BertFineTuning
 from parameters.util import read_numerical
 from search.objectives import Objective
 
-device = 'cuda'
-path_to_docs = ''
-path_to_queries = ''
-log_path = ''
-db_user = 'postgres'
-db_name = 'tpch'
-path_to_conf = ''
+# Parse command line arguments
+parser = ArgumentParser(description='Unsupervised training for NLU of DB tuning documents')
+parser.add_argument('device', type=str, help='"cuda" or "cpu"')
+parser.add_argument('docs', type=str, help='Path to file with tuning documents')
+parser.add_argument('queries', type=str, help='Path to file containing SQL queries')
+parser.add_argument('logging', type=str, help='Path to file for benchmark logging')
+parser.add_argument('user', type=str, help='User name for database access')
+parser.add_argument('db', type=str, help='Name of database for tuning')
+parser.add_argument('parameters', type=str, help='Path to file with parametetrs')
+args = parser.parse_args()
+
+device = args.device
+path_to_docs = args.docs
+path_to_queries = args.queries
+log_path = args.logging
+db_user = args.user
+db_name = args.db
+path_to_conf = args.parameters
+
+# Initialize tuning documents
+docs = DocCollection(docs_path=path_to_docs, 
+                     dbms=None, size_threshold=0)
 
 # Configure Postgres database system
 pg_params = read_numerical(path_to_conf)
@@ -35,10 +52,10 @@ bench.reset(log_path)
 
 # Initialize environment
 unsupervised_env = MultiDocTuning(
-    docs=path_to_docs, dbms=postgres, benchmark=bench, 
+    docs=docs, dbms=postgres, benchmark=bench, 
     hardware=[2000000, 2000000, 8], hints_per_episode=1,
     nr_evals=1, objective=Objective.TIME)
-unsupervised_env = GymEnvironment(unsupervised_env)
+unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 
 # Initialize agents
 model = BertFineTuning()
