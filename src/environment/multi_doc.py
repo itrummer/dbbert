@@ -48,7 +48,7 @@ class MultiDocTuning(TuningBertFine):
         """ Returns hints in document collection order. """
         hints = []
         for doc_id in range(self.docs.nr_docs):
-            hints += self.docs.get_hints(doc_id)
+            hints += [(doc_id, hint) for hint in self.docs.get_hints(doc_id)]
         return hints
         
     def _ordered_hints(self):
