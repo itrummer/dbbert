@@ -25,6 +25,7 @@ parser.add_argument('queries', type=str, help='Path to file containing SQL queri
 parser.add_argument('logging', type=str, help='Path to file for benchmark logging')
 parser.add_argument('user', type=str, help='User name for database access')
 parser.add_argument('db', type=str, help='Name of database for tuning')
+parser.add_argument('password', type=str, help='Password for database access')
 parser.add_argument('parameters', type=str, help='Path to file with parametetrs')
 parser.add_argument('restart', type=str, help='Command for restarting DBMS')
 args = parser.parse_args()
@@ -35,6 +36,7 @@ path_to_queries = args.queries
 log_path = args.logging
 db_user = args.user
 db_name = args.db
+password = args.password
 path_to_conf = args.parameters
 restart_cmd = args.restart
 
@@ -45,6 +47,7 @@ docs = DocCollection(docs_path=path_to_docs,
 # Configure Postgres database system
 pg_params = read_numerical(path_to_conf)
 postgres = PgConfig(db=db_name, user=db_user, 
+                    password=password,
                     restart_cmd=restart_cmd)
 postgres.reset_config()
 postgres.reconfigure()
