@@ -14,8 +14,8 @@ class PgConfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password=None, restart_cmd=""):
         """ Initialize DB connection with given credentials. """
-        super().__init__(db, user, password, {})
         self.restart_cmd = restart_cmd
+        super().__init__(db, user, password, {})
         
     def __del__(self):
         """ Close DBMS connection if any. """
