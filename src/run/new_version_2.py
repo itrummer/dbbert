@@ -43,14 +43,6 @@ writer = DummyWriter()
 model = NNtest()
 def make_model(env):
     return model
-    
-# create a Pytorch optimizer for the model
-optimizer = Adam(model.parameters(), lr=0.01)
-# # create an Approximation of the Q-function
-q = QNetwork(model, optimizer, writer=writer)
-# # create a Policy object derived from the Q-function
-policy = GreedyPolicy(q, 5, epsilon=0.1)
-# # instantiate the agent
-vqn = VQN(q, policy, discount_factor=0.99)
+
 # start experiment
 run_experiment(dqn(model_constructor=make_model, minibatch_size=2), supervised_env, 5000)

@@ -3,7 +3,7 @@ Created on Apr 18, 2021
 
 @author: immanueltrummer
 '''
-from environment.common import DocTuning
+from environment.bert_tuning import TuningBertFine
 from benchmark.evaluate import Benchmark
 from environment.common import DecisionType
 from collections import defaultdict
@@ -11,11 +11,11 @@ from search.search_with_hints import ParameterExplorer
 from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
 
-class MultiDocTuning(DocTuning):
+class MultiDocTuning(TuningBertFine):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
     def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark,
-                 hardware, nr_hints, nr_rereads, nr_evals, objective):
+                 hardware, hints_per_episode, nr_evals, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -23,8 +23,7 @@ class MultiDocTuning(DocTuning):
             dbms: database management system to tune
             benchmark: benchmark for which to tune system
             hardware: memory size, disk size, and number of cores
-            nr_hints: how many hints to consider
-            nr_rereads: how often to read the hints
+            hints_per_episode: candidate hints before episode ends
             nr_evals: how many evaluations with extracted hints
             objective: describes the optimization goal
         """
@@ -32,10 +31,10 @@ class MultiDocTuning(DocTuning):
         self.dbms = dbms
         self.benchmark = benchmark
         self.hardware = hardware
-        self.nr_rereads = nr_rereads
+        self.hints_per_episode = hints_per_episode
         self.nr_evals = nr_evals
         self.hints = self._ordered_hints()
-        self.nr_hints = min(nr_hints, len(self.hints))
+        self.nr_hints = len(self.hints)
         print('All hints considered for multi-doc tuning:')
         for i in range(self.nr_hints):
             _, hint = self.hints[i]

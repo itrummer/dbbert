@@ -13,16 +13,17 @@ import torch
 class TuningBertFine(DocTuning):
     """ Fine-tune BERT to predict action values. """
     
-    def __init__(self, docs: DocCollection):
+    def __init__(self, docs: DocCollection, hints_per_episode):
         """ Initialize with given document collection. 
         
         Args:
             docs: collection of documents with tuning hints
+            hints_per_episode: candidate hints until episode ends
         """
-        super().__init__(docs)
-        self.observation_space = Box(low=0, high=100000, 
-                                     shape=(3, 5, 512,), dtype=np.int64)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        super().__init__(docs, hints_per_episode)
+        self.observation_space = Box(
+            low=0, high=100000, shape=(3, 5, 512,), dtype=np.int64)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
     def _observe(self):
         """ Generate observation for current decision and hint. """
@@ -47,9 +48,10 @@ class TuningBertFine(DocTuning):
         else:
             v_weights = ['not', 'slightly', 'quite', 'very', 'extremely']
             choices = [f'The hint on {param} is {weight} important.' for weight in v_weights]
-        encoding = self.tokenizer(passage_cps, choices, return_tensors='pt', 
-                                  padding='max_length', truncation=True, max_length=512)
-        result = torch.stack(
-            (encoding['input_ids'], encoding['token_type_ids'], encoding['attention_mask']),
-            dim=0)
+        encoding = self.tokenizer(
+            passage_cps, choices, return_tensors='pt', 
+            padding='max_length', truncation=True, max_length=512)
+        result = torch.stack((encoding['input_ids'], 
+                              encoding['token_type_ids'], 
+                              encoding['attention_mask']), dim=0)
         return result
