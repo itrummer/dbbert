@@ -12,9 +12,10 @@ from dbms.generic_dbms import ConfigurableDBMS
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user, password=None):
+    def __init__(self, db, user, password=None, restart_cmd=""):
         """ Initialize DB connection with given credentials. """
         super().__init__(db, user, password, {})
+        self.restart_cmd = restart_cmd
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -99,9 +100,9 @@ class PgConfig(ConfigurableDBMS):
     def reconfigure(self):
         """ Makes parameter settings take effect. Returns true if successful. """
         self._disconnect()
-        # TODO: this should not be hardcoded
-        os.system('/opt/homebrew/bin/brew services restart postgresql')
+        os.system(self.restart_cmd)
         time.sleep(3)
+        #/opt/homebrew/bin/brew services restart postgresql
         #os.system(r'/opt/homebrew/bin/pg_ctl -D /opt/homebrew/var/postgres restart')
         success = self._connect()
         return success
