@@ -35,8 +35,9 @@ class PgConfig(ConfigurableDBMS):
                 database = self.db, user = self.user, 
                 password = self.password, host = "localhost")
             return True
-        except Exception:
+        except Exception as e:
             # Delete changes to default configuration and restart
+            print(f'Exception while trying to connect: {e}')
             os.system('rm /opt/homebrew/var/postgres/postgresql.auto.conf')
             self.reconfigure()
             return False
