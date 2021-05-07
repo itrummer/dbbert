@@ -8,7 +8,9 @@ from environment.common import DecisionType, DocTuning
 from transformers import BertTokenizer
 from gym.spaces import Box
 import numpy as np
-import torch
+#import torch
+
+from torch import *
 
 class TuningBertFine(DocTuning):
     """ Fine-tune BERT to predict action values. """

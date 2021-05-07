@@ -10,10 +10,14 @@ import torch.nn
 
 class BertFineTuning(torch.nn.Module):
     """ Used for Q learning in the fine-tuning environment. """
-    def __init__(self):
-        """ Initialize for cased text. """
+    def __init__(self, start_model):
+        """ Initialize for cased text. 
+        
+        Args:
+            start_model: name or path to pretrained model
+        """
         super(BertFineTuning, self).__init__()
-        self.model = BertForMultipleChoice.from_pretrained('bert-base-cased')
+        self.model = BertForMultipleChoice.from_pretrained(start_model)
         
     def forward(self, observations):
         """ Produces logits for five actions. """

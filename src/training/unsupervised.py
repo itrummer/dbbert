@@ -29,6 +29,9 @@ parser.add_argument('password', type=str, help='Password for database access')
 parser.add_argument('parameters', type=str, help='Path to file with parameters')
 parser.add_argument('data', type=str, help='Path to Postgres data directory')
 parser.add_argument('restart', type=str, help='Command for restarting DBMS')
+parser.add_argument('imodel', type=str, default='bert-base-cased',
+                    help='Name or path to read initial model')
+parser.add_argument('omodel', type=str, help='Path to write output model')
 args = parser.parse_args()
 
 device = args.device
@@ -41,6 +44,8 @@ password = args.password
 path_to_conf = args.parameters
 path_to_data = args.data
 restart_cmd = args.restart
+input_model = args.imodel
+output_model = args.omodel
 
 # Initialize tuning documents
 docs = DocCollection(docs_path=path_to_docs, 
@@ -63,16 +68,19 @@ bench.reset(log_path)
 unsupervised_env = MultiDocTuning(
     docs=docs, dbms=postgres, benchmark=bench, 
     hardware=[2000000, 2000000, 8], hints_per_episode=1,
-    nr_evals=1, objective=Objective.TIME)
+    nr_evals=1, scale_perf=0.01, objective=Objective.TIME)
 unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 
 # Initialize agents
-model = BertFineTuning()
+model = BertFineTuning(input_model)
 def make_model(env):
     return model
 agent = dqn(model_constructor=make_model, minibatch_size=2, device=device, 
-            lr=1e-5, final_exploration_frame=1000, target_update_frequency=1, 
+            lr=1e-5, final_exploration_frame=10000, target_update_frequency=1, 
             replay_start_size=50)
 
 # Run experiments
-run_experiment(agents=agent, envs=unsupervised_env, frames=1000, test_episodes=10)
+run_experiment(agents=agent, envs=unsupervised_env, frames=10000, test_episodes=10)
+
+# Save final model
+model.save_pretrained(output_model)

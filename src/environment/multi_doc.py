@@ -15,7 +15,7 @@ class MultiDocTuning(TuningBertFine):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
     def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark,
-                 hardware, hints_per_episode, nr_evals, objective):
+                 hardware, hints_per_episode, nr_evals, scale_perf, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -25,6 +25,7 @@ class MultiDocTuning(TuningBertFine):
             hardware: memory size, disk size, and number of cores
             hints_per_episode: candidate hints before episode ends
             nr_evals: how many evaluations with extracted hints
+            scale_perf: scale performance reward by this factor
             objective: describes the optimization goal
         """
         super().__init__(docs, hints_per_episode)
@@ -33,6 +34,7 @@ class MultiDocTuning(TuningBertFine):
         self.hardware = hardware
         self.hints_per_episode = hints_per_episode
         self.nr_evals = nr_evals
+        self.scale_perf = scale_perf
         self.docs.doc_to_hints
         #self.hints = self._ordered_hints()
         self.hints = self._hints()
@@ -83,6 +85,7 @@ class MultiDocTuning(TuningBertFine):
         value = str(int(self.base * self.factor)) + hint.val_unit 
         success = self.dbms.can_set(param, value)
         assignment = (param, value)
+        print(f'Trying assigning {param} to {value}')
         if success:
             reward = 10
             weight = pow(2, action)
@@ -94,9 +97,13 @@ class MultiDocTuning(TuningBertFine):
 
     def _finalize_episode(self):
         """ Return optimal benchmark reward when using weighted hints. """
-        reward, config = self.explorer.explore(self.hint_to_weight, self.nr_evals)
-        print(f'Achieved maximal reward of {reward} using {config}')
-        return reward
+        if self.hint_to_weight:
+            reward, config = self.explorer.explore(
+                self.hint_to_weight, self.nr_evals)
+            print(f'Achieved unscaled reward of {reward} using {config}')
+            return reward * self.scale_perf
+        else:
+            return 0
 
     def _reset(self):
         """ Initializes for new tuning episode. """

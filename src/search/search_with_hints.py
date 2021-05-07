@@ -24,7 +24,7 @@ class ParameterExplorer():
         self.benchmark = benchmark
         self.def_metrics = self._def_conf_metrics()
         self.objective = objective
-        
+
     def _def_conf_metrics(self):
         """ Returns metrics for running benchmark with default configuration. """
         if self.dbms and self.benchmark:
