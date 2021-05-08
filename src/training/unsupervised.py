@@ -29,6 +29,14 @@ parser.add_argument('password', type=str, help='Password for database access')
 parser.add_argument('parameters', type=str, help='Path to file with parameters')
 parser.add_argument('data', type=str, help='Path to Postgres data directory')
 parser.add_argument('restart', type=str, help='Command for restarting DBMS')
+parser.add_argument('memory', type=int, help='Main memory', default=2000000)
+parser.add_argument('disk', type=int, help='Disk space', default=2000000)
+parser.add_argument('cores', type=int, help='Number of cores', default=8)
+parser.add_argument('nrhints', type=int, help='Number of hints per episode', default=1)
+parser.add_argument('nrevals', type=int, help='Number of evaluations per episode', default=1)
+parser.add_argument('nrframes', type=int, help='How many frames to execute', default=10000)
+parser.add_argument('sperf', type=float, help='Performance reward scaling', default=0.01)
+parser.add_argument('epsilon', type=float, help='Initial exploration epsilon', default=1)
 parser.add_argument('imodel', type=str, default='bert-base-cased',
                     help='Name or path to read initial model')
 parser.add_argument('omodel', type=str, help='Path to write output model')
@@ -44,6 +52,7 @@ password = args.password
 path_to_conf = args.parameters
 path_to_data = args.data
 restart_cmd = args.restart
+nr_frames = args.nrframes
 input_model = args.imodel
 output_model = args.omodel
 
@@ -67,20 +76,21 @@ bench.reset(log_path)
 # Initialize environment
 unsupervised_env = MultiDocTuning(
     docs=docs, dbms=postgres, benchmark=bench, 
-    hardware=[2000000, 2000000, 8], hints_per_episode=1,
-    nr_evals=1, scale_perf=0.01, objective=Objective.TIME)
+    hardware=[args.memory, args.disk, args.memory], 
+    hints_per_episode=args.nrhints, nr_evals=args.nrevals, 
+    scale_perf=args.sperf, objective=Objective.TIME)
 unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 
 # Initialize agents
 model = BertFineTuning(input_model)
-def make_model(env):
-    return model
-agent = dqn(model_constructor=make_model, minibatch_size=2, device=device, 
-            lr=1e-5, final_exploration_frame=10000, target_update_frequency=1, 
-            replay_start_size=50)
+agent = dqn(
+    model_constructor=lambda _:model, minibatch_size=2, device=device, 
+    lr=1e-5, initial_exploration=args.epsilon, replay_start_size=50, 
+    final_exploration_frame=nr_frames, target_update_frequency=1)
 
 # Run experiments
-run_experiment(agents=agent, envs=unsupervised_env, frames=10000, test_episodes=10)
+run_experiment(agents=agent, envs=unsupervised_env, 
+               frames=nr_frames, test_episodes=10)
 
 # Save final model
-model.save_pretrained(output_model)
+model.model.save_pretrained(output_model)

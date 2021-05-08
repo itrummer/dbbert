@@ -8,8 +8,7 @@ from environment.common import DocTuning
 from gym.spaces import Box
 import nlp.nlp_util as nlp
 import numpy as np
-
-from torch import *
+import torch
 
 class TuningBertFeatures(DocTuning):
     """ Uses BERT to extract features for hint classification. """

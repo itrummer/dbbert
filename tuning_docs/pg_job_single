@@ -1,0 +1,9 @@
+filenr,sentence
+1,"We set the memory limit per operator (work mem) to 2GB, which results in much better performance due to the more frequent use of in-memory hash joins instead of ex- ternal memory sort-merge joins"
+1," Additionally, we set the buffer pool size (sharedbuffers) to 4GB and the size of the operating system’s buffer cache used by PostgreSQL (effective cache size) to 32 GB"
+1, For PostgreSQL it is gen- erally recommended to use OS buffering in addition to its own buffer pool and keep most of the memory on the OS side
+1," The de- faults for these three settings are very low (MBs, not GBs), which is why increasing them is generally recommended"
+1," Finally, by in- creasing the geqo threshold parameter to 18 we forced Post- greSQL to always use dynamic programming instead of falling back to a heuristic for queries with more than 12 joins"
+1," Therefore, we disabled nested-loop joins (but not index-nested- loop joins) in all following experiments"
+1," As Figure 6b shows, when rerunning all queries without these risky nested-loop joins, we ob- served no more timeouts despite using PostgreSQL’s estimates"
+1,

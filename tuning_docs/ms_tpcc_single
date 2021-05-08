@@ -1,0 +1,300 @@
+filenr,sentence
+1,Testing Samsung storage in tpcc-mysql benchmark of Percona Server - Percona Database Performance Blog
+1,"Cookie PolicyThis site uses cookies and other tracking technologies to assist with navigation, analyze your use of our products and services, assist with promotional and marketing efforts, allow you to give feedback, and provide content from third parties. If you do not want to accept cookies, adjust your browser settings to deny cookies or exit this site. Cookie Policy Allow cookies"
+1,Percona Live
+1,About Us
+1,Contact Us
+1,Services
+1,Support
+1,MySQL Support
+1,MongoDB Support
+1,MariaDB Support
+1,PostgreSQL Support
+1,DBaaS Support
+1,High Availability Support
+1,Flexible Pricing
+1,Support Tiers
+1,Technical Account Managers
+1,Managed Services
+1,Percona Managed Database Services
+1,Percona Advanced Managed Database Service
+1,Consulting
+1,Percona Cloud Cover
+1,Percona Open Source Advance
+1,Percona and Microsoft Azure Partnership
+1,Policies
+1,Training
+1,Products
+1,MySQL Database Software
+1,Percona Distribution for MySQL
+1,Percona Server for MySQL
+1,Percona XtraDB Cluster
+1,Percona XtraBackup
+1,MongoDB Database Software
+1,Percona Distribution for MongoDB
+1,Percona Server for MongoDB
+1,Percona Backup for MongoDB
+1,PostgreSQL Database Software
+1,Percona Monitoring and Management
+1,Percona Kubernetes Operators
+1,Open Source Database Tools
+1,Percona Toolkit
+1,Percona DBaaS Command Line Tool
+1,Solutions
+1,Eliminate Vendor Lock-In
+1,Embrace the Cloud
+1,Optimize Database Performance
+1,Reduce Costs and Complexity
+1,Resources
+1,Calculators
+1,2020 Survey Results
+1,Solution Briefs
+1,White Papers
+1,Webinars
+1,Case Studies
+1,Datasheets
+1,Ebooks
+1,Videos
+1,Technical Presentations
+1,Documentation
+1,About
+1,About Percona
+1,Contact Us
+1,Customers
+1,Careers
+1,Percona Lifestyle
+1,In The News
+1,Percona Live
+1,Events
+1,Community
+1,Forums
+1,Community Blog
+1,PMM Community Contributions
+1,Testing Samsung storage in tpcc-mysql benchmark of Percona Server
+1,Back to the Blog
+1,Jul
+1,2016
+1,Vadim Tkachenko2016-07-26T14:00:19-04:00
+1,By Vadim Tkachenko
+1,"Benchmarks, MySQL"
+1,"Benchmarks, Percona Server for MySQL, Samsung, Storage, testing, tpcc-mysql"
+1,2 Comments
+1,This blog post will detail the results of Samsung storage in
+1,tpcc-mysql benchmark using Percona Server.
+1,I had an opportunity to test different Samsung storage devices under tpcc-mysql benchmark powered by Percona Server 5.7. You can find a summary with details here https://github.com/Percona-Lab-results/201607-tpcc-samsung-storage/blob/master/summary-tpcc-samsung.md
+1,I have in my possession:
+1,"Samsung 850 Pro, 2TB: This is a SATA device and is positioned as consumer-oriented, something that you would use in a high-end user desktop. As of this post, I estimate the price of this device as around $430/TB."
+1,"Samsung SM863, 1.92TB: this device is also a SATA, and positioned for a server usage. The current price is about $600/TB."
+1,"Samsung PM1725, 800GB: This is an NVMe device, in a 2.5″ form factor, but it requires a connection to a PCIe slot, which I had to allocate in my server. The device is high-end, oriented for server-side and demanding workloads. The current price is about $1300/TB."
+1,I am going to use 1000 warehouses in the
+1,"tpcc-mysql benchmarks, which corresponds roughly to a data size of 100GB."
+1,This benchmark varies the
+1,"innodb_buffer_pool_size from 5GB to 115GB. With 5GB buffer pool size only a very small portion of data fits into memory, which results in intensive foreground IO reads and intensive background IO writes. With 115GB almost all data fits into memory, which results in very small (or almost zero) IO reads and moderate background IO writes."
+1,"All buffer pool sizes in the middle of the interval correspond to resulting IO reads and writes. For example, we can see the read to write ratio on the chart below (received for the PM1725 device) with different buffer pool sizes:"
+1,"We can see that for the 5GB buffer pool size we have 56000 read IOPs operations and 32000 write IOPs. For 115GB, the reads are minimal at about 300 IOPS and the background writes are at the 20000 IOPs level. Reads gradually decline with the increasing buffer pool size."
+1,The charts are generated with the Percona Monitoring and Management tools.
+1,Results
+1,"Let’s review the results. The first chart shows measurements taken every one second, allowing us to see the trends and stalls."
+1,"If we take averages, the results are:"
+1,In table form (the results are in new order transactions per minute (NOTPM)):
+1,"bp, GB"
+1,pm1725
+1,sam850
+1,sam863
+1,pm1725 / sam863
+1,pm1725 / sam850
+1,42427.57
+1,1931.54
+1,14709.69
+1,2.88
+1,21.97
+1,78991.67
+1,2750.85
+1,31655.18
+1,2.50
+1,28.72
+1,108077.56
+1,5156.72
+1,56777.82
+1,1.90
+1,20.96
+1,122582.17
+1,8986.15
+1,93828.48
+1,1.31
+1,13.64
+1,127828.82
+1,12136.51
+1,123979.99
+1,1.03
+1,10.53
+1,130724.59
+1,19547.81
+1,127971.30
+1,1.02
+1,6.69
+1,131901.38
+1,27653.94
+1,131020.07
+1,1.01
+1,4.77
+1,133184.70
+1,38210.94
+1,131410.40
+1,1.01
+1,3.49
+1,133058.50
+1,39669.90
+1,131657.16
+1,1.01
+1,3.35
+1,133553.49
+1,39519.18
+1,132882.29
+1,1.01
+1,3.38
+1,105
+1,134021.26
+1,39631.03
+1,132126.29
+1,1.01
+1,3.38
+1,115
+1,134037.09
+1,39469.34
+1,132683.55
+1,1.01
+1,3.40
+1,Conclusion
+1,"The Samsung 850 obviously can’t keep with the more advanced SM863 and PM1725. The PM1725 shows a greater benefit with smaller buffer pool sizes. In cases using large amounts of memory, there is practically no difference with SM863. The reason is that with big buffer pool sizes, MySQL does not push IO subsystem much to use all the PM1725 performance."
+1,"For the reference, my.cnf file is"
+1,Shell
+1,[mysqld]
+1,datadir=/var/lib/mysql
+1,socket=/tmp/mysql.sock
+1,ssl=0
+1,symbolic-links=0
+1,"sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES"
+1,# general
+1,thread_cache_size=2000
+1,table_open_cache = 200000
+1,table_open_cache_instances=64
+1,back_log=1500
+1,query_cache_type=0
+1,max_connections=4000
+1,# files
+1,innodb_file_per_table
+1,innodb_log_file_size=15G
+1,innodb_log_files_in_group=2
+1,innodb_open_files=4000
+1,innodb_io_capacity=10000
+1,loose-innodb_io_capacity_max=12000
+1,innodb_lru_scan_depth=1024
+1,innodb_page_cleaners=32
+1,# buffers
+1,innodb_buffer_pool_size= 200G
+1,innodb_buffer_pool_instances=8
+1,innodb_log_buffer_size=64M
+1,# tune
+1,innodb_doublewrite= 1
+1,innodb_support_xa=0
+1,innodb_thread_concurrency=0
+1,innodb_flush_log_at_trx_commit= 1
+1,innodb_flush_method=O_DIRECT_NO_FSYNC
+1,innodb_max_dirty_pages_pct=90
+1,join_buffer_size=32K
+1,sort_buffer_size=32K
+1,innodb_use_native_aio=0
+1,innodb_stats_persistent = 1
+1,# perf special
+1,innodb_adaptive_flushing = 1
+1,innodb_flush_neighbors = 0
+1,innodb_read_io_threads = 16
+1,innodb_write_io_threads = 8
+1,innodb_purge_threads=4
+1,innodb_adaptive_hash_index=0
+1,innodb_change_buffering=none
+1,loose-innodb-log_checksum-algorithm=crc32
+1,loose-innodb-checksum-algorithm=strict_crc32
+1,loose-innodb_sched_priority_cleaner=39
+1,loose-metadata_locks_hash_instances=256
+1,1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859
+1,"[mysqld]datadir=/var/lib/mysqlsocket=/tmp/mysql.sockssl=0 symbolic-links=0 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES # generalthread_cache_size=2000table_open_cache = 200000table_open_cache_instances=64back_log=1500query_cache_type=0max_connections=4000 # filesinnodb_file_per_tableinnodb_log_file_size=15Ginnodb_log_files_in_group=2innodb_open_files=4000 innodb_io_capacity=10000loose-innodb_io_capacity_max=12000innodb_lru_scan_depth=1024innodb_page_cleaners=32 # buffersinnodb_buffer_pool_size= 200Ginnodb_buffer_pool_instances=8innodb_log_buffer_size=64M # tuneinnodb_doublewrite= 1innodb_support_xa=0innodb_thread_concurrency=0innodb_flush_log_at_trx_commit= 1innodb_flush_method=O_DIRECT_NO_FSYNCinnodb_max_dirty_pages_pct=90join_buffer_size=32Ksort_buffer_size=32Kinnodb_use_native_aio=0innodb_stats_persistent = 1 # perf specialinnodb_adaptive_flushing = 1innodb_flush_neighbors = 0innodb_read_io_threads = 16innodb_write_io_threads = 8innodb_purge_threads=4 innodb_adaptive_hash_index=0innodb_change_buffering=none loose-innodb-log_checksum-algorithm=crc32loose-innodb-checksum-algorithm=strict_crc32loose-innodb_sched_priority_cleaner=39loose-metadata_locks_hash_instances=256"
+1,Related
+1,"Intel SSD 910 vs HDD RAID in tpcc-mysql benchmarkSeptember 11, 2012In ""Benchmarks""tpcc-mysql benchmark tool: less random with multi-schema supportAugust 9, 2016In ""Benchmarks""Percona Server for MongoDB 4.2 vs 4.4 in Python TPCC BenchmarkSeptember 15, 2020In ""Benchmarks"""
+1,STAY UP-TO-DATE With Percona!
+1,"Join 33,000+ of your fellow open-source enthusiasts! Our newsletter provides updates on Percona open source software releases, technical resources, and valuable MySQL, MariaDB, PostgreSQL, and MongoDB-related articles. Get information about Percona Live, our technical webinars, and upcoming events and meetups where you can talk with our experts.Enter your work email address:*GA CampaignGA ContentGA MediumGA SourceGA TermConversion PageLanding PageBy submitting my information I agree that Percona may use my personal data in send communication to me about Percona services. I understand that I can unsubscribe from the communication at any time in accordance with the Percona Privacy Policy."
+1,Author
+1,"Vadim TkachenkoVadim Tkachenko co-founded Percona in 2006 and serves as its Chief Technology Officer. Vadim leads Percona Labs, which focuses on technology research and performance evaluations of Percona’s and third-party products. Percona Labs designs no-gimmick tests of hardware, filesystems, storage engines, and databases that surpass the standard performance and functionality scenario benchmarks."
+1,Vadim’s expertise in LAMP performance and multi-threaded programming help optimize MySQL and InnoDB internals to take full advantage of modern hardware. Oracle Corporation and its predecessors have incorporated Vadim’s source code patches into the mainstream MySQL and InnoDB products.
+1,"He also co-authored the book High Performance MySQL: Optimization, Backups, and Replication 3rd Edition."
+1,Share this post
+1,FacebookTwitterLinkedInEmail
+1,Comments (2)
+1,Peter Zaitsev
+1,"Vadim,"
+1,Great results.
+1,Interesting to see in these test when you become write bound (higher buffer pool sizes) you can get by with relatively slower storage (sam863) while when very intensive reads required pm1725 shines.
+1,"I wonder are all of these storage solutions good enough in terms of durability, in terms of retaining acknowledged data in case of power off ? This might be more critical than raw performance for databases."
+1,"It also looks like you used only 10-20% of storage for the test, which can impact especially write performance significantly."
+1,You did not test this did you ?
+1,Sysbench fileIO can be easy to validate this.
+1,"July 27, 2016 at 7:25 pm"
+1,Jonatas
+1,Great analisys.
+1,"August 24, 2016 at 11:24 am"
+1,Comments are closed.
+1,Use Percona's Technical Forum to ask any follow-up questions on this blog topic.
+1,How Can We Help?
+1,"Percona's experts can maximize your application performance with our open source database support, managed services or consulting."
+1,Contact us
+1,Subscribe Want to get weekly updates listing the latest blog posts? Subscribe now and we'll send you an update every Friday at 1pm ET.
+1,Subscribe to our blog
+1,CategoriesMySQL(3413)Insight for DBAs(1617)Percona Software(1569)Percona Events(880)MongoDB(571)Insight for Developers(498)Benchmarks(345)Percona Live(340)Cloud(303)Webinars(302)Monitoring(193)PostgreSQL(190)MariaDB(159)Percona Services(156)Security(130)ProxySQL(130)Hardware and Storage(106)Storage Engine(57)Database Trends(55)Percona Announcements(13)   Percona Blog RSS Feed
+1,"Upcoming WebinarsThe Pros and Cons of AWS, Azure, and Google Cloud: Which cloud provider is right for your business?"
+1,Open Source Adoption for Financial and Banking Institutions
+1,Optimize and Troubleshoot MySQL using PMM
+1,MongoDB Backups Overview
+1,Introduction to pg_stat_monitor
+1,All Webinars
+1,Services
+1,Support
+1,Managed Services
+1,Consulting
+1,Training
+1,Products
+1,MySQL Software
+1,MongoDB Software
+1,PostgreSQL Distribution
+1,Kubernetes
+1,Monitoring & Management
+1,Resources
+1,Solution Briefs
+1,White Papers
+1,Webinars
+1,Case Studies
+1,Datasheets
+1,Documentation
+1,More
+1,Blog
+1,Community Blog
+1,Technical Forum Help
+1,About
+1,Customers
+1,Newsroom
+1,About
+1,Careers
+1,Contact Us
+1,Sales & General Inquiries
+1,(888) 316-9775 (USA)
+1,(208) 473-2904 (USA)
+1,+44 203 608 6727 (UK)
+1,0-808-169-6490 (UK)
+1,0-800-724-4569 (GER)
+1,"MySQL, InnoDB, MariaDB and MongoDB are trademarks of their respective owners. Proudly running Percona Server for MySQL"
+1,Terms of Use |
+1,Privacy |
+1,Copyright |
+1,Legal
+1,Copyright © 2006-2021 Percona LLC.
+1,Subscribe to notificationsTurn on the notifications for this website to receive the latest news and updates.No thanksSubscribe

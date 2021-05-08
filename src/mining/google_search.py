@@ -5,9 +5,9 @@ Created on Apr 9, 2021
 '''
 import argparse
 import pandas as pd
-from bs4 import BeautifulSoup
 from googleapiclient.discovery import build
 from urllib.request import urlopen
+from mining.web_util import extract_text
 
 def google_query(query_one, api_key, cse_id):
     """ Uses specified search engine to query_one, returns results. 
@@ -35,20 +35,7 @@ def get_web_text(url):
     try:
         html_src = urlopen(url, timeout=5).read()
         print(f'Retrieved url {url}')
-        parsed = BeautifulSoup(html_src, features="html.parser")
-        print(f'Parsed url {url}')
-        for script in parsed(["script", "style"]):
-            script.extract()
-        text = parsed.get_text()
-        print(f'Retrieved text from {url}')
-        print(f'Parsed text with length {len(text)}')
-        lines = [line.strip() for line in text.splitlines()]
-        clean_lines = []
-        for line in lines:
-            clean_lines += [part.strip() for part in line.split("  ")]
-        clean_lines = [line for line in clean_lines if len(line)>2]
-        print(f'Extracted {len(clean_lines)} lines')
-        return clean_lines
+        return extract_text(html_src)
     except:
         return []
 
