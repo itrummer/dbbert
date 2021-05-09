@@ -29,11 +29,11 @@ config.read(args.cpath)
 device = config['LEARNING']['device'] # cuda or cpu
 input_model = config['LEARNING']['input'] # name or path to input model
 output_model = config['LEARNING']['output'] # path to output model
-nr_frames = config['LEARNING']['nr_frames'] # number of frames
-epsilon = config['LEARNING']['start_epsilon'] # start value for epsilon
-p_scaling = config['LEARNING']['performance_scaling'] # scaling factor for performance reward
-nr_evals = config['LEARNING']['nr_evaluations'] # number of evaluations per episode
-nr_hints = config['LEARNING']['nr_hints'] # number of hints per episode
+nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
+epsilon = float(config['LEARNING']['start_epsilon']) # start value for epsilon
+p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
+nr_evals = int(config['LEARNING']['nr_evaluations']) # number of evaluations per episode
+nr_hints = int(config['LEARNING']['nr_hints']) # number of hints per episode
 
 dbms_name = config['DATABASE']['dbms']
 db_user = config['DATABASE']['user']
@@ -47,9 +47,9 @@ path_to_conf = config['DATABASE']['config']
 path_to_docs = config['BENCHMARK']['docs']
 path_to_queries = config['BENCHMARK']['queries']
 log_path = config['BENCHMARK']['logging']
-memory = config['BENCHMARK']['memory']
-disk = config['BENCHMARK']['disk']
-cores = config['BENCHMARK']['cores']
+memory = float(config['BENCHMARK']['memory'])
+disk = float(config['BENCHMARK']['disk'])
+cores = float(config['BENCHMARK']['cores'])
 
 # Initialize tuning documents
 docs = DocCollection(docs_path=path_to_docs, 
@@ -85,7 +85,7 @@ unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 model = BertFineTuning(input_model)
 agent = dqn(
     model_constructor=lambda _:model, minibatch_size=2, device=device, 
-    lr=1e-5, initial_exploration=args.epsilon, replay_start_size=50, 
+    lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
     final_exploration_frame=nr_frames, target_update_frequency=1)
 
 # Run experiments
