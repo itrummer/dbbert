@@ -51,8 +51,8 @@ class MySQLconfig(ConfigurableDBMS):
                 database=self.db, user=self.user, 
                 password=self.password, host="localhost")
             return True
-        except Exception:
-            # TODO: how to recover for MySQL?
+        except Exception as e:
+            print(f'Exception while trying to connect to MySQL: {e}')
             return False
         
     def _disconnect(self):
