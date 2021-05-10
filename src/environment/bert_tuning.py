@@ -61,8 +61,6 @@ class TuningBertFine(DocTuning):
         # Mask parameter name (generalization to different DBMS)
         passage_cps = self._mask(passage_cps, param)
         choices = self._mask(choices, param)
-        print(passage_cps)
-        print(choices)
         encoding = self.tokenizer(
             passage_cps, choices, return_tensors='pt', 
             padding='max_length', truncation=True, max_length=512)

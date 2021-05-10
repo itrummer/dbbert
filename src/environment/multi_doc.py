@@ -32,13 +32,16 @@ class MultiDocTuning(TuningBertFine):
         self.dbms = dbms
         self.benchmark = benchmark
         self.hardware = hardware
-        self.hints_per_episode = hints_per_episode
         self.nr_evals = nr_evals
         self.scale_perf = scale_perf
         self.docs.doc_to_hints
         #self.hints = self._ordered_hints()
         self.hints = self._hints()
         self.nr_hints = len(self.hints)
+        if hints_per_episode == -1:
+            self.hints_per_episode = self.nr_hints
+        else:
+            self.hints_per_episode = hints_per_episode
         print('All hints considered for multi-doc tuning:')
         for i in range(self.nr_hints):
             _, hint = self.hints[i]
