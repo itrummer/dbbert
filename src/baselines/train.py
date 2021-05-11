@@ -57,7 +57,9 @@ if __name__ == '__main__':
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Trains models for extracting tuning hints')
-    parser.add_argument('train_path', type=str, help='Specify path to .csv file with labeled hints')
+    parser.add_argument('train_path', type=str, help='Path to .csv file with labeled hints')
+    parser.add_argument('out_detect', type=str, help='Path to detect model output')
+    parser.add_argument('out_classify', type=str, help='Path to classification model output')
     args = parser.parse_args()
     
     # Read and pre-process training data
@@ -80,6 +82,7 @@ if __name__ == '__main__':
                                   num_labels=2, weight=[1, 50])
     detect_model.args.no_save = True
     detect_model.train_model(train_detect)
+    detect_model.save_pretrained(args.out_detect)
     
     # Train model for recognizing the type of tuning hint
     print('Training to classify tuning sentences ...')
@@ -90,3 +93,4 @@ if __name__ == '__main__':
                                 num_labels=7)
     type_model.args.no_save = True
     type_model.train_model(train_classify)
+    type_model.save_pretrained(args.out_classify)
