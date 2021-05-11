@@ -47,7 +47,7 @@ def get_context(cur_sentences, i):
 def label_hints(hints):
     """ Label hints for training or testing. """
     hints['sentence'] = hints.apply(
-        lambda row: clean_sentence(row), axis = 1)
+        lambda row: clean_sentence(row['sentence']), axis = 1)
     hints['ops_label'] = hints.apply(
         lambda row: label_formula_ops(row), axis = 1)
     hints['key_label'] = hints.apply(
@@ -76,21 +76,21 @@ if __name__ == '__main__':
     # Train model for recognizing key sentences
     print('Training to detect key sentences with tuning hints ...')
     model_args = ClassificationArgs(num_train_epochs=10, train_batch_size=50,
-                                    overwrite_output_dir=True)
+                                    overwrite_output_dir=True, 
+                                    output_dir=args.out_detect)
     detect_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                   model_name='roberta-base', args=model_args, 
                                   num_labels=2, weight=[1, 50])
     detect_model.args.no_save = True
     detect_model.train_model(train_detect)
-    detect_model.save_pretrained(args.out_detect)
     
     # Train model for recognizing the type of tuning hint
     print('Training to classify tuning sentences ...')
     model_args = ClassificationArgs(num_train_epochs=20, train_batch_size=20,
-                                    overwrite_output_dir=True)
+                                    overwrite_output_dir=True, 
+                                    output_dir=args.out_classify)
     type_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                 model_name='roberta-base', args=model_args, 
                                 num_labels=7)
     type_model.args.no_save = True
     type_model.train_model(train_classify)
-    type_model.save_pretrained(args.out_classify)
