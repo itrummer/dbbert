@@ -81,7 +81,6 @@ if __name__ == '__main__':
     detect_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                   model_name='roberta-base', args=model_args, 
                                   num_labels=2, weight=[1, 50])
-    detect_model.args.no_save = True
     detect_model.train_model(train_detect)
     
     # Train model for recognizing the type of tuning hint
@@ -92,5 +91,4 @@ if __name__ == '__main__':
     type_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                 model_name='roberta-base', args=model_args, 
                                 num_labels=7)
-    type_model.args.no_save = True
     type_model.train_model(train_classify)
