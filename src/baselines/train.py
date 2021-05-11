@@ -76,7 +76,8 @@ if __name__ == '__main__':
     # Train model for recognizing key sentences
     print('Training to detect key sentences with tuning hints ...')
     model_args = ClassificationArgs(num_train_epochs=10, train_batch_size=50,
-                                    overwrite_output_dir=True, 
+                                    overwrite_output_dir=True, save_steps=-1,
+                                    save_model_every_epoch=False, 
                                     output_dir=args.out_detect)
     detect_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                   model_name='roberta-base', args=model_args, 
@@ -86,7 +87,8 @@ if __name__ == '__main__':
     # Train model for recognizing the type of tuning hint
     print('Training to classify tuning sentences ...')
     model_args = ClassificationArgs(num_train_epochs=20, train_batch_size=20,
-                                    overwrite_output_dir=True, 
+                                    overwrite_output_dir=True, save_steps=-1,
+                                    save_model_every_epoch=False,
                                     output_dir=args.out_classify)
     type_model = ClassificationModel(model_type='roberta', use_cuda=use_cuda,
                                 model_name='roberta-base', args=model_args, 
