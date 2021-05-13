@@ -101,7 +101,6 @@ if __name__ == '__main__':
     print('Preparing to run DDPG baseline ...')
     parser = argparse.ArgumentParser()
     parser.add_argument('config', type=str, help='Path to configuration file')
-    parser.add_argument('tolerance', type=float, help='Tolerance around default values')
     args = parser.parse_args()
     
     config = configparser.ConfigParser()
@@ -118,5 +117,5 @@ if __name__ == '__main__':
         ms_p_vals = dbms.all_params()
         all_params = [p for p, v in ms_p_vals if is_numerical(v)]
 
-    tolerance = args.tolerance
+    tolerance = config['LEARNING']['tolerance']
     run_ddpg(dbms, bench, objective, all_params, tolerance, 300)
