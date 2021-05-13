@@ -10,7 +10,7 @@ import numpy as np
 from analysis.util import get_analysis_logger, TimerStruct  # noqa
 from analysis.ddpg.ddpg import DDPG  # noqa
 import analysis.simulation
-import configparser.ConfigParser
+import configparser
 import benchmark.factory
 import dbms.factory
 from parameters.util import read_numerical, is_numerical
