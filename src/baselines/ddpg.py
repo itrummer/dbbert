@@ -105,7 +105,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     config = configparser.ConfigParser()
-    config.read_file(args.config)
+    config.read(args.config)
     
     dbms = dbms.factory.from_file(config)
     bench = benchmark.factory.from_file(config, dbms)
@@ -119,4 +119,4 @@ if __name__ == '__main__':
         all_params = [p for p, v in ms_p_vals if is_numerical(v)]
 
     tolerance = args.tolerance
-    run_ddpg(dbms, benchmark, objective, all_params, tolerance, 300)
+    run_ddpg(dbms, bench, objective, all_params, tolerance, 300)
