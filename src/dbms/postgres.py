@@ -3,11 +3,10 @@ Created on Apr 2, 2021
 
 @author: immanueltrummer
 '''
+from dbms.generic_dbms import ConfigurableDBMS
 import os
 import psycopg2
 import time
-
-from dbms.generic_dbms import ConfigurableDBMS
 
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
@@ -17,6 +16,24 @@ class PgConfig(ConfigurableDBMS):
         self.restart_cmd = restart_cmd
         self.data_dir = data_dir
         super().__init__(db, user, password, {})
+        
+    @classmethod
+    def from_file(cls, config):
+        """ Initializes PgConfig object from configuration file. 
+        
+        Args:
+            cls: class (currently, only PgConfig)
+            config: configuration read from file
+            
+        Returns:
+            new Postgres DBMS object
+        """
+        db_user = config['DATABASE']['user']
+        db_name = config['DATABASE']['name']
+        password = config['DATABASE']['password']
+        restart_cmd = config['DATABASE']['restart_cmd']
+        path_to_data = config['DATABASE']['data_dir']
+        return cls(db_name, db_user, password, restart_cmd, path_to_data)
         
     def __del__(self):
         """ Close DBMS connection if any. """

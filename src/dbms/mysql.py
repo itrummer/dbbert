@@ -3,6 +3,7 @@ Created on Apr 7, 2021
 
 @author: immanueltrummer
 '''
+from configparser import ConfigParser
 from dbms.generic_dbms import ConfigurableDBMS
 
 import mysql.connector
@@ -24,6 +25,23 @@ class MySQLconfig(ConfigurableDBMS):
                       'K':'000', 'M':'000000', 'G':'000000000'}
         super().__init__(db, user, password, unit_to_size)
         self.bin_dir = bin_dir
+        
+    @classmethod
+    def from_file(cls, config):
+        """ Initialize DBMS from configuration file. 
+        
+        Args:
+            cls: class (currently: MySQLconfig only)
+            config: configuration read from file
+            
+        Returns:
+            new MySQL DBMS object
+        """
+        db_user = config['DATABASE']['user']
+        db_name = config['DATABASE']['name']
+        password = config['DATABASE']['password']
+        bin_dir = config['DATABASE']['bin_dir']
+        return cls(db_name, db_user, password, bin_dir)
         
     def __del__(self):
         """ Close DBMS connection if any. """

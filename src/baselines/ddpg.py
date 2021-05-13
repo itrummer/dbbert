@@ -3,18 +3,24 @@ Created on Apr 26, 2021
 
 @author: immanueltrummer
 '''
-import sys
+import argparse
 import numpy as np
-sys.path.append('/Users/immanueltrummer/git/ottertune/server')
+#import sys
+#sys.path.append('/Users/immanueltrummer/git/ottertune/server')
 from analysis.util import get_analysis_logger, TimerStruct  # noqa
 from analysis.ddpg.ddpg import DDPG  # noqa
 import analysis.simulation
+import configparser.ConfigParser
+import benchmark.factory
+import dbms.factory
+from parameters.util import read_numerical, is_numerical
 import random
+import search.objectives
 import torch
 
 from parameters.util import decompose_val
 from search.objectives import calculate_reward
-
+from dbms.postgres import PgConfig
 
 class DDPGenv(object):
     """ Environment teaching DDPG++ agent how to tune a DBMS. """
@@ -90,3 +96,27 @@ def run_ddpg(dbms, benchmark, objective, knob_names, max_val_change, timeout_s):
                    'c_hidden_sizes': [64, 128, 64]}
     analysis.simulation.ddpg(
         env, ddpg_config, n_loops=200, timeout_s=timeout_s)
+    
+if __name__ == '__main__':
+    print('Preparing to run DDPG baseline ...')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config', type=str, help='Path to configuration file')
+    parser.add_argument('tolerance', type=float, help='Tolerance around default values')
+    args = parser.parse_args()
+    
+    config = configparser.ConfigParser()
+    config.read_file(args.config)
+    
+    dbms = dbms.factory.from_file(config)
+    bench = benchmark.factory.from_file(config, dbms)
+    objective = search.objectives.from_file(config)
+    
+    if isinstance(dbms, PgConfig):
+        conf_path = config['DATABASE']['config']
+        all_params = read_numerical(conf_path)
+    else:
+        ms_p_vals = dbms.all_params()
+        all_params = [p for p, v in ms_p_vals if is_numerical(v)]
+
+    tolerance = args.tolerance
+    run_ddpg(dbms, benchmark, objective, all_params, tolerance, 300)
