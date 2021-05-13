@@ -107,6 +107,8 @@ if __name__ == '__main__':
     config.read(args.config)
     
     dbms = dbms.factory.from_file(config)
+    dbms.reset_config()
+    dbms.reconfigure()
     bench = benchmark.factory.from_file(config, dbms)
     objective = search.objectives.from_file(config)
     
