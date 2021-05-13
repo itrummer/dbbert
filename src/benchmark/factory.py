@@ -3,7 +3,7 @@ Created on May 12, 2021
 
 @author: immanueltrummer
 '''
-import benchmark.evaluate.OLAP
+import benchmark.evaluate
 
 def from_file(config, dbms=None):
     """ Generate benchmark object from configuration file. 
@@ -15,5 +15,5 @@ def from_file(config, dbms=None):
     Returns:
         object representing configured benchmark
     """
-    
+    path_to_queries = config['BENCHMARK']['queries']
     return benchmark.evaluate.OLAP(dbms, path_to_queries)
