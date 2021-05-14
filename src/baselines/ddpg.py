@@ -58,9 +58,14 @@ class DDPGenv(object):
         for knob in self.knob_names:
             raw_val = self.dbms.get_value(knob)
             print(f'knob: {knob}; raw_val: {raw_val}')
-            f_val, unit = decompose_val(raw_val)
-            min_val = int(f_val / self.max_val_change)
-            max_val = int(f_val* self.max_val_change)
+            if raw_val in ['on', 'off', '1', '0']:
+                min_val = 0
+                max_val = 1
+            else:
+                f_val, unit = decompose_val(raw_val)
+                min_val = int(f_val / self.max_val_change)
+                max_val = int(f_val* self.max_val_change)
+                
             self.knobs_min.append(min_val)
             self.knobs_max.append(max_val)
             self.knob_units.append(unit)
