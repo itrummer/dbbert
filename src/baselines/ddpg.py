@@ -80,9 +80,9 @@ class DDPGenv(object):
             int_val = int(min_ + (max_ - min_) * knob_data[i])
             unit = self.knob_units[i]
             value = str(int_val) + unit
-            #print(f'Setting {knob} to {value}')
+            print(f'Setting {knob} to {value}')
             success = self.dbms.set_param_smart(knob, value)
-            #print(f'Set successful: {success}')
+            print(f'Set successful: {success}')
         self.dbms.reconfigure()
         metrics = self.benchmark.evaluate()
         reward_val = calculate_reward(metrics, self.def_metrics, self.objective)

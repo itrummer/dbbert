@@ -141,7 +141,6 @@ class TpcC(Benchmark):
         Returns:
             Dictionary containing error flag and throughput
          """
-        self.print_stats()
         self._remove_oltp_results()
         self.evals_since_reset += 1
         if self.evals_since_reset > self.reset_every:
@@ -170,6 +169,7 @@ class TpcC(Benchmark):
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
         # Logging
+        self.print_stats()
         self._log(self.max_throughput, self.max_config)
         return {'error': had_error, 'throughput': throughput}
     
