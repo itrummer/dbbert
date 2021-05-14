@@ -25,7 +25,7 @@ def from_file(config, dbms):
         oltp_home = config['BENCHMARK']['oltp_home']
         oltp_config = config['BENCHMARK']['oltp_config']
         oltp_result = config['BENCHMARK']['oltp_result']
-        reset_every = config['BENCHMARK']['reset_every']
+        reset_every = int(config['BENCHMARK']['reset_every'])
         bench = benchmark.evaluate.TpcC(
             oltp_home, oltp_config, oltp_result, 
             dbms, template_db, target_db, reset_every)

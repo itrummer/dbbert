@@ -141,6 +141,7 @@ class TpcC(Benchmark):
         Returns:
             Dictionary containing error flag and throughput
          """
+        self.print_stats()
         self._remove_oltp_results()
         self.evals_since_reset += 1
         if self.evals_since_reset > self.reset_every:
