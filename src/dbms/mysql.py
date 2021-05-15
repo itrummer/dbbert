@@ -139,11 +139,13 @@ class MySQLconfig(ConfigurableDBMS):
     
     def reset_config(self):
         """ Reset all parameters to default values. """
-        var_vals = self.all_params()
-        for var_val in var_vals:
-            var, _ = var_val
-            self.set_param(var, 'default')
-        self.config = {}
+        # TODO: should not be hard-coded
+        os.system('sudo systemctl restart mysql.service')
+        # var_vals = self.all_params()
+        # for var_val in var_vals:
+            # var, _ = var_val
+            # self.set_param(var, 'default')
+        # self.config = {}
     
     def reconfigure(self):
         """ Makes all parameter changes take effect (may require restart). 
