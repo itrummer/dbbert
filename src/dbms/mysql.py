@@ -8,6 +8,7 @@ from dbms.generic_dbms import ConfigurableDBMS
 
 import mysql.connector
 import os
+import time
 
 class MySQLconfig(ConfigurableDBMS):
     """ Represents configurable MySQL database. """
@@ -140,7 +141,10 @@ class MySQLconfig(ConfigurableDBMS):
     def reset_config(self):
         """ Reset all parameters to default values. """
         # TODO: should not be hard-coded
+        self._disconnect()
         os.system('sudo systemctl restart mysql.service')
+        time.sleep(2)
+        self._connect()
         # var_vals = self.all_params()
         # for var_val in var_vals:
             # var, _ = var_val
