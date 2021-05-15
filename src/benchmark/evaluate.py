@@ -35,8 +35,12 @@ class Benchmark(ABC):
         # Initialize timestamps and logging
         self.start_ms = time.time() * 1000.0
         self.log_path = log_path
-        with open(self.log_path, 'w') as file:
-            file.write('millis\tquality\tconfiguration\n')
+        self.log_perf_path = log_path + '_performance'
+        self.log_conf_path = log_path + '_configure'
+        with open(self.log_perf_path, 'w') as file:
+            file.write('millis\tbestQuality\tcurQuality\n')
+        with open(self.log_conf_path, 'w') as file:
+            file.write('millis\tbestConf\tcurConf\n')
         # Initialize stats with default configuration
         self._init_stats()
         self.evaluate()
@@ -46,20 +50,24 @@ class Benchmark(ABC):
         """ Initializes benchmark statistics. """
         pass
             
-    def _log(self, quality, config):
+    def _log(self, best_quality, best_config, cur_quality, cur_config):
         """ Write quality and timestamp to log file. 
         
         Note: this method has no effect if no log file path was specified.
         
         Args:
-            quality: quality of best current solution (e.g., w.r.t. throughput)
-            config: description of associated configuration (as dictionary)
+            best_quality: quality of best current solution (e.g., w.r.t. throughput)
+            best_config: description of associated configuration (as dictionary)
+            cur_quality: quality of most recently tried configuration
+            cur_config: most recently tried configuration
         """
         if self.log_path:
-            with open(self.log_path, 'a') as file:
-                cur_ms = time.time() * 1000.0
-                total_ms = cur_ms - self.start_ms
-                file.write(f'{total_ms}\t{quality}\t{config}\n')
+            cur_ms = time.time() * 1000.0
+            total_ms = cur_ms - self.start_ms
+            with open(self.log_perf_path, 'a') as file:
+                file.write(f'{total_ms}\t{best_quality}\t{cur_quality}\n')
+            with open(self.log_conf_path, 'a') as file:
+                file.write(f'{total_ms}\t{best_config}\t{cur_config}\n')
     
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
@@ -84,14 +92,15 @@ class OLAP(Benchmark):
         millis = end_ms - start_ms
         # Update statistics
         if not error:
+            config = self.dbms.changed() if self.dbms else None
             if millis < self.min_time:
                 self.min_time = millis
-                self.min_conf = self.dbms.changed() if self.dbms else None
+                self.min_conf = config
             if millis > self.max_time:
                 self.max_time = millis
-                self.max_conf = self.dbms.changed() if self.dbms else None
+                self.max_conf = config
         # Logging
-        self._log(self.min_time, self.min_conf)
+        self._log(self.min_time, self.min_conf, millis, config)
         return {'error': error, 'time': millis}
     
     def print_stats(self):
@@ -148,6 +157,7 @@ class TpcC(Benchmark):
             self.evals_since_reset = 0
         throughput = -1
         had_error = True
+        config = self.dbms.changed()
         try:
             # Run benchmark
             return_code = subprocess.run(\
@@ -162,15 +172,15 @@ class TpcC(Benchmark):
             # Update statistics
             if throughput > self.max_throughput:
                 self.max_throughput = throughput
-                self.max_config = self.dbms.changed()
+                self.max_config = config
             if throughput < self.min_throughput:
                 self.min_throughput = throughput
-                self.min_config = self.dbms.changed()
+                self.min_config = config
         except (Exception, psycopg2.DatabaseError) as e:
             print(e)
         # Logging
         self.print_stats()
-        self._log(self.max_throughput, self.max_config)
+        self._log(self.max_throughput, self.max_config, throughput, config)
         return {'error': had_error, 'throughput': throughput}
     
     def print_stats(self):
