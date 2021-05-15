@@ -152,7 +152,7 @@ class TpcC(Benchmark):
             # Run benchmark
             return_code = subprocess.run(\
                 ['./oltpbenchmark', '-b', 'tpcc', '-c', self.config_path,
-                '--execute=true', '-s', '5', '-o', 'tuningtest'],
+                '--execute=true', '-s', '120', '-o', 'tuningtest'],
                 cwd = self.oltp_path)
             print(f'Benchmark return code: {return_code}')
             # Extract throughput from generated files
