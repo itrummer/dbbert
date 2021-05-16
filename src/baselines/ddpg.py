@@ -125,4 +125,4 @@ if __name__ == '__main__':
         all_params = [p for p, v in ms_p_vals if is_numerical(v)]
 
     tolerance = config['LEARNING']['tolerance']
-    run_ddpg(dbms, bench, objective, all_params, tolerance, 300)
+    run_ddpg(dbms, bench, objective, all_params, tolerance, 600)
