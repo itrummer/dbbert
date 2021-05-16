@@ -10,6 +10,22 @@ import pandas as pd
 import re
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
+from enum import IntEnum
+
+class HintOrder(IntEnum):
+    """ The order in which tuning hints are considered. """
+    DOCUMENT=0, # process hints in document order
+    BY_PARAMETER=1, # prioritize hints about frequently mentioned parameters
+    
+def parse_order(config):
+    """ Parse hint order from configuration file. """
+    order_str = config['BENCHMARK']['hint_order']
+    if order_str == 'by_parameter':
+        print('Sorting hints by parameter')
+        return HintOrder.BY_PARAMETER
+    else:
+        print('Processing hints in document order')
+        return HintOrder.DOCUMENT
 
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """

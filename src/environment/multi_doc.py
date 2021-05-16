@@ -10,12 +10,13 @@ from collections import defaultdict
 from search.search_with_hints import ParameterExplorer
 from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
+import doc.collection
 
 class MultiDocTuning(TuningBertFine):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
     def __init__(
-            self, docs: DocCollection, max_length, mask_params, 
+            self, docs: DocCollection, max_length, mask_params, hint_order,
             dbms: ConfigurableDBMS, benchmark: Benchmark, hardware, 
             hints_per_episode, nr_evals, scale_perf, scale_asg, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
@@ -24,6 +25,7 @@ class MultiDocTuning(TuningBertFine):
             docs: collection of text documents with tuning hints
             max_length: maximum number of tokens per snippet
             mask_params: whether to mask parameters or not
+            hint_order: process tuning hints in this order
             dbms: database management system to tune
             benchmark: benchmark for which to tune system
             hardware: memory size, disk size, and number of cores
@@ -41,8 +43,10 @@ class MultiDocTuning(TuningBertFine):
         self.scale_perf = scale_perf
         self.scale_asg = scale_asg
         self.docs.doc_to_hints
-        #self.hints = self._ordered_hints()
-        self.hints = self._hints()
+        if hint_order == doc.collection.HintOrder.BY_PARAMETER:
+            self.hints = self._ordered_hints()
+        else:
+            self.hints = self._hints()
         self.nr_hints = len(self.hints)
         if hints_per_episode == -1:
             self.hints_per_episode = self.nr_hints

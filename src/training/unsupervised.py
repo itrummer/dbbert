@@ -9,16 +9,13 @@ from all.environments.gym import GymEnvironment
 from all.experiments import run_experiment
 from all.presets.classic_control import dqn
 from argparse import ArgumentParser
-from benchmark.evaluate import OLAP
 from configparser import ConfigParser
-from dbms.mysql import MySQLconfig
-from dbms.postgres import PgConfig
 from doc.collection import DocCollection
 from environment.multi_doc import MultiDocTuning
 from models.bert_tuning import BertFineTuning
-from parameters.util import read_numerical
 import benchmark.factory
 import dbms.factory
+import doc.collection
 import search.objectives
 
 # Read configuration referenced as command line parameters
@@ -51,6 +48,7 @@ path_to_conf = config['DATABASE']['config']
 
 path_to_docs = config['BENCHMARK']['docs']
 max_length = int(config['BENCHMARK']['max_length'])
+hint_order = doc.collection.parse_order(config)
 path_to_queries = config['BENCHMARK']['queries']
 log_path = config['BENCHMARK']['logging']
 memory = float(config['BENCHMARK']['memory'])
@@ -69,10 +67,11 @@ bench.reset(log_path)
 
 # Initialize environment
 unsupervised_env = MultiDocTuning(
-    docs=docs, max_length=max_length, mask_params=mask_params,
-    dbms=dbms, benchmark=bench, hardware=[memory, disk, memory],
-    hints_per_episode=nr_hints, nr_evals=nr_evals,
-    scale_perf=p_scaling, scale_asg=a_scaling, objective=objective)
+    docs=docs, max_length=max_length, mask_params=mask_params, 
+    hint_order=hint_order, dbms=dbms, benchmark=bench, 
+    hardware=[memory, disk, memory], hints_per_episode=nr_hints, 
+    nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
+    objective=objective)
 unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 
 # Initialize agents
