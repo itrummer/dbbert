@@ -13,16 +13,21 @@ import torch
 class TuningBertFine(DocTuning):
     """ Fine-tune BERT to predict action values. """
     
-    def __init__(self, docs: DocCollection, hints_per_episode):
+    def __init__(self, docs: DocCollection, hints_per_episode, 
+                 max_length, mask_params):
         """ Initialize with given document collection. 
         
         Args:
             docs: collection of documents with tuning hints
             hints_per_episode: candidate hints until episode ends
+            max_length: maximum number of tokens per snippet
+            mask_params: whether to mask parameter names
         """
         super().__init__(docs, hints_per_episode)
+        self.max_length = max_length
+        self.mask_params = mask_params
         self.observation_space = Box(
-            low=0, high=100000, shape=(3, 5, 512,), dtype=np.int64)
+            low=0, high=100000, shape=(3, 5, max_length,), dtype=np.int64)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
     def _mask(self, strings, param):
@@ -59,12 +64,14 @@ class TuningBertFine(DocTuning):
             v_weights = ['not', 'slightly', 'quite', 'very', 'extremely']
             choices = [f'The hint on {param} is {weight} important.' for weight in v_weights]
         # Mask parameter name (generalization to different DBMS)
-        passage_cps = self._mask(passage_cps, param)
-        choices = self._mask(choices, param)
+        if self.mask_params:
+            passage_cps = self._mask(passage_cps, param)
+            choices = self._mask(choices, param)
         encoding = self.tokenizer(
             passage_cps, choices, return_tensors='pt', 
-            padding='max_length', truncation=True, max_length=512)
-        result = torch.stack((encoding['input_ids'], 
-                              encoding['token_type_ids'], 
-                              encoding['attention_mask']), dim=0)
+            padding='max_length', truncation=True, 
+            max_length=self.max_length)
+        result = torch.stack(
+            (encoding['input_ids'], encoding['token_type_ids'], 
+             encoding['attention_mask']), dim=0)
         return result

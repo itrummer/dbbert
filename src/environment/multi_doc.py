@@ -14,12 +14,16 @@ from dbms.generic_dbms import ConfigurableDBMS
 class MultiDocTuning(TuningBertFine):
     """ Agent finds good configurations by aggregating tuning document collections. """
 
-    def __init__(self, docs: DocCollection, dbms: ConfigurableDBMS, benchmark: Benchmark,
-                 hardware, hints_per_episode, nr_evals, scale_perf, objective):
+    def __init__(
+            self, docs: DocCollection, max_length, mask_params, 
+            dbms: ConfigurableDBMS, benchmark: Benchmark, hardware, 
+            hints_per_episode, nr_evals, scale_perf, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
             docs: collection of text documents with tuning hints
+            max_length: maximum number of tokens per snippet
+            mask_params: whether to mask parameters or not
             dbms: database management system to tune
             benchmark: benchmark for which to tune system
             hardware: memory size, disk size, and number of cores
@@ -28,7 +32,7 @@ class MultiDocTuning(TuningBertFine):
             scale_perf: scale performance reward by this factor
             objective: describes the optimization goal
         """
-        super().__init__(docs, hints_per_episode)
+        super().__init__(docs, hints_per_episode, max_length, mask_params)
         self.dbms = dbms
         self.benchmark = benchmark
         self.hardware = hardware
