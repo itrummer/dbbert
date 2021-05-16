@@ -34,6 +34,7 @@ output_model = config['LEARNING']['output'] # path to output model
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
 epsilon = float(config['LEARNING']['start_epsilon']) # start value for epsilon
 p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
+a_scaling = float(config['LEARNING']['assignment_scaling']) # assignment reward scaling
 nr_evals = int(config['LEARNING']['nr_evaluations']) # number of evaluations per episode
 nr_hints = int(config['LEARNING']['nr_hints']) # number of hints per episode
 min_batch_size = int(config['LEARNING']['min_batch_size']) # samples per batch
@@ -71,7 +72,7 @@ unsupervised_env = MultiDocTuning(
     docs=docs, max_length=max_length, mask_params=mask_params,
     dbms=dbms, benchmark=bench, hardware=[memory, disk, memory],
     hints_per_episode=nr_hints, nr_evals=nr_evals,
-    scale_perf=p_scaling, objective=objective)
+    scale_perf=p_scaling, scale_asg=a_scaling, objective=objective)
 unsupervised_env = GymEnvironment(unsupervised_env, device=device)
 
 # Initialize agents

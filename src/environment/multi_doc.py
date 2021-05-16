@@ -17,7 +17,7 @@ class MultiDocTuning(TuningBertFine):
     def __init__(
             self, docs: DocCollection, max_length, mask_params, 
             dbms: ConfigurableDBMS, benchmark: Benchmark, hardware, 
-            hints_per_episode, nr_evals, scale_perf, objective):
+            hints_per_episode, nr_evals, scale_perf, scale_asg, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -30,6 +30,7 @@ class MultiDocTuning(TuningBertFine):
             hints_per_episode: candidate hints before episode ends
             nr_evals: how many evaluations with extracted hints
             scale_perf: scale performance reward by this factor
+            scale_asg: scale reward for successful assignments
             objective: describes the optimization goal
         """
         super().__init__(docs, hints_per_episode, max_length, mask_params)
@@ -38,6 +39,7 @@ class MultiDocTuning(TuningBertFine):
         self.hardware = hardware
         self.nr_evals = nr_evals
         self.scale_perf = scale_perf
+        self.scale_asg = scale_asg
         self.docs.doc_to_hints
         #self.hints = self._ordered_hints()
         self.hints = self._hints()
@@ -94,7 +96,7 @@ class MultiDocTuning(TuningBertFine):
         assignment = (param, value)
         print(f'Trying assigning {param} to {value}')
         if success:
-            reward = 10
+            reward = 10 * self.scale_asg
             weight = pow(2, action)
             self.hint_to_weight[assignment] += weight
             print(f'Adding assignment {assignment} with weight {weight}')
