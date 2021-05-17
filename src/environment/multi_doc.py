@@ -10,7 +10,26 @@ from collections import defaultdict
 from search.search_with_hints import ParameterExplorer
 from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
-import doc.collection
+import enum.IntEnum
+
+class HintOrder(enum.IntEnum):
+    """ The order in which tuning hints are considered. """
+    DOCUMENT=0, # process hints in document order
+    BY_PARAMETER=1, # prioritize hints about frequently mentioned parameters
+    BY_STRIDE=2, # round robin over hint batches associated with parameters
+    
+def parse_order(config):
+    """ Parse hint order from configuration file. """
+    order_str = config['BENCHMARK']['hint_order']
+    if order_str == 'by_parameter':
+        print('Sorting hints by parameter')
+        return HintOrder.BY_PARAMETER
+    elif order_str == 'by_stride':
+        print('Sorting hints by stride')
+        return HintOrder.BY_STRIDE
+    else:
+        print('Hints in document order')
+        return HintOrder.DOCUMENT
 
 class MultiDocTuning(TuningBertFine):
     """ Agent finds good configurations by aggregating tuning document collections. """
@@ -43,10 +62,7 @@ class MultiDocTuning(TuningBertFine):
         self.scale_perf = scale_perf
         self.scale_asg = scale_asg
         self.docs.doc_to_hints
-        if hint_order == doc.collection.HintOrder.BY_PARAMETER:
-            self.hints = self._ordered_hints()
-        else:
-            self.hints = self._hints()
+        self.hints = self._ordered_hints(hint_order)
         self.nr_hints = len(self.hints)
         if hints_per_episode == -1:
             self.hints_per_episode = self.nr_hints
@@ -59,19 +75,43 @@ class MultiDocTuning(TuningBertFine):
         self.explorer = ParameterExplorer(dbms, benchmark, objective)
         self.reset()
         
-    def _hints(self):
+    def _ordered_hints(self, hint_order):
+        """ Returns hints according to specified order. """
+        if hint_order == HintOrder.BY_PARAMETER:
+            return self._hints_by_param()
+        elif hint_order == HintOrder.BY_STRIDE:
+            return self._hints_by_stride()
+        else:
+            return self._hints_by_doc()
+
+    def _hints_by_doc(self):
         """ Returns hints in document collection order. """
         hints = []
         for doc_id in range(self.docs.nr_docs):
             hints += [(doc_id, hint) for hint in self.docs.get_hints(doc_id)]
         return hints
         
-    def _ordered_hints(self):
-        """ Prioritize hints in tuning document collection. """
+    def _hints_by_param(self):
+        """ Order hints by occurrence frequency of associated parameter. """
         ordered_hints = []
         for param, _ in self.docs.param_counts.most_common():
             param_hints = self.docs.param_to_hints[param]
             ordered_hints += param_hints
+        return ordered_hints
+
+    def _hints_by_stride(self):
+        """ Round robin between parameters based on occurrence frequency. """
+        ordered_hints = []
+        hints_per_param = max([len(h) for h in self.docs.param_to_hints.values()])
+        step = 10
+        for lb in range(0, hints_per_param, step):
+            for param, _ in self.docs.param_counts.most_common():
+                param_hints = self.docs.param_to_hints[param]
+                nr_param_hints = len(param_hints)
+                if nr_param_hints < lb:
+                    ub = min(lb + step, nr_param_hints-1)
+                    stride = param_hints[lb:ub]
+                    ordered_hints += stride
         return ordered_hints
 
     def _take_action(self, action):

@@ -23,13 +23,13 @@ class LabeledDocTuning(TuningBertFine):
             nr_hints: consider so many hints during optimization
         """
         super().__init__(docs)
-        self.hints = self._ordered_hints()
+        self.hints = self._hints_by_param()
         shuffle(self.hints)
         self.nr_hints = min(len(self.hints), nr_hints)
         self.ok_actions = self._read_labels(label_path)
         self.reset()
         
-    def _ordered_hints(self):
+    def _hints_by_param(self):
         """ Prioritize hints in tuning document collection. """
         ordered_hints = []
         for param, _ in self.docs.param_counts.most_common():
