@@ -10,7 +10,7 @@ from collections import defaultdict
 from search.search_with_hints import ParameterExplorer
 from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
-import enum.IntEnum
+import enum
 
 class HintOrder(enum.IntEnum):
     """ The order in which tuning hints are considered. """
@@ -103,10 +103,11 @@ class MultiDocTuning(TuningBertFine):
         """ Round robin between parameters based on occurrence frequency. """
         ordered_hints = []
         hints_per_param = max([len(h) for h in self.docs.param_to_hints.values()])
+        param_to_list = {p:list(v) for p, v in self.docs.param_to_hints.items()}
         step = 10
         for lb in range(0, hints_per_param, step):
             for param, _ in self.docs.param_counts.most_common():
-                param_hints = self.docs.param_to_hints[param]
+                param_hints = param_to_list[param]
                 nr_param_hints = len(param_hints)
                 if nr_param_hints < lb:
                     ub = min(lb + step, nr_param_hints-1)

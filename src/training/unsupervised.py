@@ -15,7 +15,7 @@ from environment.multi_doc import MultiDocTuning
 from models.bert_tuning import BertFineTuning
 import benchmark.factory
 import dbms.factory
-import doc.collection
+import environment.multi_doc
 import search.objectives
 
 # Read configuration referenced as command line parameters
@@ -48,7 +48,7 @@ path_to_conf = config['DATABASE']['config']
 
 path_to_docs = config['BENCHMARK']['docs']
 max_length = int(config['BENCHMARK']['max_length'])
-hint_order = doc.collection.parse_order(config)
+hint_order = environment.multi_doc.parse_order(config)
 path_to_queries = config['BENCHMARK']['queries']
 log_path = config['BENCHMARK']['logging']
 memory = float(config['BENCHMARK']['memory'])
