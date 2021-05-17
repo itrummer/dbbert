@@ -81,8 +81,11 @@ class PgConfig(ConfigurableDBMS):
         """ Executes all SQL queries in given file. """
         error = True
         try:
-            # TODO: this should not be hard-coded
-            os.system(f'psql {self.db} -f {path} > query_results.txt')
+            with open(path) as file:
+                sql = file.read()
+                cursor = self.connection.cursor()
+                cursor.execute(sql)
+            #os.system(f'psql {self.db} -f {path} > query_results.txt')
             error = False
         except Exception as e:
             print(f'Exception: {e}')
