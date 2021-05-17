@@ -83,6 +83,7 @@ class PgConfig(ConfigurableDBMS):
         try:
             with open(path) as file:
                 sql = file.read()
+                self.connection.autocommit = True
                 cursor = self.connection.cursor()
                 cursor.execute(sql)
             #os.system(f'psql {self.db} -f {path} > query_results.txt')
