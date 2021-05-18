@@ -73,7 +73,7 @@ class PgConfig(ConfigurableDBMS):
         cursor.execute('select name from pg_settings where name != \'port\'')
         var_vals = cursor.fetchall()
         cursor.close()
-        return var_vals
+        return [v[0] for v in var_vals]
                         
     def query_one(self, sql):
         """ Executes query_one and returns first result table cell or None. """

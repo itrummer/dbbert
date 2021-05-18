@@ -93,8 +93,8 @@ class OLAP(Benchmark):
         end_ms = time.time() * 1000.0
         millis = end_ms - start_ms
         # Update statistics
+        config = self.dbms.changed() if self.dbms else None
         if not error:
-            config = self.dbms.changed() if self.dbms else None
             if millis < self.min_time:
                 self.min_time = millis
                 self.min_conf = config
@@ -160,7 +160,7 @@ class TpcC(Benchmark):
             self.evals_since_reset = 0
         throughput = -1
         had_error = True
-        config = self.dbms.changed()
+        config = self.dbms.changed() if self.dbms else None
         try:
             # Run benchmark
             return_code = subprocess.run(\

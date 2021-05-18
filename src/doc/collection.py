@@ -34,8 +34,8 @@ class TuningHint():
 class DocCollection():
     """ Represents a collection of documents with tuning hints. """
     
-    def __init__(self, docs_path, dbms:ConfigurableDBMS=None, 
-                 size_threshold=512, filter_params, consider_implicit):
+    def __init__(self, docs_path, dbms:ConfigurableDBMS, 
+                 size_threshold, filter_params, consider_implicit):
         """ Reads tuning passages from a file. 
         
         Reads passages containing tuning hints from a text. Tries
@@ -53,6 +53,7 @@ class DocCollection():
         self.size_threshold = size_threshold
         self.filter_params = filter_params
         self.consider_implicit = consider_implicit
+        self._prepare_implicit()
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
         self.nr_docs = self.docs['filenr'].max()
@@ -69,8 +70,6 @@ class DocCollection():
         self.asg_counts, self.param_counts = self._assignment_stats()
         # Sort hints by parameter
         self.param_to_hints = self._hints_by_param()
-        # Embed parameters for implicit hints
-        self._prepare_implicit()
         # Output a summary of data read
         print(f'Initializing documents from file {docs_path} ...')
         print('Sample of tuning hints:')
