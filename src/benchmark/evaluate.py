@@ -33,14 +33,15 @@ class Benchmark(ABC):
             log_path: path for logging output
         """
         # Initialize timestamps and logging
+        self.eval_ctr = 0
         self.start_ms = time.time() * 1000.0
         self.log_path = log_path
         self.log_perf_path = log_path + '_performance'
         self.log_conf_path = log_path + '_configure'
         with open(self.log_perf_path, 'w') as file:
-            file.write('millis\tbestQuality\tcurQuality\n')
+            file.write('ctr\tmillis\tbestQuality\tcurQuality\n')
         with open(self.log_conf_path, 'w') as file:
-            file.write('millis\tbestConf\tcurConf\n')
+            file.write('ctr\tmillis\tbestConf\tcurConf\n')
         # Initialize stats with default configuration
         self._init_stats()
         self.evaluate()
@@ -65,9 +66,9 @@ class Benchmark(ABC):
             cur_ms = time.time() * 1000.0
             total_ms = cur_ms - self.start_ms
             with open(self.log_perf_path, 'a') as file:
-                file.write(f'{total_ms}\t{best_quality}\t{cur_quality}\n')
+                file.write(f'{self.eval_ctr}\t{total_ms}\t{best_quality}\t{cur_quality}\n')
             with open(self.log_conf_path, 'a') as file:
-                file.write(f'{total_ms}\t{best_config}\t{cur_config}\n')
+                file.write(f'{self.eval_ctr}\t{total_ms}\t{best_config}\t{cur_config}\n')
     
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
@@ -86,6 +87,7 @@ class OLAP(Benchmark):
             Dictionary containing error flag and time in milliseconds
         """
         self.print_stats()
+        self.eval_ctr += 1
         start_ms = time.time() * 1000.0
         error = self.dbms.exec_file(self.query_path)
         end_ms = time.time() * 1000.0
@@ -151,6 +153,7 @@ class TpcC(Benchmark):
             Dictionary containing error flag and throughput
          """
         self._remove_oltp_results()
+        self.eval_ctr += 1
         self.evals_since_reset += 1
         if self.evals_since_reset > self.reset_every:
             self._reset_db()

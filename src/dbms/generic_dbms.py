@@ -30,6 +30,10 @@ class ConfigurableDBMS(ABC):
         """ Close DBMS connection if any. """
         self._disconnect()
     
+    def all_params(self):
+        """ Returns names of all tuning parameters. """
+        pass
+    
     def can_query(self, sql):
         """ Returns True iff the query_one can be executed. """
         return True if self.query_one(sql) else False

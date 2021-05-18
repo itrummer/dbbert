@@ -44,10 +44,11 @@ password = config['DATABASE']['password']
 restart_cmd = config['DATABASE']['restart_cmd']
 bin_dir = config['DATABASE']['bin_dir']
 path_to_data = config['DATABASE']['data_dir']
-path_to_conf = config['DATABASE']['config']
 
 path_to_docs = config['BENCHMARK']['docs']
 max_length = int(config['BENCHMARK']['max_length'])
+filter_params = int(config['BENCHMARK']['filter_param'])
+use_implicit = int(config['BENCHMARK']['use_implicit'])
 hint_order = environment.multi_doc.parse_order(config)
 path_to_queries = config['BENCHMARK']['queries']
 log_path = config['BENCHMARK']['logging']
@@ -58,8 +59,9 @@ cores = float(config['BENCHMARK']['cores'])
 objective = search.objectives.from_file(config)
 dbms = dbms.factory.from_file(config)
 bench = benchmark.factory.from_file(config, dbms)
-docs = DocCollection(docs_path=path_to_docs, 
-    dbms=None, size_threshold=max_length)
+docs = DocCollection(
+    docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
+    consider_implicit=use_implicit, filter_params=filter_params)
 
 dbms.reset_config()
 dbms.reconfigure()

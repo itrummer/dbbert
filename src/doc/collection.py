@@ -10,6 +10,8 @@ import pandas as pd
 import re
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
+from sentence_transformers import SentenceTransformer, util
+from nltk.metrics.aline import similarity_matrix
 
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """
@@ -32,7 +34,8 @@ class TuningHint():
 class DocCollection():
     """ Represents a collection of documents with tuning hints. """
     
-    def __init__(self, docs_path, dbms:ConfigurableDBMS=None, size_threshold=512):
+    def __init__(self, docs_path, dbms:ConfigurableDBMS=None, 
+                 size_threshold=512, filter_params, consider_implicit):
         """ Reads tuning passages from a file. 
         
         Reads passages containing tuning hints from a text. Tries
@@ -43,9 +46,13 @@ class DocCollection():
             docs_path: path to document with tuning hints.
             dbms: database management system (optional).
             size_threshold: start new passage after so many tokens.
+            filter_params: whether to filter hints by their parameters.
+            consider_implicit: whether to consider implicit hints.
         """
         self.dbms = dbms
         self.size_threshold = size_threshold
+        self.filter_params = filter_params
+        self.consider_implicit = consider_implicit
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
         self.nr_docs = self.docs['filenr'].max()
@@ -62,6 +69,8 @@ class DocCollection():
         self.asg_counts, self.param_counts = self._assignment_stats()
         # Sort hints by parameter
         self.param_to_hints = self._hints_by_param()
+        # Embed parameters for implicit hints
+        self._prepare_implicit()
         # Output a summary of data read
         print(f'Initializing documents from file {docs_path} ...')
         print('Sample of tuning hints:')
@@ -93,6 +102,21 @@ class DocCollection():
                 p_length += s_length
         return passages
     
+    def _enrich_passage(self, passage):
+        """ Add implicit parameters and values to passage. """
+        e = self.transformer.encode([passage], convert_to_tensor=True)[0]
+        max_sim = -1
+        max_param = None
+        for p, p_e in zip(self.all_params, self.p_embeddings):
+            sim = util.pytorch_cos_sim(e.unsqueeze(0), p_e.unsqueeze(0))[0][0]
+            if sim > max_sim:
+                max_sim = sim
+                max_param = p
+        if max_param:
+            passage += f' {max_param} '
+        passage += ' 1 0'
+        return passage
+    
     def _filter_passages(self, passages):
         """ Filter passages to potentially relevant ones. """
         # Filter based on simple string matching (need parameters and values)
@@ -103,6 +127,14 @@ class DocCollection():
                 self.dbms.is_param(t) for t in get_parameters(p))]
         return passages
     
+    def _prepare_implicit(self):
+        """ Prepare extraction of implicit tuning hints. """
+        if self.consider_implicit:
+            self.transformer = SentenceTransformer('paraphrase-distilroberta-base-v1')
+            self.all_params = self.dbms.all_params()
+            self.p_embeddings = self.transformer.encode(
+                self.all_params, convert_to_tensor=True)
+
     def get_hints(self, doc_id):
         """ Returns candidate tuning hints extracted from given document. 
         
@@ -116,11 +148,17 @@ class DocCollection():
             hints = []
             passages = self.passages_by_doc[doc_id]
             for passage in passages:
-                params = re.finditer(r'[a-z_]+_[a-z]+', passage)
-                values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', passage)
+                if self.consider_implicit:
+                    exp_passage = self._enrich_passage(passage)
+                    print(f'Enriched passage: {exp_passage}')
+                else:
+                    exp_passage = passage
+                    
+                params = re.finditer(r'[a-z_]+_[a-z]+', exp_passage)
+                values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', exp_passage)
                 for param in params:
                     print(f'Param: {param}')
-                    if not self.dbms or self.dbms.is_param(param.group()):
+                    if not self.filter_params or self.dbms.is_param(param.group()):
                         for value in values:
                             hint = TuningHint(doc_id, passage, param, value)
                             hints.append(hint)

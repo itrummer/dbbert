@@ -66,6 +66,14 @@ class PgConfig(ConfigurableDBMS):
         if self.connection:
             print('Disconnecting ...')
             self.connection.close()
+
+    def all_params(self):
+        """ Return names of all tuning parameters. """
+        cursor = self.connection.cursor(buffered=True)
+        cursor.execute('select name from pg_settings where name != \'port\'')
+        var_vals = cursor.fetchall()
+        cursor.close()
+        return var_vals
                         
     def query_one(self, sql):
         """ Executes query_one and returns first result table cell or None. """
