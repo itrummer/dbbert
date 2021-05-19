@@ -62,7 +62,8 @@ class DocCollection():
         self.passages_by_doc = []
         for doc_id in range(self.nr_docs):
             passages = self._doc_passages(doc_id+1)
-            passages = self._filter_passages(passages)
+            if self.filter_params:
+                passages = self._filter_passages(passages)
             self.passages_by_doc.append(passages)
             self.nr_passages.append(len(passages))
         # Prepare caching of tuning hints
