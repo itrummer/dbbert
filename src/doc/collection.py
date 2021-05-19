@@ -161,6 +161,7 @@ class DocCollection():
                     print(f'Param: {param}')
                     if not self.filter_params or self.dbms.is_param(param.group()):
                         for value in values:
+                            print(f'Value: {value}')
                             hint = TuningHint(doc_id, passage, param, value)
                             hints.append(hint)
             self.doc_to_hints[doc_id] = hints
