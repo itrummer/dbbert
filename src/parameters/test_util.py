@@ -16,4 +16,4 @@ class TestParameterExplorer(unittest.TestCase):
         self.assertTrue(is_numerical('10.0MB'))
         self.assertTrue(is_numerical('10'))
         self.assertTrue(is_numerical('0.000'))
-        print (decompose_val('20%'))
+        print (decompose_val('20and%'))
