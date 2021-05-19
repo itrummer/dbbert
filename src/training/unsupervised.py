@@ -72,7 +72,7 @@ for run_ctr in range(nr_runs):
     # Initialize for new run
     dbms.reset_config()
     dbms.reconfigure()
-    bench.reset(log_path)
+    bench.reset(log_path, run_ctr)
     
     # Initialize environment
     unsupervised_env = MultiDocTuning(

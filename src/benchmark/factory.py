@@ -29,6 +29,4 @@ def from_file(config, dbms):
         bench = benchmark.evaluate.TpcC(
             oltp_home, oltp_config, oltp_result, 
             dbms, template_db, target_db, reset_every)
-    path_to_logs = config['BENCHMARK']['logging']
-    bench.reset(path_to_logs)
     return bench

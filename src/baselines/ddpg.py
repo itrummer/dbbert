@@ -111,18 +111,26 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(args.config)
     
-    dbms = dbms.factory.from_file(config)
-    dbms.reset_config()
-    dbms.reconfigure()
-    bench = benchmark.factory.from_file(config, dbms)
-    objective = search.objectives.from_file(config)
-    
-    if isinstance(dbms, PgConfig):
-        conf_path = config['DATABASE']['config']
-        all_params = read_numerical(conf_path)
-    else:
-        ms_p_vals = dbms.all_params()
-        all_params = [p for p, v in ms_p_vals if is_numerical(v)]
-
     tolerance = config['LEARNING']['tolerance']
-    run_ddpg(dbms, bench, objective, all_params, tolerance, 600)
+    path_to_logs = config['BENCHMARK']['logging']
+    nr_runs = int(config['BENCHMARK']['nr_runs'])
+    timeout_s = int(config['LEARNING']['timeout_s'])
+    
+    objective = search.objectives.from_file(config)
+    dbms = dbms.factory.from_file(config)
+    bench = benchmark.factory.from_file(config, dbms)
+
+    for run_ctr in range(nr_runs):
+
+        dbms.reset_config()
+        dbms.reconfigure()
+            
+        if isinstance(dbms, PgConfig):
+            conf_path = config['DATABASE']['config']
+            all_params = read_numerical(conf_path)
+        else:
+            ms_p_vals = dbms.all_params()
+            all_params = [p for p, v in ms_p_vals if is_numerical(v)]
+        
+        bench.reset(path_to_logs, run_ctr)
+        run_ddpg(dbms, bench, objective, all_params, tolerance, timeout_s)
