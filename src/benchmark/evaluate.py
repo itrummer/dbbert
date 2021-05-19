@@ -26,23 +26,27 @@ class Benchmark(ABC):
         """ Prints out some benchmark statistics. """
         pass
     
-    def reset(self, log_path):
+    def reset(self, log_path, run_ctr):
         """ Reset timestamps for logging and reset statistics. 
         
         Args:
             log_path: path for logging output
+            run_ctr: number of the current run
         """
-        # Initialize timestamps and logging
+        self.run_ctr = run_ctr
         self.eval_ctr = 0
         self.start_ms = time.time() * 1000.0
+        
         self.log_path = log_path
         self.log_perf_path = log_path + '_performance'
         self.log_conf_path = log_path + '_configure'
-        with open(self.log_perf_path, 'w') as file:
-            file.write('ctr\tmillis\tbestQuality\tcurQuality\n')
-        with open(self.log_conf_path, 'w') as file:
-            file.write('ctr\tmillis\tbestConf\tcurConf\n')
-        # Initialize stats with default configuration
+        
+        if run_ctr == 0:
+            with open(self.log_perf_path, 'w') as file:
+                file.write('run\teval\tmillis\tbestQuality\tcurQuality\n')
+            with open(self.log_conf_path, 'w') as file:
+                file.write('run\teval\tmillis\tbestConf\tcurConf\n')
+        
         self._init_stats()
         self.evaluate()
             
@@ -66,9 +70,13 @@ class Benchmark(ABC):
             cur_ms = time.time() * 1000.0
             total_ms = cur_ms - self.start_ms
             with open(self.log_perf_path, 'a') as file:
-                file.write(f'{self.eval_ctr}\t{total_ms}\t{best_quality}\t{cur_quality}\n')
+                file.write(
+                    f'{self.run_ctr}\t{self.eval_ctr}\t{total_ms}\t' +
+                    f'{best_quality}\t{cur_quality}\n')
             with open(self.log_conf_path, 'a') as file:
-                file.write(f'{self.eval_ctr}\t{total_ms}\t{best_config}\t{cur_config}\n')
+                file.write(
+                    f'{self.run_ctr}\t{self.eval_ctr}\t{total_ms}\t' +
+                    f'{best_config}\t{cur_config}\n')
     
 class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """

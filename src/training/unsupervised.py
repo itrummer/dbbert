@@ -48,6 +48,7 @@ restart_cmd = config['DATABASE']['restart_cmd']
 bin_dir = config['DATABASE']['bin_dir']
 path_to_data = config['DATABASE']['data_dir']
 
+nr_runs = int(config['BENCHMARK']['nr_runs'])
 path_to_docs = config['BENCHMARK']['docs']
 max_length = int(config['BENCHMARK']['max_length'])
 filter_params = int(config['BENCHMARK']['filter_param'])
@@ -66,42 +67,47 @@ docs = DocCollection(
     docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
     consider_implicit=use_implicit, filter_params=filter_params)
 
-dbms.reset_config()
-dbms.reconfigure()
-bench.reset(log_path)
-
-# Initialize environment
-unsupervised_env = MultiDocTuning(
-    docs=docs, max_length=max_length, mask_params=mask_params, 
-    hint_order=hint_order, dbms=dbms, benchmark=bench, 
-    hardware=[memory, disk, memory], hints_per_episode=nr_hints, 
-    nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
-    objective=objective)
-unsupervised_env = GymEnvironment(unsupervised_env, device=device)
-
-# Initialize agents
-model = BertFineTuning(input_model)
-agent = dqn(
-    model_constructor=lambda _:model, minibatch_size=min_batch_size, 
-    device=device, lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
-    final_exploration_frame=nr_frames, target_update_frequency=1)
-
-# Run experiments
-experiment = SingleEnvExperiment(
-    agent, unsupervised_env, logdir='runs', 
-    quiet=False, render=False, write_loss=True)
-
-def finished(experiment, elapsed_s):
-    """ Returns true iff the experiment is finished. """
-    return elapsed_s > timeout_s or experiment._done(
-        frames=nr_frames, epusodes=np.inf)
-
-start_s = time.time()
-elapsed_s = 0
-while not finished(experiment, elapsed_s):
-    cur_s = time.time()
-    elapsed_s = cur_s - start_s
-    experiment._run_training_episode()
-
-# Save final model
-model.model.save_pretrained(output_model)
+for run_ctr in range(nr_runs):
+    
+    # Initialize for new run
+    dbms.reset_config()
+    dbms.reconfigure()
+    bench.reset(log_path)
+    
+    # Initialize environment
+    unsupervised_env = MultiDocTuning(
+        docs=docs, max_length=max_length, mask_params=mask_params, 
+        hint_order=hint_order, dbms=dbms, benchmark=bench, 
+        hardware=[memory, disk, memory], hints_per_episode=nr_hints, 
+        nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
+        objective=objective)
+    unsupervised_env = GymEnvironment(unsupervised_env, device=device)
+    
+    # Initialize agents
+    model = BertFineTuning(input_model)
+    agent = dqn(
+        model_constructor=lambda _:model, minibatch_size=min_batch_size, 
+        device=device, lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
+        final_exploration_frame=nr_frames, target_update_frequency=1)
+    
+    # Run experiments
+    experiment = SingleEnvExperiment(
+        agent, unsupervised_env, logdir='runs', 
+        quiet=False, render=False, write_loss=True)
+    
+    def finished(experiment, elapsed_s):
+        """ Returns true iff the experiment is finished. """
+        return elapsed_s > timeout_s or experiment._done(
+            frames=nr_frames, episodes=np.inf)
+    
+    print(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
+    start_s = time.time()
+    elapsed_s = 0
+    while not finished(experiment, elapsed_s):
+        experiment._run_training_episode()
+        cur_s = time.time()
+        elapsed_s = cur_s - start_s
+        print(f'Elapsed time: {elapsed_s} seconds')
+    
+    # Save final model
+    model.model.save_pretrained(output_model)
