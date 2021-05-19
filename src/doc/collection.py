@@ -51,7 +51,8 @@ class DocCollection():
         """
         self.dbms = dbms
         self.size_threshold = size_threshold
-        self.filter_params = filter_params
+        self.filter_params = True if filter_params == '1' else False
+        print(f'Filter by parameter: {self.filter_params}')
         self.consider_implicit = consider_implicit
         self._prepare_implicit()
         self.docs = pd.read_csv(docs_path)
