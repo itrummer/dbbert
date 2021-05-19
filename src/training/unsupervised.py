@@ -63,9 +63,6 @@ cores = float(config['BENCHMARK']['cores'])
 objective = search.objectives.from_file(config)
 dbms = dbms.factory.from_file(config)
 bench = benchmark.factory.from_file(config, dbms)
-docs = DocCollection(
-    docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
-    consider_implicit=use_implicit, filter_params=filter_params)
 
 for run_ctr in range(nr_runs):
     
@@ -73,6 +70,10 @@ for run_ctr in range(nr_runs):
     dbms.reset_config()
     dbms.reconfigure()
     bench.reset(log_path, run_ctr)
+    
+    docs = DocCollection(
+        docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
+        consider_implicit=use_implicit, filter_params=filter_params)
     
     # Initialize environment
     unsupervised_env = MultiDocTuning(
