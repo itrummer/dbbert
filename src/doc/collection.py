@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 from doc.util import get_parameters, get_values
 from parameters.util import decompose_val
 import pandas as pd
+import parameters.util
 import re
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
@@ -155,9 +156,8 @@ class DocCollection():
                 else:
                     exp_passage = passage
                     
-                params = re.finditer(r'[a-z_]+_[a-z]+', exp_passage)
-                #values = re.finditer(r'\d+[a-zA-Z]*%{0,1}', exp_passage)
-                values = re.finditer(r'\d+(\.\d+){0,1}(%|\w*)', exp_passage)
+                params = re.finditer(parameters.util.param_reg, exp_passage)
+                values = re.finditer(parameters.util.value_reg, exp_passage)
                 for param in params:
                     print(f'Param: {param}')
                     if not self.filter_params or self.dbms.is_param(param.group()):

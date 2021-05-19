@@ -6,9 +6,12 @@ Created on Apr 17, 2021
 import configparser
 import re
 
+param_reg = r'[a-z_]+_[a-z]+'
+value_reg = r'(\d+(\.\d+)?)(%|\w*)'
+
 def is_numerical(value):
     """ Returns true iff value is number, optionally followed by unit. """
-    return True if re.match(r'\d+(\.\d+){0,1}(%|\w*)$', str(value)) else False
+    return True if re.match(value_reg + r'$', str(value)) else False
 
 def read_numerical(file_path):
     """ Reads all numerical parameters from a configuration file. 
@@ -41,15 +44,12 @@ def decompose_val(value: str):
         Tuple containing float value and unit (string)
     """
     str_value = str(value)
-    if re.match(r'\d+%$', str_value):
-        raw_float_val = float(re.sub(r'(\d+)%', r'\g<1>', str_value))
-        float_val = raw_float_val/100.0
-        val_unit = ''
+    float_val = float(re.sub(value_reg, r'\g<1>', str_value))
+    unit = re.sub(value_reg, r'\g<3>', str_value)
+    if unit == '%':
+        return float_val / 100.0, ''
     else:
-        val_regex = r'(\d+)(\.\d+){0,1}(\w*)'
-        float_val = float(re.sub(val_regex, r'\g<1>\g<2>', str_value))
-        val_unit = re.sub(val_regex, r'\g<3>', str_value)
-    return float_val, val_unit
+        return float_val, unit
 
 def convert_to_bytes(value):
     """ Try converting value with unit into byte value. 
