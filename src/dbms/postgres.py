@@ -69,7 +69,7 @@ class PgConfig(ConfigurableDBMS):
 
     def all_params(self):
         """ Return names of all tuning parameters. """
-        cursor = self.connection.cursor(buffered=True)
+        cursor = self.connection.cursor()
         cursor.execute('select name from pg_settings where name != \'port\'')
         var_vals = cursor.fetchall()
         cursor.close()

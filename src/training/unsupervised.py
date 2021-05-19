@@ -6,6 +6,7 @@ Created on May 5, 2021
 Train interpreting tuning documents without supervision.
 '''
 from all.environments.gym import GymEnvironment
+from all.experiments.single_env_experiment import SingleEnvExperiment
 from all.presets.classic_control import dqn
 from argparse import ArgumentParser
 from configparser import ConfigParser
@@ -86,9 +87,9 @@ agent = dqn(
     final_exploration_frame=nr_frames, target_update_frequency=1)
 
 # Run experiments
-experiment = all.experiments.SingleEnvExperiment(
-    agent, unsupervised_env, logdir='runs', quiet=False,
-    render=False, write_loss=True)
+experiment = SingleEnvExperiment(
+    agent, unsupervised_env, logdir='runs', 
+    quiet=False, render=False, write_loss=True)
 
 def finished(experiment, elapsed_s):
     """ Returns true iff the experiment is finished. """
