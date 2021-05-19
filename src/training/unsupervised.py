@@ -6,7 +6,6 @@ Created on May 5, 2021
 Train interpreting tuning documents without supervision.
 '''
 from all.environments.gym import GymEnvironment
-from all.experiments import run_experiment
 from all.presets.classic_control import dqn
 from argparse import ArgumentParser
 from configparser import ConfigParser
@@ -16,7 +15,9 @@ from models.bert_tuning import BertFineTuning
 import benchmark.factory
 import dbms.factory
 import environment.multi_doc
+import numpy as np
 import search.objectives
+import time
 
 # Read configuration referenced as command line parameters
 arg_parser = ArgumentParser(description='DB-BERT: Train NLU for DB tuning documents')
@@ -29,6 +30,7 @@ device = config['LEARNING']['device'] # cuda or cpu
 input_model = config['LEARNING']['input'] # name or path to input model
 output_model = config['LEARNING']['output'] # path to output model
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
+timeout_s = float(config['LEARNING']['timeout_s']) # seconds until timeout
 epsilon = float(config['LEARNING']['start_epsilon']) # start value for epsilon
 p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
 a_scaling = float(config['LEARNING']['assignment_scaling']) # assignment reward scaling
@@ -84,8 +86,21 @@ agent = dqn(
     final_exploration_frame=nr_frames, target_update_frequency=1)
 
 # Run experiments
-run_experiment(agents=agent, envs=unsupervised_env, 
-               frames=nr_frames, test_episodes=1)
+experiment = all.experiments.SingleEnvExperiment(
+    agent, unsupervised_env, logdir='runs', quiet=False,
+    render=False, write_loss=True)
+
+def finished(experiment, elapsed_s):
+    """ Returns true iff the experiment is finished. """
+    return elapsed_s > timeout_s or experiment._done(
+        frames=nr_frames, epusodes=np.inf)
+
+start_s = time.time()
+elapsed_s = 0
+while not finished(experiment, elapsed_s):
+    cur_s = time.time()
+    elapsed_s = cur_s - start_s
+    experiment._run_training_episode()
 
 # Save final model
 model.model.save_pretrained(output_model)

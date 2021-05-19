@@ -24,6 +24,7 @@ class DocTuning(Env, ABC):
         Args:
             docs: collection of documents with tuning hints
             hints_per_episode: candidate hints before evaluation
+            
         """
         self.docs = docs
         self.hints_per_episode = hints_per_episode
