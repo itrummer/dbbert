@@ -66,6 +66,8 @@ bench = benchmark.factory.from_file(config, dbms)
 
 for run_ctr in range(nr_runs):
     
+    print(f'Starting run number {run_ctr}')
+    
     # Initialize for new run
     dbms.reset_config()
     dbms.reconfigure()
