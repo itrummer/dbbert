@@ -13,9 +13,10 @@ class PgConfig(ConfigurableDBMS):
     
     def __init__(self, db, user, password=None, restart_cmd="", data_dir=""):
         """ Initialize DB connection with given credentials. """
-        self.restart_cmd = restart_cmd
         self.data_dir = data_dir
-        super().__init__(db, user, password, {})
+        unit_to_size={'KB':'kB', 'MB':'000kB', 'GB':'000000kB',
+                      'K':'kB', 'M':'000kB', 'G':'000000kB'}
+        super().__init__(db, user, password, unit_to_size, restart_cmd)
         
     @classmethod
     def from_file(cls, config):

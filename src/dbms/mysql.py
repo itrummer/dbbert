@@ -3,7 +3,6 @@ Created on Apr 7, 2021
 
 @author: immanueltrummer
 '''
-from configparser import ConfigParser
 from dbms.generic_dbms import ConfigurableDBMS
 
 import mysql.connector
@@ -13,7 +12,7 @@ import time
 class MySQLconfig(ConfigurableDBMS):
     """ Represents configurable MySQL database. """
     
-    def __init__(self, db, user, password, bin_dir):
+    def __init__(self, db, user, password, bin_dir, restart_cmd):
         """ Initialize DB connection with given credentials. 
         
         Args:
@@ -24,7 +23,7 @@ class MySQLconfig(ConfigurableDBMS):
         """
         unit_to_size={'KB':'000', 'MB':'000000', 'GB':'000000000',
                       'K':'000', 'M':'000000', 'G':'000000000'}
-        super().__init__(db, user, password, unit_to_size)
+        super().__init__(db, user, password, unit_to_size, restart_cmd)
         self.bin_dir = bin_dir
         
     @classmethod
@@ -42,7 +41,8 @@ class MySQLconfig(ConfigurableDBMS):
         db_name = config['DATABASE']['name']
         password = config['DATABASE']['password']
         bin_dir = config['DATABASE']['bin_dir']
-        return cls(db_name, db_user, password, bin_dir)
+        restart_cmd = config['DATABASE']['restart_cmd']
+        return cls(db_name, db_user, password, bin_dir, restart_cmd)
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -140,9 +140,8 @@ class MySQLconfig(ConfigurableDBMS):
     
     def reset_config(self):
         """ Reset all parameters to default values. """
-        # TODO: should not be hard-coded
         self._disconnect()
-        os.system('sudo systemctl restart mysql.service')
+        os.system(self.restart_cmd)
         time.sleep(2)
         self._connect()
         # var_vals = self.all_params()
