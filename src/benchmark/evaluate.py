@@ -199,10 +199,10 @@ class TpcC(Benchmark):
         print(f'Minimal throughput {self.min_throughput} with configuration {self.min_config}')
         print(f'Maximal throughput {self.max_throughput} with configuration {self.max_config}')
         
-    def reset(self, log_path):
+    def reset(self, log_path, run_ctr):
         """ Reset database along with logging and statistics. """
         self._reset_db()
-        super().reset(log_path)
+        super().reset(log_path, run_ctr)
         
     def _init_stats(self):
         """ Reset minimal and maximal throughput (and configurations). """
