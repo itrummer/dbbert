@@ -40,21 +40,12 @@ nr_hints = int(config['LEARNING']['nr_hints']) # number of hints per episode
 min_batch_size = int(config['LEARNING']['min_batch_size']) # samples per batch
 mask_params = True if config['LEARNING']['mode'] == 'masked' else False
 
-dbms_name = config['DATABASE']['dbms']
-db_user = config['DATABASE']['user']
-db_name = config['DATABASE']['name']
-password = config['DATABASE']['password']
-restart_cmd = config['DATABASE']['restart_cmd']
-bin_dir = config['DATABASE']['bin_dir']
-path_to_data = config['DATABASE']['data_dir']
-
 nr_runs = int(config['BENCHMARK']['nr_runs'])
 path_to_docs = config['BENCHMARK']['docs']
 max_length = int(config['BENCHMARK']['max_length'])
 filter_params = int(config['BENCHMARK']['filter_param'])
 use_implicit = int(config['BENCHMARK']['use_implicit'])
 hint_order = environment.multi_doc.parse_order(config)
-path_to_queries = config['BENCHMARK']['queries']
 log_path = config['BENCHMARK']['logging']
 memory = float(config['BENCHMARK']['memory'])
 disk = float(config['BENCHMARK']['disk'])
@@ -81,7 +72,7 @@ for run_ctr in range(nr_runs):
     unsupervised_env = MultiDocTuning(
         docs=docs, max_length=max_length, mask_params=mask_params, 
         hint_order=hint_order, dbms=dbms, benchmark=bench, 
-        hardware=[memory, disk, memory], hints_per_episode=nr_hints, 
+        hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
         objective=objective)
     unsupervised_env = GymEnvironment(unsupervised_env, device=device)
