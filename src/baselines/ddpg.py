@@ -124,13 +124,8 @@ if __name__ == '__main__':
 
         dbms.reset_config()
         dbms.reconfigure()
-            
-        if isinstance(dbms, PgConfig):
-            conf_path = config['DATABASE']['config']
-            all_params = read_numerical(conf_path)
-        else:
-            ms_p_vals = dbms.all_params()
-            all_params = [p for p, v in ms_p_vals if is_numerical(v)]
+        all_params = dbms.all_params()
+        all_params = [p for p in all_params if is_numerical(dbms.get_value(p))]
         
         bench.reset(path_to_logs, run_ctr)
         run_ddpg(dbms, bench, objective, all_params, tolerance, timeout_s)

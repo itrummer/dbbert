@@ -25,8 +25,8 @@ class MySQLconfig(ConfigurableDBMS):
                       'K':'000', 'M':'000000', 'G':'000000000'}
         super().__init__(db, user, password, unit_to_size, restart_cmd)
         self.bin_dir = bin_dir
-        self.global_vars = self.query_all(
-            'show global variables where variable_name != \'keyring_file_data\'')
+        self.global_vars = [t[0] for t in self.query_all(
+            'show global variables where variable_name != \'keyring_file_data\'')]
         self.server_cost_params = self.query_all(
             'select cost_name from mysql.server_cost')
         self.engine_cost_params = self.query_all(
