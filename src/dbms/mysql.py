@@ -33,6 +33,8 @@ class MySQLconfig(ConfigurableDBMS):
             'select cost_name from mysql.engine_cost')]
         self.all_variables = self.global_vars + \
             self.server_cost_params + self.engine_cost_params
+        self.update('update mysql.server_cost set cost_value = default_value')
+        self.update('update mysql.engine_cost set cost_value = default_value')
             
         print(f'Global variables: {self.global_vars}')
         print(f'Server cost parameters: {self.server_cost_params}')
