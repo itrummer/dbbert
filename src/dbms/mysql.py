@@ -25,6 +25,19 @@ class MySQLconfig(ConfigurableDBMS):
                       'K':'000', 'M':'000000', 'G':'000000000'}
         super().__init__(db, user, password, unit_to_size, restart_cmd)
         self.bin_dir = bin_dir
+        self.global_vars = self.query_all(
+            'show global variables where variable_name != \'keyring_file_data\'')
+        self.server_cost_params = self.query_all(
+            'select cost_name from mysql.server_cost')
+        self.engine_cost_params = self.query_all(
+            'select cost_name from mysql.engine_cost')
+        self.all_variables = self.global_vars + \
+            self.server_cost_params + self.engine_cost_params
+            
+        print(f'Global variables: {self.global_vars}')
+        print(f'Server cost parameters: {self.server_cost_params}')
+        print(f'Engine cost parameters: {self.engine_cost_params}')
+        print(f'All parameters: {self.all_variables}')
         
     @classmethod
     def from_file(cls, config):
@@ -89,6 +102,18 @@ class MySQLconfig(ConfigurableDBMS):
         except Exception:
             return None
     
+    def query_all(self, sql):
+        """ Runs SQL query and returns all results if it succeeds. """
+        try:
+            cursor = self.connection.cursor(buffered=True)
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            cursor.close()
+            return results
+        except Exception as e:
+            print(f'Exception in mysql.query_all: {e}')
+            return None
+    
     def exec_file(self, path):
         """ Executes all SQL queries in given file and returns error flag. """
         error = True
@@ -118,37 +143,50 @@ class MySQLconfig(ConfigurableDBMS):
     
     def is_param(self, param):
         """ Returns True iff the given parameter can be configured. """
-        return self.can_query(f'show variables like \'{param}\'')
+        return param in self.all_variables
     
     def get_value(self, param):
         """ Returns current value for given parameter. """
-        return self.query_one(f'select @@{param}')
+        if param in self.global_vars:
+            return self.query_one(f'select @@{param}')
+        elif param in self.server_cost_params:
+            return self.query_one(
+                f'select cost_value from mysql.server_cost where cost_name={param}')
+        elif param in self.engine_cost_params:
+            return self.query_one(
+                f'select cost_value from mysql.engine_cost where cost_name={param}')
+        else:
+            return None
     
     def set_param(self, param, value):
         """ Set parameter to given value. """
-        #print(f'set_param: {param} to {value}')
-        self.config[param] = value
-        return self.update(f'set global {param}={value}')
+        if param in self.global_vars:
+            success = self.update(f'set global {param}={value}')
+        elif param in self.server_cost_params:
+            success = self.update(
+                f'update mysql.server_cost set cost_value={value} where cost_name={param}')
+        elif param in self.engine_cost_params:
+            success = self.update(
+                f'update mysql.engine_cost set cost_value={value} where cost_name={param}')
+        else: 
+            success = False
+        if success:
+            self.config[param] = value
+        return success
     
     def all_params(self):
         """ Returns list of tuples, containing configuration parameters and values. """
-        cursor = self.connection.cursor(buffered=True)
-        cursor.execute('show global variables where variable_name != \'keyring_file_data\'')
-        var_vals = cursor.fetchall()
-        cursor.close()
-        return var_vals
+        return self.all_variables
     
     def reset_config(self):
         """ Reset all parameters to default values. """
+        self.update('update mysql.server_cost set cost_value=NULL')
+        self.update('update mysql.engine_cost set cost_value=NULL')
         self._disconnect()
         os.system(self.restart_cmd)
         time.sleep(2)
         self._connect()
-        # var_vals = self.all_params()
-        # for var_val in var_vals:
-            # var, _ = var_val
-            # self.set_param(var, 'default')
-        # self.config = {}
+        self.config = {}
     
     def reconfigure(self):
         """ Makes all parameter changes take effect (may require restart). 
@@ -156,5 +194,9 @@ class MySQLconfig(ConfigurableDBMS):
         Returns:
             Whether reconfiguration was successful
         """
+        # Optimizer cost parameters requires flush and reconnect
+        self.update('flush optimizer_costs')
+        self._disconnect()
+        self._connect()
         # Currently, we consider no MySQL parameters requiring restart
         return True
