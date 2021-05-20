@@ -27,10 +27,10 @@ class MySQLconfig(ConfigurableDBMS):
         self.bin_dir = bin_dir
         self.global_vars = [t[0] for t in self.query_all(
             'show global variables where variable_name != \'keyring_file_data\'')]
-        self.server_cost_params = self.query_all(
-            'select cost_name from mysql.server_cost')
-        self.engine_cost_params = self.query_all(
-            'select cost_name from mysql.engine_cost')
+        self.server_cost_params = [t[0] for t in self.query_all(
+            'select cost_name from mysql.server_cost')]
+        self.engine_cost_params = [t[0] for t in self.query_all(
+            'select cost_name from mysql.engine_cost')]
         self.all_variables = self.global_vars + \
             self.server_cost_params + self.engine_cost_params
             
