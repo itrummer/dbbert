@@ -12,7 +12,7 @@ import time
 class MySQLconfig(ConfigurableDBMS):
     """ Represents configurable MySQL database. """
     
-    def __init__(self, db, user, password, bin_dir, restart_cmd):
+    def __init__(self, db, user, password, bin_dir, restart_cmd, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
@@ -20,10 +20,12 @@ class MySQLconfig(ConfigurableDBMS):
             user: name of MySQL user
             password: password for database
             bin_dir: directory containing MySQL binaries (no trailing slash)
+            timeout_s: per-query timeout in seconds
         """
         unit_to_size={'KB':'000', 'MB':'000000', 'GB':'000000000',
                       'K':'000', 'M':'000000', 'G':'000000000'}
-        super().__init__(db, user, password, unit_to_size, restart_cmd)
+        super().__init__(db, user, password, 
+                         unit_to_size, restart_cmd, timeout_s)
         self.bin_dir = bin_dir
         self.global_vars = [t[0] for t in self.query_all(
             'show global variables where variable_name != \'keyring_file_data\'')]
@@ -55,7 +57,9 @@ class MySQLconfig(ConfigurableDBMS):
         password = config['DATABASE']['password']
         bin_dir = config['DATABASE']['bin_dir']
         restart_cmd = config['DATABASE']['restart_cmd']
-        return cls(db_name, db_user, password, bin_dir, restart_cmd)
+        timeout_s = config['LEARNING']['timeout_s']
+        return cls(db_name, db_user, password, 
+                   bin_dir, restart_cmd, timeout_s)
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -82,6 +86,7 @@ class MySQLconfig(ConfigurableDBMS):
             self.connection = mysql.connector.connect(
                 database=self.db, user=self.user, 
                 password=self.password, host="localhost")
+            self.set_timeout(self.timeout_s)
             return True
         except Exception as e:
             print(f'Exception while trying to connect to MySQL: {e}')
@@ -113,19 +118,6 @@ class MySQLconfig(ConfigurableDBMS):
         except Exception as e:
             print(f'Exception in mysql.query_all: {e}')
             return None
-    
-    def exec_file(self, path):
-        """ Executes all SQL queries in given file and returns error flag. """
-        error = True
-        try:
-            with open(path, 'r') as file:
-                queries = file.read().split(';')
-                for query in queries:
-                    self.query_one(query)
-            error = False
-        except Exception as e:
-            print(f'Exception: {e}')
-        return error
     
     def update(self, sql):
         """ Runs an SQL update and returns true iff the update succeeds. """
@@ -177,6 +169,11 @@ class MySQLconfig(ConfigurableDBMS):
         if success:
             self.config[param] = value
         return success
+    
+    def set_timeout(self, timeout_s):
+        """ Set per-query timeout. """
+        timeout_ms = int(timeout_s * 1000)
+        self.update(f"set session max_execution_time = {timeout_ms}")
     
     def all_params(self):
         """ Returns list of tuples, containing configuration parameters and values. """

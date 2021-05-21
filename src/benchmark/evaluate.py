@@ -48,7 +48,6 @@ class Benchmark(ABC):
                 file.write('run\teval\tmillis\tbestConf\tcurConf\n')
         
         self._init_stats()
-        self.evaluate()
             
     @abstractmethod
     def _init_stats(self):

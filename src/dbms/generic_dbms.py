@@ -9,7 +9,8 @@ import copy
 class ConfigurableDBMS(ABC):
     """ Represents a configurable database management system. """
     
-    def __init__(self, db, user, password, unit_to_size, restart_cmd):
+    def __init__(self, db, user, password, 
+                 unit_to_size, restart_cmd, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
@@ -18,12 +19,14 @@ class ConfigurableDBMS(ABC):
             password: password for database access
             unit_to_size: maps size units to byte size
             restart_cmd: command for restarting server
+            timeout_s: per-query timeout in seconds
         """
         self.db = db
         self.user = user
         self.password = password
         self.unit_to_size = unit_to_size
         self.restart_cmd = restart_cmd
+        self.timeout_s = timeout_s
         self.config = {}
         self.connection = None
         self._connect()
@@ -59,12 +62,21 @@ class ConfigurableDBMS(ABC):
     def copy_db(self, source_db, target_db):
         """ Copy source to target database (overriding target). """
         pass
-    
-    @abstractmethod
+  
     def exec_file(self, path):
-        """ Executes all SQL queries in given file, returns error flag. """
-        pass
-    
+        """ Executes all SQL queries in given file and returns error flag. """
+        error = True
+        try:
+            with open(path) as file:
+                sql = file.read()
+                self.connection.autocommit = True
+                cursor = self.connection.cursor()
+                cursor.execute(sql)
+            error = False
+        except Exception as e:
+            print(f'Exception execution {path}: {e}')
+        return error
+            
     @abstractmethod
     def get_value(self, param):
         """ Returns current value for given parameter. """
@@ -111,6 +123,11 @@ class ConfigurableDBMS(ABC):
         success = self.set_param(param, trans_value)
         #print(f'set_param_smart: {success}')
         return success
+    
+    @abstractmethod
+    def set_timeout(self, timeout_s):
+        """ Set per-query timeout. """
+        pass
                 
     @abstractmethod    
     def _connect(self):

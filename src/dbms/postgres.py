@@ -11,12 +11,23 @@ import time
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user, password=None, restart_cmd="", data_dir=""):
-        """ Initialize DB connection with given credentials. """
+    def __init__(self, db, user, password=None, 
+                 restart_cmd="", data_dir="", timeout_s):
+        """ Initialize DB connection with given credentials. 
+        
+        Args:
+            db: name of Postgres database
+            user: name of database user
+            password: database password
+            restart_cmd: command for restarting server
+            data_dir: Postgres data directory
+            timeout_s: per-query timeout in seconds
+        """
         self.data_dir = data_dir
         unit_to_size={'KB':'kB', 'MB':'000kB', 'GB':'000000kB',
                       'K':'kB', 'M':'000kB', 'G':'000000kB'}
-        super().__init__(db, user, password, unit_to_size, restart_cmd)
+        super().__init__(db, user, password, 
+                         unit_to_size, restart_cmd, timeout_s)
         
     @classmethod
     def from_file(cls, config):
@@ -34,7 +45,9 @@ class PgConfig(ConfigurableDBMS):
         password = config['DATABASE']['password']
         restart_cmd = config['DATABASE']['restart_cmd']
         path_to_data = config['DATABASE']['data_dir']
-        return cls(db_name, db_user, password, restart_cmd, path_to_data)
+        timeout_s = config['LEARNING']['timeout_s']
+        return cls(db_name, db_user, password, 
+                   restart_cmd, path_to_data, timeout_s)
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -53,6 +66,7 @@ class PgConfig(ConfigurableDBMS):
             self.connection = psycopg2.connect(
                 database = self.db, user = self.user, 
                 password = self.password, host = "localhost")
+            self.set_timeout(self.timeout_s)
             return True
         except Exception as e:
             # Delete changes to default configuration and restart
@@ -85,22 +99,7 @@ class PgConfig(ConfigurableDBMS):
             return cursor.fetchone()[0]
         except Exception:
             return None
-        
-    def exec_file(self, path):
-        """ Executes all SQL queries in given file. """
-        error = True
-        try:
-            with open(path) as file:
-                sql = file.read()
-                self.connection.autocommit = True
-                cursor = self.connection.cursor()
-                cursor.execute(sql)
-            #os.system(f'psql {self.db} -f {path} > query_results.txt')
-            error = False
-        except Exception as e:
-            print(f'Exception: {e}')
-        return error
-        
+         
     def update(self, sql):
         """ Executes update and returns true iff the update succeeds. """
         try:
@@ -125,6 +124,10 @@ class PgConfig(ConfigurableDBMS):
         query_one = f'alter system set {param} to \'{value}\''
         return self.update(query_one)
     
+    def set_timeout(self, timeout_s):
+        """ Set per-query timeout. """
+        self.update(f"set statement_timeout = '{timeout_s}s'")
+
     def reset_config(self):
         """ Reset all parameters to default values. """
         self.update('alter system reset all')
@@ -139,3 +142,4 @@ class PgConfig(ConfigurableDBMS):
         #os.system(r'/opt/homebrew/bin/pg_ctl -D /opt/homebrew/var/postgres restart')
         success = self._connect()
         return success
+    
