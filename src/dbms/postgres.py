@@ -89,6 +89,21 @@ class PgConfig(ConfigurableDBMS):
         cursor.close()
         return [v[0] for v in var_vals]
                         
+    def exec_file(self, path):
+        """ Executes all SQL queries in given file and returns error flag. """
+        error = True
+        try:
+            with open(path) as file:
+                sql = file.read()
+                self.connection.autocommit = True
+                cursor = self.connection.cursor()
+                cursor.execute(sql)
+                cursor.close()
+            error = False
+        except Exception as e:
+            print(f'Exception execution {path}: {e}')
+        return error
+                        
     def query_one(self, sql):
         """ Executes query_one and returns first result table cell or None. """
         try:

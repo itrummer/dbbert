@@ -98,6 +98,21 @@ class MySQLconfig(ConfigurableDBMS):
             print('Disconnecting ...')
             self.connection.close()
     
+    def exec_file(self, path):
+        """ Executes all SQL queries in given file and returns error flag. """
+        error = True
+        try:
+            with open(path) as file:
+                sql = file.read()
+                self.connection.autocommit = True
+                cursor = self.connection.cursor()
+                cursor.execute(sql, multi=True)
+                cursor.close()
+            error = False
+        except Exception as e:
+            print(f'Exception execution {path}: {e}')
+        return error
+    
     def query_one(self, sql):
         """ Runs SQL query_one and returns one result if it succeeds. """
         try:
