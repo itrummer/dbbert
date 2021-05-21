@@ -168,10 +168,10 @@ class MySQLconfig(ConfigurableDBMS):
             success = self.update(f'set global {param}={value}')
         elif param in self.server_cost_params:
             success = self.update(
-                f'update mysql.server_cost set cost_value={value} where cost_name={param}')
+                f"update mysql.server_cost set cost_value={value} where cost_name='{param}'")
         elif param in self.engine_cost_params:
             success = self.update(
-                f'update mysql.engine_cost set cost_value={value} where cost_name={param}')
+                f"update mysql.engine_cost set cost_value={value} where cost_name='{param}'")
         else: 
             success = False
         if success:
