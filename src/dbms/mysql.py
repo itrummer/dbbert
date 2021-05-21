@@ -153,10 +153,10 @@ class MySQLconfig(ConfigurableDBMS):
             return self.query_one(f'select @@{param}')
         elif param in self.server_cost_params:
             return self.query_one(
-                f'select cost_value from mysql.server_cost where cost_name={param}')
+                f"select cost_value from mysql.server_cost where cost_name='{param}'")
         elif param in self.engine_cost_params:
             return self.query_one(
-                f'select cost_value from mysql.engine_cost where cost_name={param}')
+                f"select cost_value from mysql.engine_cost where cost_name='{param}'")
         else:
             return None
     
