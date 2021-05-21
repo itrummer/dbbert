@@ -11,8 +11,7 @@ import time
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user, password=None, 
-                 restart_cmd="", data_dir="", timeout_s):
+    def __init__(self, db, user, password, restart_cmd, data_dir, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
