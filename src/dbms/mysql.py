@@ -33,8 +33,6 @@ class MySQLconfig(ConfigurableDBMS):
             'select cost_name from mysql.engine_cost')]
         self.all_variables = self.global_vars + \
             self.server_cost_params + self.engine_cost_params
-        self.update('update mysql.server_cost set cost_value = default_value')
-        self.update('update mysql.engine_cost set cost_value = default_value')
             
         print(f'Global variables: {self.global_vars}')
         print(f'Server cost parameters: {self.server_cost_params}')
@@ -153,10 +151,14 @@ class MySQLconfig(ConfigurableDBMS):
             return self.query_one(f'select @@{param}')
         elif param in self.server_cost_params:
             return self.query_one(
-                f"select cost_value from mysql.server_cost where cost_name='{param}'")
+                "select case when cost_value is NULL then default_value " \
+                "else cost_value end from mysql.server_cost " \
+                f"where cost_name='{param}'")
         elif param in self.engine_cost_params:
             return self.query_one(
-                f"select cost_value from mysql.engine_cost where cost_name='{param}'")
+                "select case when cost_value is NULL then default_value " \
+                "else cost_value end from mysql.engine_cost " \
+                f"where cost_name='{param}'")
         else:
             return None
     
@@ -186,8 +188,6 @@ class MySQLconfig(ConfigurableDBMS):
         os.system(self.restart_cmd)
         time.sleep(2)
         self._connect()
-        self.update('update mysql.server_cost set cost_value = default_value')
-        self.update('update mysql.engine_cost set cost_value = default_value')
         self.config = {}
     
     def reconfigure(self):
