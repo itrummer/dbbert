@@ -72,6 +72,7 @@ class ConfigurableDBMS(ABC):
                 self.connection.autocommit = True
                 cursor = self.connection.cursor()
                 cursor.execute(sql)
+                cursor.close()
             error = False
         except Exception as e:
             print(f'Exception execution {path}: {e}')
