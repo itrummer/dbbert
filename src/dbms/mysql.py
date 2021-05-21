@@ -105,7 +105,7 @@ class MySQLconfig(ConfigurableDBMS):
             with open(path) as file:
                 sql = file.read()
                 for query in sql.split(';'):
-                    cursor = self.connection.cursor()
+                    cursor = self.connection.cursor(buffered=True)
                     cursor.execute(query)
                     cursor.close()
             error = False
