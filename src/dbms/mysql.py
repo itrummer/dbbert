@@ -100,16 +100,17 @@ class MySQLconfig(ConfigurableDBMS):
     
     def exec_file(self, path):
         """ Executes all SQL queries in given file and returns error flag. """
-        error = True
         try:
+            self.connection.autocommit = True
             with open(path) as file:
                 sql = file.read()
-                self.connection.autocommit = True
-                cursor = self.connection.cursor()
-                cursor.execute(sql, multi=True)
-                cursor.close()
+                for query in sql.split(';'):
+                    cursor = self.connection.cursor()
+                    cursor.execute(query)
+                    cursor.close()
             error = False
         except Exception as e:
+            error = True
             print(f'Exception execution {path}: {e}')
         return error
     
