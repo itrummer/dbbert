@@ -182,12 +182,12 @@ class MySQLconfig(ConfigurableDBMS):
     
     def reset_config(self):
         """ Reset all parameters to default values. """
-        self.update('update mysql.server_cost set cost_value = default_value')
-        self.update('update mysql.engine_cost set cost_value = default_value')
         self._disconnect()
         os.system(self.restart_cmd)
         time.sleep(2)
         self._connect()
+        self.update('update mysql.server_cost set cost_value = default_value')
+        self.update('update mysql.engine_cost set cost_value = default_value')
         self.config = {}
     
     def reconfigure(self):
