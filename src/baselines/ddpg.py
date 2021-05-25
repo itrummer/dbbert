@@ -77,7 +77,7 @@ class DDPGenv(object):
             knob = self.knob_names[i]
             min_ = self.knobs_min[i]
             max_ = self.knobs_max[i]
-            int_val = int(min_ + (max_ - min_) * knob_data[i])
+            int_val = int(round(min_ + (max_ - min_) * knob_data[i]))
             unit = self.knob_units[i]
             value = str(int_val) + unit
             print(f'Setting {knob} to {value}')

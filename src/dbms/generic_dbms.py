@@ -9,8 +9,8 @@ import copy
 class ConfigurableDBMS(ABC):
     """ Represents a configurable database management system. """
     
-    def __init__(self, db, user, password, 
-                 unit_to_size, restart_cmd, timeout_s):
+    def __init__(self, db, user, password, unit_to_size, 
+                 restart_cmd, recovery_cmd, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
@@ -19,6 +19,7 @@ class ConfigurableDBMS(ABC):
             password: password for database access
             unit_to_size: maps size units to byte size
             restart_cmd: command for restarting server
+            recovery_cmd: command for recovering database
             timeout_s: per-query timeout in seconds
         """
         self.db = db
@@ -26,6 +27,7 @@ class ConfigurableDBMS(ABC):
         self.password = password
         self.unit_to_size = unit_to_size
         self.restart_cmd = restart_cmd
+        self.recovery_cmd = recovery_cmd
         self.timeout_s = timeout_s
         self.config = {}
         self.connection = None

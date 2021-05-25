@@ -12,21 +12,22 @@ import time
 class MySQLconfig(ConfigurableDBMS):
     """ Represents configurable MySQL database. """
     
-    def __init__(self, db, user, password, bin_dir, restart_cmd, timeout_s):
+    def __init__(self, db, user, password, 
+                 restart_cmd, recovery_cmd, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
             db: name of MySQL database
             user: name of MySQL user
             password: password for database
-            bin_dir: directory containing MySQL binaries (no trailing slash)
+            restart_cmd: command to restart server
+            recovery_cmd: command to recover database
             timeout_s: per-query timeout in seconds
         """
         unit_to_size={'KB':'000', 'MB':'000000', 'GB':'000000000',
                       'K':'000', 'M':'000000', 'G':'000000000'}
-        super().__init__(db, user, password, 
-                         unit_to_size, restart_cmd, timeout_s)
-        self.bin_dir = bin_dir
+        super().__init__(db, user, password, unit_to_size, 
+                         restart_cmd, recovery_cmd, timeout_s)
         self.global_vars = [t[0] for t in self.query_all(
             'show global variables where variable_name != \'keyring_file_data\'')]
         self.server_cost_params = [t[0] for t in self.query_all(
@@ -55,11 +56,11 @@ class MySQLconfig(ConfigurableDBMS):
         db_user = config['DATABASE']['user']
         db_name = config['DATABASE']['name']
         password = config['DATABASE']['password']
-        bin_dir = config['DATABASE']['bin_dir']
         restart_cmd = config['DATABASE']['restart_cmd']
+        recovery_cmd = config['DATABASE']['recovery_cmd']
         timeout_s = config['LEARNING']['timeout_s']
         return cls(db_name, db_user, password, 
-                   bin_dir, restart_cmd, timeout_s)
+                   restart_cmd, recovery_cmd, timeout_s)
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -67,8 +68,8 @@ class MySQLconfig(ConfigurableDBMS):
         
     def copy_db(self, source_db, target_db):
         """ Copy source to target database. """
-        ms_clc_prefix = f'{self.bin_dir}/mysql -u{self.user} -p{self.password} '
-        ms_dump_prefix = f'{self.bin_dir}/mysqldump -u{self.user} -p{self.password} '
+        ms_clc_prefix = f'mysql -u{self.user} -p{self.password} '
+        ms_dump_prefix = f'mysqldump -u{self.user} -p{self.password} '
         os.system(ms_dump_prefix + f' {source_db} > copy_db_dump')
         print('Dumped old database')
         os.system(ms_clc_prefix + f" -e 'drop database if exists {target_db}'")
@@ -90,6 +91,11 @@ class MySQLconfig(ConfigurableDBMS):
             return True
         except Exception as e:
             print(f'Exception while trying to connect to MySQL: {e}')
+            print(f'Trying recovery with "{self.recovery_cmd}" ...')
+            os.system(self.recovery_cmd)
+            os.system(self.restart_cmd)
+            self.reset_config()
+            self.reconfigure()
             return False
         
     def _disconnect(self):
@@ -111,7 +117,7 @@ class MySQLconfig(ConfigurableDBMS):
             error = False
         except Exception as e:
             error = True
-            print(f'Exception execution {path}: {e}')
+            print(f'Exception executing {path}: {e}')
         return error
     
     def query_one(self, sql):

@@ -11,7 +11,8 @@ import time
 class PgConfig(ConfigurableDBMS):
     """ Reconfigurable Postgres DBMS instance. """
     
-    def __init__(self, db, user, password, restart_cmd, data_dir, timeout_s):
+    def __init__(self, db, user, password, restart_cmd, 
+                 recovery_cmd, timeout_s):
         """ Initialize DB connection with given credentials. 
         
         Args:
@@ -19,14 +20,13 @@ class PgConfig(ConfigurableDBMS):
             user: name of database user
             password: database password
             restart_cmd: command for restarting server
-            data_dir: Postgres data directory
+            recovery_cmd: command for recovering DB
             timeout_s: per-query timeout in seconds
         """
-        self.data_dir = data_dir
         unit_to_size={'KB':'kB', 'MB':'000kB', 'GB':'000000kB',
                       'K':'kB', 'M':'000kB', 'G':'000000kB'}
-        super().__init__(db, user, password, 
-                         unit_to_size, restart_cmd, timeout_s)
+        super().__init__(db, user, password, unit_to_size, 
+                         restart_cmd, recovery_cmd, timeout_s)
         
     @classmethod
     def from_file(cls, config):
@@ -43,10 +43,10 @@ class PgConfig(ConfigurableDBMS):
         db_name = config['DATABASE']['name']
         password = config['DATABASE']['password']
         restart_cmd = config['DATABASE']['restart_cmd']
-        path_to_data = config['DATABASE']['data_dir']
+        recovery_cmd = config['DATABASE']['recovery_cmd']
         timeout_s = config['LEARNING']['timeout_s']
         return cls(db_name, db_user, password, 
-                   restart_cmd, path_to_data, timeout_s)
+                   restart_cmd, recovery_cmd, timeout_s)
         
     def __del__(self):
         """ Close DBMS connection if any. """
@@ -70,8 +70,8 @@ class PgConfig(ConfigurableDBMS):
         except Exception as e:
             # Delete changes to default configuration and restart
             print(f'Exception while trying to connect: {e}')
-            #/opt/homebrew/var/postgres
-            os.system(f'sudo rm {self.data_dir}/postgresql.auto.conf')
+            print(f'Trying recovery with "{self.recovery_cmd}" ...')
+            os.system(self.recovery_cmd)
             self.reconfigure()
             return False
         
