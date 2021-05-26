@@ -83,7 +83,7 @@ class MySQLconfig(ConfigurableDBMS):
         """ Establish connection to database, returns success flag. """
         print(f'Trying to connect to {self.db} with user {self.user}')
         # Need to recover in case of bad configuration
-        try:            
+        try:
             self.connection = mysql.connector.connect(
                 database=self.db, user=self.user, 
                 password=self.password, host="localhost")
@@ -93,7 +93,7 @@ class MySQLconfig(ConfigurableDBMS):
             print(f'Exception while trying to connect to MySQL: {e}')
             print(f'Trying recovery with "{self.recovery_cmd}" ...')
             os.system(self.recovery_cmd)
-            os.system(self.restart_cmd)
+            os.system(self.restart_cmd)            
             self.reset_config()
             self.reconfigure()
             return False

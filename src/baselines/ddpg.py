@@ -58,7 +58,8 @@ class DDPGenv(object):
         for knob in self.knob_names:
             raw_val = self.dbms.get_value(knob)
             print(f'knob: {knob}; raw_val: {raw_val}')
-            if raw_val in ['on', 'off', '1', '0']:
+            if raw_val in ['on', 'off', '1', '0', 1, 0]:
+                unit = ''
                 min_val = 0
                 max_val = 1
             else:
