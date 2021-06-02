@@ -179,6 +179,15 @@ class TpcC(Benchmark):
             df = pd.read_csv(f'{self.result_path}/tuningtest.res')
             throughput = df[' throughput(req/sec)'].median()
             had_error = False
+            # Check for MySQL specific read-only flags (if activated, 
+            # OLTP benchmark reports large throughput due to exceptions).
+            ms_ro_flags = ['read_only', 'super_read_only', 
+                           'transaction_read_only', 'innodb_read_only']
+            true_ro_flags = [f for f in ms_ro_flags 
+                             if f in config and str(config[f]) == '1']
+            if true_ro_flags:
+                print('MS Read-only flags set - do not count throughput')
+                had_error = True
             # Update statistics
             if throughput > self.max_throughput:
                 self.max_throughput = throughput
