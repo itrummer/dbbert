@@ -92,9 +92,9 @@ class DDPGenv(object):
 
 def run_ddpg(dbms, benchmark, objective, knob_names, max_val_change, timeout_s):
     """ Run benchmark for DDPG+ algorithm, using specified knobs and ranges. """
-    random.seed(1)
-    np.random.seed(1)
-    torch.manual_seed(0)
+    # random.seed(1)
+    # np.random.seed(1)
+    # torch.manual_seed(0)
     env = DDPGenv(dbms, benchmark, objective, knob_names, max_val_change)
     ddpg_config = {'gamma': 0., 'c_lr': 0.001, 'a_lr': 0.02, 
                    'num_collections': 2, 'n_epochs': 30, 
