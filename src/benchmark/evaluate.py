@@ -6,6 +6,7 @@ Created on Apr 2, 2021
 from abc import ABC
 from abc import abstractmethod
 import glob
+import math
 import os
 import pandas as pd
 import psycopg2
@@ -175,10 +176,16 @@ class TpcC(Benchmark):
                 '--execute=true', '-s', '120', '-o', 'tuningtest'],
                 cwd = self.oltp_path)
             print(f'Benchmark return code: {return_code}')
+            
             # Extract throughput from generated files
             df = pd.read_csv(f'{self.result_path}/tuningtest.res')
             throughput = df[' throughput(req/sec)'].median()
-            had_error = False
+            if not math.isnan(throughput):
+                print(f'Measured valid throughput: {throughput}')
+                had_error = False
+            else:
+                print(f'Error - throughput is NaN!')
+                
             # Check for MySQL specific read-only flags (if activated, 
             # OLTP benchmark reports large throughput due to exceptions).
             ms_ro_flags = ['read_only', 'super_read_only', 
@@ -188,15 +195,16 @@ class TpcC(Benchmark):
             if true_ro_flags:
                 print('MS Read-only flags set - do not count throughput')
                 had_error = True
-            # Update statistics
+        except (Exception, psycopg2.DatabaseError) as e:
+            print(f'Exception for TPC-C: {e}')
+        # Update statistics
+        if not had_error:
             if throughput > self.max_throughput:
                 self.max_throughput = throughput
                 self.max_config = config
             if throughput < self.min_throughput:
                 self.min_throughput = throughput
                 self.min_config = config
-        except (Exception, psycopg2.DatabaseError) as e:
-            print(e)
         # Logging
         self.print_stats()
         self._log(self.max_throughput, self.max_config, throughput, config)

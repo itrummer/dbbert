@@ -122,11 +122,13 @@ if __name__ == '__main__':
     bench = benchmark.factory.from_file(config, dbms)
 
     for run_ctr in range(nr_runs):
-
+        
+        print(f'Preparing for run number {run_ctr}')
         dbms.reset_config()
         dbms.reconfigure()
         all_params = dbms.all_params()
         all_params = [p for p in all_params if is_numerical(dbms.get_value(p))]
         
+        print(f'Starting run number {run_ctr}')
         bench.reset(path_to_logs, run_ctr)
         run_ddpg(dbms, bench, objective, all_params, tolerance, timeout_s)
