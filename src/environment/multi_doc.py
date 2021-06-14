@@ -147,7 +147,7 @@ class MultiDocTuning(TuningBertFine):
             print(f'Adding assignment {assignment} with weight {weight}')
         else:
             reward = -10
-        return reward        
+        return reward
 
     def _finalize_episode(self):
         """ Return optimal benchmark reward when using weighted hints. """

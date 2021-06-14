@@ -5,6 +5,7 @@ Created on May 5, 2021
 
 Agent models, based on BERT.
 '''
+from transformers import trainer_utils
 from transformers import BertForMultipleChoice
 import torch.nn
 
@@ -17,6 +18,7 @@ class BertFineTuning(torch.nn.Module):
             start_model: name or path to pretrained model
         """
         super(BertFineTuning, self).__init__()
+        trainer_utils.set_seed(42)
         self.model = BertForMultipleChoice.from_pretrained(start_model)
         
     def forward(self, observations):
