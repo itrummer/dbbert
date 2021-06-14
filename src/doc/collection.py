@@ -36,7 +36,7 @@ class DocCollection():
     """ Represents a collection of documents with tuning hints. """
     
     def __init__(self, docs_path, dbms:ConfigurableDBMS, 
-                 size_threshold, filter_params, consider_implicit):
+                 size_threshold, filter_params, use_implicit):
         """ Reads tuning passages from a file. 
         
         Reads passages containing tuning hints from a text. Tries
@@ -48,14 +48,14 @@ class DocCollection():
             dbms: database management system (optional).
             size_threshold: start new passage after so many tokens.
             filter_params: whether to filter hints by their parameters.
-            consider_implicit: whether to consider implicit hints.
+            use_implicit: whether to consider implicit hints.
         """
         self.dbms = dbms
         self.size_threshold = size_threshold
-        self.filter_params = True if filter_params == '1' else False
-        print(f'Filter by parameter: {self.filter_params}')
-        self.consider_implicit = True if consider_implicit == '1' else False
-        print(f'Use implicit parameters: {self.consider_implicit}')
+        self.filter_params = True if filter_params == 1 else False
+        print(f'Filter by parameter: {self.filter_params} ({filter_params})')
+        self.use_implicit = True if use_implicit == 1 else False
+        print(f'Implicit parameters: {self.use_implicit} ({use_implicit})')
         self._prepare_implicit()
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
@@ -132,7 +132,7 @@ class DocCollection():
     
     def _prepare_implicit(self):
         """ Prepare extraction of implicit tuning hints. """
-        if self.consider_implicit:
+        if self.use_implicit:
             self.transformer = SentenceTransformer('paraphrase-distilroberta-base-v1')
             self.all_params = self.dbms.all_params()
             self.p_embeddings = self.transformer.encode(
@@ -151,7 +151,7 @@ class DocCollection():
             hints = []
             passages = self.passages_by_doc[doc_id]
             for passage in passages:
-                if self.consider_implicit:
+                if self.use_implicit:
                     exp_passage = self._enrich_passage(passage)
                     print(f'Enriched passage: {exp_passage}')
                 else:

@@ -66,7 +66,7 @@ for run_ctr in range(nr_runs):
     
     docs = DocCollection(
         docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
-        consider_implicit=use_implicit, filter_params=filter_params)
+        use_implicit=use_implicit, filter_params=filter_params)
     
     # Initialize environment
     unsupervised_env = MultiDocTuning(
