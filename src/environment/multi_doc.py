@@ -109,7 +109,7 @@ class MultiDocTuning(TuningBertFine):
             for param, _ in self.docs.param_counts.most_common():
                 param_hints = param_to_list[param]
                 nr_param_hints = len(param_hints)
-                if nr_param_hints < lb:
+                if lb < nr_param_hints:
                     ub = min(lb + step, nr_param_hints-1)
                     stride = param_hints[lb:ub]
                     ordered_hints += stride
