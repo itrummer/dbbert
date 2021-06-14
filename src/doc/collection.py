@@ -189,9 +189,9 @@ class DocCollection():
         
     def _hints_by_param(self):
         """ Maps parameters to corresponding hints. """
-        param_to_hints = defaultdict(lambda: set())
+        param_to_hints = defaultdict(lambda: [])
         for doc_id, doc_hints in self.doc_to_hints.items():
             for hint in doc_hints:
                 param = hint.param.group()
-                param_to_hints[param].add((doc_id, hint))
+                param_to_hints[param].append((doc_id, hint))
         return param_to_hints
