@@ -7,6 +7,7 @@ from dbms.generic_dbms import ConfigurableDBMS
 
 import mysql.connector
 import os
+from parameters.util import is_numerical
 import time
 
 class MySQLconfig(ConfigurableDBMS):
@@ -29,7 +30,7 @@ class MySQLconfig(ConfigurableDBMS):
         super().__init__(db, user, password, unit_to_size, 
                          restart_cmd, recovery_cmd, timeout_s)
         self.global_vars = [t[0] for t in self.query_all(
-            'show global variables where variable_name != \'keyring_file_data\'')]
+            'show global variables') if is_numerical(t[1])]
         self.server_cost_params = [t[0] for t in self.query_all(
             'select cost_name from mysql.server_cost')]
         self.engine_cost_params = [t[0] for t in self.query_all(
