@@ -145,6 +145,7 @@ class MultiDocTuning(TuningBertFine):
             weight = pow(2, action)
             self.hint_to_weight[assignment] += weight
             print(f'Adding assignment {assignment} with weight {weight}')
+            print(f'Assignment {assignment} extracted from "{hint.passage}"')
         else:
             reward = -10
         return reward
