@@ -40,7 +40,7 @@ class MultiDocTuning(TuningBertFine):
             self, docs: DocCollection, max_length, mask_params, hint_order,
             dbms: ConfigurableDBMS, benchmark: Benchmark, hardware, 
             hints_per_episode, nr_evals, scale_perf, scale_asg, objective,
-            rec_path):
+            rec_path, use_recs):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -57,6 +57,7 @@ class MultiDocTuning(TuningBertFine):
             scale_asg: scale reward for successful assignments
             objective: describes the optimization goal
             rec_path: path to file with parameter recommendations
+            use_recs: flag indicating whether to use recommendations
         """
         super().__init__(docs, hints_per_episode, max_length, mask_params)
         self.dbms = dbms
@@ -77,8 +78,10 @@ class MultiDocTuning(TuningBertFine):
             _, hint = self.hints[i]
             print(f'Hint nr. {i}: {hint.param.group()} -> {hint.value.group()}')
         self.explorer = ParameterExplorer(dbms, benchmark, objective)
-        with open(rec_path) as file:
-            self.recs = json.load(file)
+        self.use_recs = use_recs
+        if use_recs:
+            with open(rec_path) as file:
+                self.recs = json.load(file)
         self.reset()
 
     def _finalize_episode(self):
@@ -130,24 +133,6 @@ class MultiDocTuning(TuningBertFine):
             return self._hints_by_stride()
         else:
             return self._hints_by_doc()
-
-    def _take_action(self, action):
-        """ Process action and return obtained reward. """
-        reward = 0
-        _, hint = self.hints[self.hint_ctr]
-        # Distinguish by decision type
-        if self.decision == DecisionType.PICK_BASE:
-            if action <= 2 and hint.float_val < 1.0:
-                # Multiply given value with hardware properties
-                self.base = float(self.hardware[action]) * hint.float_val
-            else:
-                # Use provided value as is
-                self.base = hint.float_val
-        elif self.decision == DecisionType.PICK_FACTOR:
-            self.factor = float(self.factors[action])
-        else:
-            reward = self._process_hint(hint, action)
-        return reward
     
     def _process_hint(self, hint, action):
         """ Finishes processing current hint and returns direct reward. """
@@ -163,13 +148,14 @@ class MultiDocTuning(TuningBertFine):
             print(f'Assignment {assignment} extracted from "{hint.passage}"')
 
             reward = 10 * self.scale_asg
-            reward += weight * self.scale_asg * self._rec_reward(assignment)
+            if self.use_recs:
+                reward += weight * self.scale_asg * self._rec_reward(assignment)
         else:
             reward = -10
         return reward
 
     def _rec_reward(self, assignment):
-        """ Reward for being consistent with recommendations if any. 
+        """ Reward for being consistent with recommendations if any.
         
         Args:
             assignment: parameter - value pair to evaluate
@@ -202,3 +188,21 @@ class MultiDocTuning(TuningBertFine):
         self.label = None
         self.hint_to_weight = defaultdict(lambda: 0)
         self.benchmark.print_stats()
+        
+    def _take_action(self, action):
+        """ Process action and return obtained reward. """
+        reward = 0
+        _, hint = self.hints[self.hint_ctr]
+        # Distinguish by decision type
+        if self.decision == DecisionType.PICK_BASE:
+            if action <= 2 and hint.float_val < 1.0:
+                # Multiply given value with hardware properties
+                self.base = float(self.hardware[action]) * hint.float_val
+            else:
+                # Use provided value as is
+                self.base = hint.float_val
+        elif self.decision == DecisionType.PICK_FACTOR:
+            self.factor = float(self.factors[action])
+        else:
+            reward = self._process_hint(hint, action)
+        return reward
