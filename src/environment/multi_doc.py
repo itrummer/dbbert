@@ -186,7 +186,8 @@ class MultiDocTuning(TuningBertFine):
             if not rec_vals:
                 def_val = self.dbms.get_value(param)
                 def_b_val = parameters.util.convert_to_bytes(def_val)
-                rec_vals += [def_b_val]
+                if def_b_val is not None:
+                    rec_vals += [def_b_val]
             
             if rec_vals:
                 for rec_val in rec_vals:
