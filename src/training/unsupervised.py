@@ -78,7 +78,7 @@ for run_ctr in range(nr_runs):
         hint_order=hint_order, dbms=dbms, benchmark=bench, 
         hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
-        objective=objective, rec_file=rec_path)
+        objective=objective, rec_path=rec_path)
     unsupervised_env = GymEnvironment(unsupervised_env, device=device)
     
     # Initialize agents
