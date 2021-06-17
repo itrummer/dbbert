@@ -178,16 +178,17 @@ class MultiDocTuning(TuningBertFine):
             1 if consistent, -1 if not consistent, 0 if no recommendation
         """
         parameter, value = assignment
-        b_val = parameters.util.convert_to_bytes(float(value))
-        rec_vals = [float(r['value']) for r in self.recs['recommendations'] 
-                    if r['parameter']==parameter]
-        
-        if rec_vals:
-            for rec_val in rec_vals:
-                if rec_val*0.25 <= b_val and b_val <= rec_val*4:
-                    print(f'Assignment {assignment} matches rec {rec_val}')
-                    return 1
-            return -1
+        b_val = parameters.util.convert_to_bytes(value)
+        if b_val is not None:
+            rec_vals = [float(r['value']) for r in self.recs['recommendations'] 
+                        if r['parameter']==parameter]
+            
+            if rec_vals:
+                for rec_val in rec_vals:
+                    if rec_val*0.25 <= b_val and b_val <= rec_val*4:
+                        print(f'Assignment {assignment} matches rec {rec_val}')
+                        return 1
+                return -1
         return 0
 
     def _reset(self):
