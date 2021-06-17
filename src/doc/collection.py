@@ -12,7 +12,6 @@ import re
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
 from sentence_transformers import SentenceTransformer, util
-from nltk.metrics.aline import similarity_matrix
 
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """
@@ -116,7 +115,7 @@ class DocCollection():
                 max_sim = sim
                 max_param = p
         if max_param:
-            passage = f' {max_param} ' + passage
+            passage += f' {max_param} '
         passage += ' 1 0'
         return passage
     
@@ -163,10 +162,9 @@ class DocCollection():
                     print(f'Param: {param}')
                     if not self.filter_params or self.dbms.is_param(param.group()):
                         for value in values:
-                            if param.span()[1] <= value.span()[0]:
-                                print(f'Value: {value}')
-                                hint = TuningHint(doc_id, passage, param, value)
-                                hints.append(hint)
+                            print(f'Value: {value}')
+                            hint = TuningHint(doc_id, passage, param, value)
+                            hints.append(hint)
             self.doc_to_hints[doc_id] = hints
             return hints
         

@@ -42,6 +42,10 @@ mask_params = True if config['LEARNING']['mode'] == 'masked' else False
 
 nr_runs = int(config['BENCHMARK']['nr_runs'])
 path_to_docs = config['BENCHMARK']['docs']
+if 'rec_file' in config['BENCHMARK']:
+    rec_path = config['BENCHMARK']['rec_file']
+else:
+    rec_path = None
 max_length = int(config['BENCHMARK']['max_length'])
 filter_params = int(config['BENCHMARK']['filter_param'])
 use_implicit = int(config['BENCHMARK']['use_implicit'])
@@ -74,7 +78,7 @@ for run_ctr in range(nr_runs):
         hint_order=hint_order, dbms=dbms, benchmark=bench, 
         hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
-        objective=objective)
+        objective=objective, rec_file=rec_path)
     unsupervised_env = GymEnvironment(unsupervised_env, device=device)
     
     # Initialize agents

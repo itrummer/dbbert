@@ -11,6 +11,8 @@ from search.search_with_hints import ParameterExplorer
 from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
 import enum
+import json
+import parameters.util.convert_to_bytes
 
 class HintOrder(enum.IntEnum):
     """ The order in which tuning hints are considered. """
@@ -37,7 +39,8 @@ class MultiDocTuning(TuningBertFine):
     def __init__(
             self, docs: DocCollection, max_length, mask_params, hint_order,
             dbms: ConfigurableDBMS, benchmark: Benchmark, hardware, 
-            hints_per_episode, nr_evals, scale_perf, scale_asg, objective):
+            hints_per_episode, nr_evals, scale_perf, scale_asg, objective,
+            rec_path):
         """ Initialize from given tuning documents, database, and benchmark. 
         
         Args:
@@ -53,6 +56,7 @@ class MultiDocTuning(TuningBertFine):
             scale_perf: scale performance reward by this factor
             scale_asg: scale reward for successful assignments
             objective: describes the optimization goal
+            rec_path: path to file with parameter recommendations
         """
         super().__init__(docs, hints_per_episode, max_length, mask_params)
         self.dbms = dbms
@@ -73,16 +77,19 @@ class MultiDocTuning(TuningBertFine):
             _, hint = self.hints[i]
             print(f'Hint nr. {i}: {hint.param.group()} -> {hint.value.group()}')
         self.explorer = ParameterExplorer(dbms, benchmark, objective)
+        with open(rec_path) as file:
+            self.recs = json.load(file)
         self.reset()
-        
-    def _ordered_hints(self, hint_order):
-        """ Returns hints according to specified order. """
-        if hint_order == HintOrder.BY_PARAMETER:
-            return self._hints_by_param()
-        elif hint_order == HintOrder.BY_STRIDE:
-            return self._hints_by_stride()
+
+    def _finalize_episode(self):
+        """ Return optimal benchmark reward when using weighted hints. """
+        if self.hint_to_weight:
+            reward, config = self.explorer.explore(
+                self.hint_to_weight, self.nr_evals)
+            print(f'Achieved unscaled reward of {reward} using {config}')
+            return reward * self.scale_perf
         else:
-            return self._hints_by_doc()
+            return 0
 
     def _hints_by_doc(self):
         """ Returns hints in document collection order. """
@@ -114,6 +121,15 @@ class MultiDocTuning(TuningBertFine):
                     stride = param_hints[lb:ub]
                     ordered_hints += stride
         return ordered_hints
+        
+    def _ordered_hints(self, hint_order):
+        """ Returns hints according to specified order. """
+        if hint_order == HintOrder.BY_PARAMETER:
+            return self._hints_by_param()
+        elif hint_order == HintOrder.BY_STRIDE:
+            return self._hints_by_stride()
+        else:
+            return self._hints_by_doc()
 
     def _take_action(self, action):
         """ Process action and return obtained reward. """
@@ -136,29 +152,43 @@ class MultiDocTuning(TuningBertFine):
     def _process_hint(self, hint, action):
         """ Finishes processing current hint and returns direct reward. """
         param = hint.param.group()
-        value = str(int(self.base * self.factor)) + hint.val_unit 
+        value = str(int(self.base * self.factor)) + hint.val_unit
         success = self.dbms.can_set(param, value)
         assignment = (param, value)
         print(f'Trying assigning {param} to {value}')
         if success:
-            reward = 10 * self.scale_asg
             weight = pow(2, action)
             self.hint_to_weight[assignment] += weight
             print(f'Adding assignment {assignment} with weight {weight}')
             print(f'Assignment {assignment} extracted from "{hint.passage}"')
+
+            reward = 10 * self.scale_asg
+            reward += weight * self.scale_asg * self._rec_reward(assignment)
         else:
             reward = -10
         return reward
 
-    def _finalize_episode(self):
-        """ Return optimal benchmark reward when using weighted hints. """
-        if self.hint_to_weight:
-            reward, config = self.explorer.explore(
-                self.hint_to_weight, self.nr_evals)
-            print(f'Achieved unscaled reward of {reward} using {config}')
-            return reward * self.scale_perf
-        else:
-            return 0
+    def _rec_reward(self, assignment):
+        """ Reward for being consistent with recommendations if any. 
+        
+        Args:
+            assignment: parameter - value pair to evaluate
+            
+        Returns:
+            1 if consistent, -1 if not consistent, 0 if no recommendation
+        """
+        parameter, value = assignment
+        b_val = parameters.util.convert_to_bytes(float(value))
+        rec_vals = [r['value'] for r in self.recs['recommendations'] 
+                    if r['parameter']==parameter]
+        
+        if rec_vals:
+            for rec_val in rec_vals:
+                if rec_val*0.5 <= b_val and b_val <= rec_val*1.5:
+                    print(f'Assignment {assignment} matches rec {rec_val}')
+                    return 1
+            return -1
+        return 0
 
     def _reset(self):
         """ Initializes for new tuning episode. """
