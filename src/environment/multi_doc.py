@@ -177,11 +177,14 @@ class MultiDocTuning(TuningBertFine):
         Returns:
             1 if consistent, -1 if not consistent, 0 if no recommendation
         """
-        parameter, value = assignment
-        b_val = parameters.util.convert_to_bytes(value)
+        param, val = assignment
+        b_val = parameters.util.convert_to_bytes(val)
         if b_val is not None:
             rec_vals = [float(r['value']) for r in self.recs['recommendations'] 
-                        if r['parameter']==parameter]
+                        if r['parameter']==param]
+            if not rec_vals:
+                def_value = float(self.dbms.get_value(param))
+                rec_vals += [(param, def_value)]
             
             if rec_vals:
                 for rec_val in rec_vals:

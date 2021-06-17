@@ -7,7 +7,7 @@ Train interpreting tuning documents without supervision.
 '''
 from all.environments.gym import GymEnvironment
 from all.experiments.single_env_experiment import SingleEnvExperiment
-from all.presets.classic_control import dqn
+from all.presets.classic_control import dqn, ddqn
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from doc.collection import DocCollection
@@ -83,10 +83,14 @@ for run_ctr in range(nr_runs):
     
     # Initialize agents
     model = BertFineTuning(input_model)
-    agent = dqn(
+    agent = ddqn(
         model_constructor=lambda _:model, minibatch_size=min_batch_size, 
         device=device, lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
         final_exploration_frame=nr_frames, target_update_frequency=1)
+    # agent = dqn(
+        # model_constructor=lambda _:model, minibatch_size=min_batch_size, 
+        # device=device, lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
+        # final_exploration_frame=nr_frames, target_update_frequency=1)
     
     # Run experiments
     experiment = SingleEnvExperiment(
