@@ -177,6 +177,7 @@ class MultiDocTuning(TuningBertFine):
         Returns:
             1 if consistent, -1 if not consistent, 0 if no recommendation
         """
+        print(f'Calculating recommendation reward for {assignment}')
         param, val = assignment
         b_val = parameters.util.convert_to_bytes(val)
         if b_val is not None:
