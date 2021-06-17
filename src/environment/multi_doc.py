@@ -185,7 +185,7 @@ class MultiDocTuning(TuningBertFine):
                         if r['parameter']==param]
             if not rec_vals:
                 def_value = float(self.dbms.get_value(param))
-                rec_vals += [(param, def_value)]
+                rec_vals += [def_value]
             
             if rec_vals:
                 for rec_val in rec_vals:
