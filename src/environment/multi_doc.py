@@ -12,7 +12,7 @@ from doc.collection import DocCollection
 from dbms.generic_dbms import ConfigurableDBMS
 import enum
 import json
-import parameters.util.convert_to_bytes
+import parameters.util
 
 class HintOrder(enum.IntEnum):
     """ The order in which tuning hints are considered. """
