@@ -184,12 +184,13 @@ class MultiDocTuning(TuningBertFine):
             rec_vals = [float(r['value']) for r in self.recs['recommendations'] 
                         if r['parameter']==param]
             if not rec_vals:
-                def_value = float(self.dbms.get_value(param))
-                rec_vals += [def_value]
+                def_val = self.dbms.get_value(param)
+                def_b_val = parameters.util.convert_to_bytes(def_val)
+                rec_vals += [def_b_val]
             
             if rec_vals:
                 for rec_val in rec_vals:
-                    if rec_val*0.25 <= b_val and b_val <= rec_val*4:
+                    if rec_val*0.25 - 1 <= b_val and b_val <= rec_val*4 + 1:
                         print(f'Assignment {assignment} matches rec {rec_val}')
                         return 1
                 return -1
