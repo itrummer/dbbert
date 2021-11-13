@@ -4,6 +4,7 @@ Created on Apr 3, 2021
 @author: immanueltrummer
 '''
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from doc.util import get_parameters, get_values
 from parameters.util import decompose_val
 import pandas as pd
@@ -12,7 +13,9 @@ import re
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
 from sentence_transformers import SentenceTransformer, util
+from transformers import pipeline
 
+@dataclass
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """
     
@@ -55,7 +58,12 @@ class DocCollection():
         print(f'Filter by parameter: {self.filter_params} ({filter_params})')
         self.use_implicit = True if use_implicit == 1 else False
         print(f'Implicit parameters: {self.use_implicit} ({use_implicit})')
-        self._prepare_implicit()
+        self._prepare_implicit()        
+        qa_model_name = "deepset/roberta-base-squad2"
+        self.qa_pipeline = pipeline(
+            'question-answering', model=qa_model_name, 
+            tokenizer=qa_model_name)
+        
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
         self.nr_docs = self.docs['filenr'].max()
@@ -157,14 +165,25 @@ class DocCollection():
                     exp_passage = passage
                     
                 params = re.finditer(parameters.util.param_reg, exp_passage)
-                values = re.finditer(parameters.util.value_reg, exp_passage)
                 for param in params:
                     print(f'Param: {param}')
                     if not self.filter_params or self.dbms.is_param(param.group()):
-                        for value in values:
-                            print(f'Value: {value}')
-                            hint = TuningHint(doc_id, passage, param, value)
-                            hints.append(hint)
+                        qa_input = {
+                            'question': f'Which values are recommended for {param}?',
+                            'context': passage
+                        }
+                        qa_result = self.qa_pipeline(qa_input)
+                        answer = qa_result['answer']
+                        score = qa_result['score']
+                        if score > 0.05:
+                            values = re.finditer(
+                                parameters.util.value_reg, answer)
+                            for value in values:
+                                print(f'Value: {value}')
+                                hint = TuningHint(doc_id, passage, param, value)
+                                hints.append(hint)
+                        else:
+                            print(f'Confidence {score} for {param} and {answer}')
             self.doc_to_hints[doc_id] = hints
             return hints
         
