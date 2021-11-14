@@ -85,7 +85,7 @@ for run_ctr in range(1):
         hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
         objective=objective, rec_path=rec_path, use_recs=use_recs)
-    unsupervised_env.hints_per_episode = 10000
+    unsupervised_env.reset()
     # unsupervised_env = GymEnvironment(unsupervised_env, device=device)
     
     # Initialize agents
@@ -100,5 +100,14 @@ for run_ctr in range(1):
         elapsed_s = time.time() - start_s
         if elapsed_s > timeout_s:
             break
-        if i % 100 == 0:
+        if i % 500 == 0:
+            print(f'Step {i} - tuned for {elapsed_s} seconds')
+    
+    unsupervised_env.stop_warmup()
+    for i in range(100):
+        model.learn(total_timesteps=1)
+        elapsed_s = time.time() - start_s
+        if elapsed_s > timeout_s:
+            break
+        if i % 500 == 0:
             print(f'Step {i} - tuned for {elapsed_s} seconds')

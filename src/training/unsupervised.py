@@ -81,6 +81,7 @@ for run_ctr in range(nr_runs):
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
         objective=objective, rec_path=rec_path, use_recs=use_recs)
     unsupervised_env = GymEnvironment(unsupervised_env, device=device)
+    unsupervised_env.reset()
     
     # Initialize agents
     model = BertFineTuning(input_model)

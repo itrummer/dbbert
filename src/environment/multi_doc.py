@@ -85,7 +85,6 @@ class MultiDocTuning(TuningBertFine):
         if use_recs:
             with open(rec_path) as file:
                 self.recs = json.load(file)
-        self.reset()
 
     def _finalize_episode(self):
         """ Return optimal benchmark reward when using weighted hints. """
@@ -240,9 +239,11 @@ class MultiDocBart(MultiDocTuning):
             rec_path: path to file with parameter recommendations
             use_recs: flag indicating whether to use recommendations
         """
+        self.warmup = True
         self.bart = transformers.pipeline(
             'zero-shot-classification',
             model='facebook/bart-large-mnli')
+        self.obs_cache = {}
         super().__init__(
             docs, max_length, mask_params, hint_order, dbms, 
             benchmark, hardware, hints_per_episode, nr_evals, 
@@ -250,37 +251,92 @@ class MultiDocBart(MultiDocTuning):
         self.observation_space = gym.spaces.Box(
             0, 1, (8,), np.float32)
     
+    def step(self, action):
+        """ Performs one step in the environment. 
+        
+        Args:
+            action: selected action
+        
+        Returns:
+            observation, reward, termination flag, debugging info
+        """
+        if self.warmup:
+            reward = self._bart_reward(action)
+            self.hint_ctr += 1
+            return self._observe(), reward, False, {}
+        else:
+            return super().step(action)
+    
+    def stop_warmup(self):
+        """ Switch from warmup mode to actual evaluations. """
+        self.warmup = False
+        self.obs_cache = {}
+        self.hint_ctr = 0
+        self.reset()
+    
+    def _bart_reward(self, action):
+        """ Calculate reward for taking actions consistent with BART.
+        
+        Args:
+            action: take this action
+        
+        Returns:
+            reward for taking model recommendation
+        """
+        observations = self._observe()
+        bart_reward_idx = 3+action
+        bart_reward = observations[bart_reward_idx]
+        # print(f'Observations: {observations}')
+        # print(f'Taking action: {action}')
+        # print(f'BART reward: {bart_reward}')
+        return bart_reward
+    
     def _observe(self):
-        """ Generate observation for current decision and hint. 
+        """ Generate observation for current decision and hint.
         
         Returns:
             Vector of floats: document, hint, decision, and BART scores.
         """
-        _, hint = self.hints[self.hint_ctr]
-        if self.decision == DecisionType.PICK_BASE:
-            choices = ['RAM', 'disk', 'cores', 'absolute', 'not a hint']
-        elif self.decision == DecisionType.PICK_FACTOR:
-            choices = ['Decrease recommendation strongly', 
-                       'Decrease recommendation', 
-                       'Use recommendation', 
-                       'Increase recommendation', 
-                       'Increase recommendation strongly']
+        obs_idx = (self.hint_ctr, int(self.decision))
+        if obs_idx in self.obs_cache:
+            return self.obs_cache[obs_idx]
+        if self.warmup:
+            observations =  self.observation_space.sample()
         else:
-            v_weights = ['not', 'somewhat', 'quite', 'very', 'super']
-            choices = [f'This hint is {w} important.' for w in v_weights]
-        
-        result = self.bart(hint.passage, choices)
-        scores = []
-        for choice in choices:
-            choice_idx = result['labels'].index(choice)
-            score = result['scores'][choice_idx]
-            scores += [score]
-        observations = [hint.doc_id, self.hint_ctr, self.decision] + scores
-        print(observations)
+            _, hint = self.hints[self.hint_ctr]
+            if self.decision == DecisionType.PICK_BASE:
+                choices = ['RAM', 'disk', 'cores', 'absolute', 'not a hint']
+            elif self.decision == DecisionType.PICK_FACTOR:
+                choices = ['Decrease recommendation strongly', 
+                           'Decrease recommendation', 
+                           'Use recommendation', 
+                           'Increase recommendation', 
+                           'Increase recommendation strongly']
+            else:
+                v_weights = ['not', 'somewhat', 'quite', 'very', 'super']
+                choices = [f'This hint is {w} important.' for w in v_weights]
+            
+            result = self.bart(hint.passage, choices)
+            scores = []
+            for choice in choices:
+                choice_idx = result['labels'].index(choice)
+                score = result['scores'][choice_idx]
+                scores += [score]
+            scaled_doc_id = hint.doc_id / self.docs.nr_docs
+            scaled_hint_ctr = self.hint_ctr / self.nr_hints
+            scaled_decision = float(self.decision) / 3
+            scaled_vals = [scaled_doc_id, scaled_hint_ctr, scaled_decision]
+            observations = scaled_vals + scores
+        self.obs_cache[obs_idx] = observations
         return observations
     
+    def _reset(self):
+        """ Reset for next tuning episode. """
+        if not self.warmup:
+            super()._reset()
+    
     def _take_action(self, action):
-        """ Adds reward for selecting action with highest BART score. 
+        """ Adds reward for selecting action with highest BART score.
         
         Args:
             action: agent chose this action
@@ -288,9 +344,6 @@ class MultiDocBart(MultiDocTuning):
         Returns:
             reward for action
         """
-        print(f'Taking action: {action}')
         reward = super()._take_action(action)
-        observations = self._observe()
-        bart_reward_idx = 3+action
-        reward += observations[bart_reward_idx]
+        reward += self._bart_reward(action)
         return reward
