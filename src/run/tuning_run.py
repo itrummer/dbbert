@@ -1,22 +1,25 @@
 '''
+Created on Nov 13, 2021
+
+@author: immanueltrummer
+'''
+'''
 Created on May 5, 2021
 
 @author: immanueltrummer
 
 Train interpreting tuning documents without supervision.
 '''
-from all.environments.gym import GymEnvironment
-from all.experiments.single_env_experiment import SingleEnvExperiment
-from all.presets.classic_control import dqn, ddqn
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from doc.collection import DocCollection
-from environment.multi_doc import MultiDocTuning
-from models.bert_tuning import BertFineTuning
+from environment.multi_doc import MultiDocBart
+from stable_baselines3 import DQN
+from stable_baselines3 import A2C
+from stable_baselines3.common.evaluation import evaluate_policy
 import benchmark.factory
 import dbms.factory
 import environment.multi_doc
-import numpy as np
 import search.objectives
 import time
 
@@ -60,7 +63,8 @@ objective = search.objectives.from_file(config)
 dbms = dbms.factory.from_file(config)
 bench = benchmark.factory.from_file(config, dbms)
 
-for run_ctr in range(nr_runs):
+#for run_ctr in range(nr_runs):
+for run_ctr in range(1):
     
     print(f'Starting run number {run_ctr}')
     
@@ -69,44 +73,32 @@ for run_ctr in range(nr_runs):
     dbms.reconfigure()
     bench.reset(log_path, run_ctr)
     
+    # Initialize input documents
     docs = DocCollection(
         docs_path=path_to_docs, dbms=dbms, size_threshold=max_length,
         use_implicit=use_implicit, filter_params=filter_params)
     
     # Initialize environment
-    unsupervised_env = MultiDocTuning(
+    unsupervised_env = MultiDocBart(
         docs=docs, max_length=max_length, mask_params=mask_params, 
         hint_order=hint_order, dbms=dbms, benchmark=bench, 
         hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
         nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
         objective=objective, rec_path=rec_path, use_recs=use_recs)
-    unsupervised_env = GymEnvironment(unsupervised_env, device=device)
+    unsupervised_env.hints_per_episode = 10000
+    # unsupervised_env = GymEnvironment(unsupervised_env, device=device)
     
     # Initialize agents
-    model = BertFineTuning(input_model)
-    agent = ddqn(
-        model_constructor=lambda _:model, minibatch_size=min_batch_size, 
-        device=device, lr=1e-5, initial_exploration=epsilon, replay_start_size=50, 
-        final_exploration_frame=nr_frames, target_update_frequency=1)
-    
-    # Run experiments
-    experiment = SingleEnvExperiment(
-        agent, unsupervised_env, logdir='runs', 
-        quiet=False, render=False, write_loss=True)
-    
-    def finished(experiment, elapsed_s):
-        """ Returns true iff the experiment is finished. """
-        return elapsed_s > timeout_s or experiment._done(
-            frames=nr_frames, episodes=np.inf)
+    model = A2C('MlpPolicy', unsupervised_env, verbose=1)
     
     print(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
     start_s = time.time()
     elapsed_s = 0
-    while not finished(experiment, elapsed_s):
-        experiment._run_training_episode()
-        cur_s = time.time()
-        elapsed_s = cur_s - start_s
-        print(f'Elapsed time: {elapsed_s} seconds')
-    
-    # Save final model
-    model.model.save_pretrained(output_model)
+    #for i in range(nr_frames):
+    for i in range(9999):
+        model.learn(total_timesteps=1)
+        elapsed_s = time.time() - start_s
+        if elapsed_s > timeout_s:
+            break
+        if i % 100 == 0:
+            print(f'Step {i} - tuned for {elapsed_s} seconds')

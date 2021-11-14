@@ -14,22 +14,32 @@ import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
+from typing import Any
 
 @dataclass
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """
+    doc_id: str
+    passage: str
+    recommendation: str
+    param: Any
+    value: Any
+    float_val: float
+    val_unit: str
     
-    def __init__(self, doc_id, passage, param, value):
+    def __init__(self, doc_id, passage, recommendation, param, value):
         """ Initializes tuning hint for given passage. 
         
         Args:
             doc_id: document from which hint was extracted
             passage: A text passage containing the hint.
             param: match object referencing parameter in passage.
+            recommendation: text passage with recommended value.
             value: match object referencing value in passage.
         """
         self.doc_id = doc_id
         self.passage = passage
+        self.recommendation = recommendation
         self.param = param
         self.value = value
         self.float_val, self.val_unit = decompose_val(value.group())
@@ -55,9 +65,12 @@ class DocCollection():
         self.dbms = dbms
         self.size_threshold = size_threshold
         self.filter_params = True if filter_params == 1 else False
-        print(f'Filter by parameter: {self.filter_params} ({filter_params})')
+        print(f'Discard text passages without at least one ' \
+              f'explicit parameter reference: ' \
+              f'{self.filter_params} ({filter_params})')
         self.use_implicit = True if use_implicit == 1 else False
-        print(f'Implicit parameters: {self.use_implicit} ({use_implicit})')
+        print(f'Try to infer implicit parameter references: ' \
+              f'{self.use_implicit} ({use_implicit})')
         self._prepare_implicit()        
         qa_model_name = "deepset/roberta-base-squad2"
         self.qa_pipeline = pipeline(
@@ -103,7 +116,7 @@ class DocCollection():
             p_length += s_length
             if p_length > self.size_threshold:
                 # Start new passage
-                passages.append(" ".join(passage))
+                passages.append('\n'.join(passage))
                 passage = [snippet]
                 p_length = 0
             else:
@@ -124,7 +137,8 @@ class DocCollection():
                 max_param = p
         if max_param:
             passage += f' {max_param} '
-        passage += ' 1 0'
+        # TODO: reconsider this after adding NLP-based value extraction step
+        # passage += '\n1 0'
         return passage
     
     def _filter_passages(self, passages):
@@ -144,6 +158,25 @@ class DocCollection():
             self.all_params = self.dbms.all_params()
             self.p_embeddings = self.transformer.encode(
                 self.all_params, convert_to_tensor=True)
+    
+    def _preprocess_passage(self, passage):
+        """ Pre-processes text of a passage for hint extraction.
+        
+        Args:
+            passage: raw passage for pre-processing
+        
+        Returns:
+            passage text after pre-processing
+        """
+        # print(f'Before pre-processing: {passage}')
+        for val_sep_unit in re.finditer(
+            f'(\d+)\s(kb|mb|gb)', passage, re.IGNORECASE):
+            digits = val_sep_unit.group(1)
+            unit = val_sep_unit.group(2)
+            val_unit = f'{digits}{unit}'
+            passage = passage.replace(val_sep_unit.group(), val_unit)
+        # print(f'After pre-processing: {passage}')
+        return passage
 
     def get_hints(self, doc_id):
         """ Returns candidate tuning hints extracted from given document. 
@@ -160,18 +193,17 @@ class DocCollection():
             for passage in passages:
                 if self.use_implicit:
                     exp_passage = self._enrich_passage(passage)
-                    print(f'Enriched passage: {exp_passage}')
+                    # print(f'Enriched passage: {exp_passage}')
                 else:
                     exp_passage = passage
-                    
+                
+                exp_passage = self._preprocess_passage(exp_passage)
                 params = re.finditer(parameters.util.param_reg, exp_passage)
-                for param in params:
-                    print(f'Param: {param}')
-                    if not self.filter_params or self.dbms.is_param(param.group()):
-                        qa_input = {
-                            'question': f'Which values are recommended for {param}?',
-                            'context': passage
-                        }
+                p_names = set([p.group() for p in params])
+                for p_name in p_names:
+                    if not self.filter_params or self.dbms.is_param(p_name):
+                        question = f'Which values are recommended for {p_name}?'
+                        qa_input = {'question': question, 'context': exp_passage}
                         qa_result = self.qa_pipeline(qa_input)
                         answer = qa_result['answer']
                         score = qa_result['score']
@@ -179,11 +211,15 @@ class DocCollection():
                             values = re.finditer(
                                 parameters.util.value_reg, answer)
                             for value in values:
-                                print(f'Value: {value}')
-                                hint = TuningHint(doc_id, passage, param, value)
+                                param = re.search(p_name, exp_passage)
+                                hint = TuningHint(
+                                    doc_id, exp_passage, 
+                                    answer, param, value)
                                 hints.append(hint)
+                                print(f'Adding hint {hint} with confidence {score}')
                         else:
-                            print(f'Confidence {score} for {param} and {answer}')
+                            print(f'Excluding hint {answer} for parameter ' \
+                                  f'{p_name} due to low confidence ({score})')
             self.doc_to_hints[doc_id] = hints
             return hints
         
