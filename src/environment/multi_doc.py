@@ -275,7 +275,9 @@ class MultiDocBart(MultiDocTuning):
             choice_idx = result['labels'].index(choice)
             score = result['scores'][choice_idx]
             scores += [score]
-        return [hint.doc_id, self.hint_ctr, self.decision] + scores
+        observations = [hint.doc_id, self.hint_ctr, self.decision] + scores
+        print(observations)
+        return observations
     
     def _take_action(self, action):
         """ Adds reward for selecting action with highest BART score. 
@@ -286,7 +288,7 @@ class MultiDocBart(MultiDocTuning):
         Returns:
             reward for action
         """
-        print('New version of _take_action method')
+        print(f'Taking action: {action}')
         reward = super()._take_action(action)
         observations = self._observe()
         bart_reward_idx = 3+action
