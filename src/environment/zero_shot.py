@@ -5,6 +5,7 @@ Created on Nov 15, 2021
 '''
 import benchmark
 import collections
+import dataclasses
 import dbms
 import doc
 import enum
@@ -12,6 +13,7 @@ import gym.spaces
 import numpy as np
 import search.search_with_hints
 import transformers
+import typing
 
 class DecisionType(enum.IntEnum):
     """ Describes next decision to make by agent. """
@@ -44,6 +46,26 @@ def parse_order(config):
     else:
         print('Hints in document order')
         return HintOrder.DOCUMENT
+
+@dataclasses.dataclass(frozen=True)
+class LabeledObservation():
+    """ Represents observation and associated logging text. """
+    obs: typing.Any
+    decision_txt: str
+    choices: typing.List[str]
+    scores: typing.List[float]
+    
+    def output(self, warmup):
+        """ Generates output, depending on warmup flag. 
+        
+        Args:
+            warmup: whether this is the warmup phase
+        """
+        if not warmup:
+            print(f'Decision: {self.decision_txt}')
+            print(f'Choices: {self.choices}')
+            print(f'Scores: {self.scores}')
+
 
 class NlpTuningEnv(gym.Env):
     """ Models database tuning using natural language hints
@@ -251,43 +273,50 @@ class NlpTuningEnv(gym.Env):
         """
         obs_idx = (self.hint_ctr, int(self.decision))
         if obs_idx in self.obs_cache:
-            return self.obs_cache[obs_idx]
-        if self.warmup:
-            observations =  self.observation_space.sample()
+            l_obs = self.obs_cache[obs_idx]
+        elif self.warmup:
+            obs =  self.observation_space.sample()
+            l_obs = LabeledObservation(obs, '', [], [])
         else:
             print(f'No warmup - hint counter: {self.hint_ctr}')
             _, hint = self.hints[self.hint_ctr]
             if self.decision == DecisionType.PICK_BASE:
-                print(f'Deciding hint type of {hint}')
-                choices = ['RAM', 'disk', 'cores', 'absolute', 'not a hint']
+                decision_txt = f'Deciding hint type of {hint}'
+                choices = ['relative to RAM size', 
+                           'relative to disk size', 
+                           'relative to the number of CPU cores', 
+                           'recommends concrete value', 
+                           'not recommendation']
             elif self.decision == DecisionType.PICK_FACTOR:
-                print(f'Deciding adaption of {hint}')
+                decision_txt = f'Deciding adaption of {hint}'
                 choices = ['Decrease recommendation strongly', 
                            'Decrease recommendation', 
                            'Use recommendation', 
                            'Increase recommendation', 
                            'Increase recommendation strongly']
             else:
-                print(f'Deciding weight of {hint}')
+                decision_txt = f'Deciding weight of {hint}'
                 v_weights = ['not', 'somewhat', 'quite', 'very', 'super']
                 choices = [f'This hint is {w} important.' for w in v_weights]
             
-            print(f'Choice labels: {choices}')
             result = self.bart(hint.passage, choices)
+            print(result)
             scores = []
             for choice in choices:
                 choice_idx = result['labels'].index(choice)
                 score = result['scores'][choice_idx]
                 scores += [score]
             
-            print(f'Probabilities: {scores}')
             scaled_doc_id = hint.doc_id / self.docs.nr_docs
             scaled_hint_ctr = self.hint_ctr / self.nr_hints
             scaled_decision = float(self.decision) / 3
             scaled_vals = [scaled_doc_id, scaled_hint_ctr, scaled_decision]
-            observations = scaled_vals + scores
-        self.obs_cache[obs_idx] = observations
-        return observations
+            obs = scaled_vals + scores
+            l_obs = LabeledObservation(obs, decision_txt, choices, scores)
+        
+        l_obs.output(self.warmup)
+        self.obs_cache[obs_idx] = l_obs
+        return l_obs.obs
     
     def _ordered_hints(self, hint_order):
         """ Returns hints according to specified order.

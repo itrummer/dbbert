@@ -107,7 +107,7 @@ for run_ctr in range(nr_runs):
     unsupervised_env.reset()
     
     # Initialize agents
-    model = A2C('MlpPolicy', unsupervised_env, verbose=1, seed=0)
+    model = DQN('MlpPolicy', unsupervised_env, verbose=1, seed=0)
     
     # Warm-up phase (quick), followed by actual tuning
     print(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
