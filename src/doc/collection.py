@@ -218,8 +218,10 @@ class DocCollection():
                                 hints.append(hint)
                                 print(f'Adding hint {hint} with confidence {score}')
                         else:
-                            print(f'Excluding hint {answer} for parameter ' \
-                                  f'{p_name} due to low confidence ({score})')
+                            print(
+                                f'Excluding recommendation "{answer}" for ' \
+                                f'parameter "{p_name}" due to low confidence ' \
+                                f'({score})')
             self.doc_to_hints[doc_id] = hints
             return hints
         

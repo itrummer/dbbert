@@ -91,7 +91,7 @@ class MultiDocTuning(TuningBertFine):
         if self.hint_to_weight:
             reward, config = self.explorer.explore(
                 self.hint_to_weight, self.nr_evals)
-            print(f'Achieved unscaled reward of {reward} using {config}')
+            print(f'Achieved unscaled reward of {reward} using {config}.')
             return reward * self.scale_perf
         else:
             return 0
@@ -157,6 +157,7 @@ class MultiDocTuning(TuningBertFine):
             if self.use_recs:
                 reward += weight * self.scale_asg * self._rec_reward(assignment)
         else:
+            print(f'Assignment {assignment} was rejected')
             reward = -10
         return reward
 
@@ -303,25 +304,32 @@ class MultiDocBart(MultiDocTuning):
         if self.warmup:
             observations =  self.observation_space.sample()
         else:
+            print(f'No warmup - hint counter: {self.hint_ctr}')
             _, hint = self.hints[self.hint_ctr]
             if self.decision == DecisionType.PICK_BASE:
+                print(f'Deciding hint type of {hint}')
                 choices = ['RAM', 'disk', 'cores', 'absolute', 'not a hint']
             elif self.decision == DecisionType.PICK_FACTOR:
+                print(f'Deciding adaption of {hint}')
                 choices = ['Decrease recommendation strongly', 
                            'Decrease recommendation', 
                            'Use recommendation', 
                            'Increase recommendation', 
                            'Increase recommendation strongly']
             else:
+                print(f'Deciding weight of {hint}')
                 v_weights = ['not', 'somewhat', 'quite', 'very', 'super']
                 choices = [f'This hint is {w} important.' for w in v_weights]
             
+            print(f'Choice labels: {choices}')
             result = self.bart(hint.passage, choices)
             scores = []
             for choice in choices:
                 choice_idx = result['labels'].index(choice)
                 score = result['scores'][choice_idx]
                 scores += [score]
+            
+            print(f'Probabilities: {scores}')
             scaled_doc_id = hint.doc_id / self.docs.nr_docs
             scaled_hint_ctr = self.hint_ctr / self.nr_hints
             scaled_decision = float(self.decision) / 3
@@ -344,6 +352,7 @@ class MultiDocBart(MultiDocTuning):
         Returns:
             reward for action
         """
+        print(f'Choice: {action}')
         reward = super()._take_action(action)
         reward += self._bart_reward(action)
         return reward
