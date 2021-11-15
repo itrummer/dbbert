@@ -20,10 +20,10 @@ from typing import Any
 class TuningHint():
     """ Represents a single tuning hint, assigning a parameter to a value. """
     doc_id: str
-    passage: str
-    recommendation: str
     param: Any
     value: Any
+    recommendation: str
+    passage: str
     float_val: float
     val_unit: str
     

@@ -15,6 +15,7 @@ from argparse import ArgumentParser
 from configparser import ConfigParser
 from doc.collection import DocCollection
 from environment.multi_doc import MultiDocBart
+from environment.zero_shot import NlpTuningEnv
 from stable_baselines3 import DQN
 from stable_baselines3 import A2C
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -90,14 +91,20 @@ for run_ctr in range(nr_runs):
     torch.manual_seed(0)
     set_global_seeds(0)
 
-    unsupervised_env = MultiDocBart(
-        docs=docs, max_length=max_length, mask_params=mask_params, 
-        hint_order=hint_order, dbms=dbms, benchmark=bench, 
-        hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
-        nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
-        objective=objective, rec_path=rec_path, use_recs=use_recs)
-    unsupervised_env.reset()
+    # unsupervised_env = MultiDocBart(
+        # docs=docs, max_length=max_length, mask_params=mask_params, 
+        # hint_order=hint_order, dbms=dbms, benchmark=bench, 
+        # hardware=[memory, disk, cores], hints_per_episode=nr_hints, 
+        # nr_evals=nr_evals, scale_perf=p_scaling, scale_asg=a_scaling, 
+        # objective=objective, rec_path=rec_path, use_recs=use_recs)
+    # unsupervised_env.reset()
     # unsupervised_env = GymEnvironment(unsupervised_env, device=device)
+    unsupervised_env = NlpTuningEnv(
+        docs=docs, max_length=max_length, hint_order=hint_order, 
+        dbms=dbms, benchmark=bench, hardware=[memory, disk, cores], 
+        hints_per_episode=nr_hints, nr_evals=nr_evals, 
+        scale_perf=p_scaling, scale_asg=a_scaling, objective=objective)
+    unsupervised_env.reset()
     
     # Initialize agents
     model = A2C('MlpPolicy', unsupervised_env, verbose=1, seed=0)
