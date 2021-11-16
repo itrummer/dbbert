@@ -282,11 +282,15 @@ class NlpTuningEnv(gym.Env):
             _, hint = self.hints[self.hint_ctr]
             if self.decision == DecisionType.PICK_BASE:
                 decision_txt = f'Deciding hint type of {hint}'
-                choices = ['relative to RAM size', 
-                           'relative to disk size', 
-                           'relative to the number of CPU cores', 
-                           'recommends concrete value', 
-                           'not recommendation']
+                choices = ['ratio (disk)', 'ratio (RAM)', 'ratio (cores)', 
+                           'value (RAM/disk/cores)', 'no hint']
+                    #
+                    #
+                    # 'relative to RAM size', 
+                    # 'relative to disk size', 
+                    # 'relative to the number of CPU cores', 
+                    # 'recommends concrete value', 
+                    # 'not recommendation']
             elif self.decision == DecisionType.PICK_FACTOR:
                 decision_txt = f'Deciding adaption of {hint}'
                 choices = ['Decrease recommendation strongly', 
@@ -299,7 +303,7 @@ class NlpTuningEnv(gym.Env):
                 v_weights = ['not', 'somewhat', 'quite', 'very', 'super']
                 choices = [f'This hint is {w} important.' for w in v_weights]
             
-            result = self.bart(hint.passage, choices)
+            result = self.bart(hint.recommendation, choices)
             print(result)
             scores = []
             for choice in choices:
