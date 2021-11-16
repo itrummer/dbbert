@@ -82,11 +82,14 @@ for run_ctr in range(nr_runs):
     # unsupervised_env = GymEnvironment(unsupervised_env, device=device)
     
     # Initialize agents
-    model = A2C('MlpPolicy', unsupervised_env, verbose=1, normalize_advantage=True)
+    model = A2C(
+        'MlpPolicy', unsupervised_env, 
+        verbose=1, normalize_advantage=True)
     
     # Warm-up phase (quick), followed by actual tuning
     print(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
     start_s = time.time()
+    # Could move warmup to pre-training
     model.learn(total_timesteps=20000)
     unsupervised_env.stop_warmup()
     for i in range(nr_frames):
