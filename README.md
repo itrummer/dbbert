@@ -8,9 +8,7 @@ DB-BERT is a database tuning tools that exploits natural language text as additi
 - DB-BERT uses configuration files, an example file can be found under `config/pg_tpch_manydocs.ini`.
 - For a first try, update credentials in the `[DBMS]` section. You may adapt tuning time and other parameters in the `[BENCHMARK]` section.
 - Execute `src/run/tuning_run.py`, passing the configuration file as first (and only) argument, e.g. (from main directory):
-```
-PYTHONPATH='src' python3 src/run/tuning_run.py config/pg_tpch_manydocs.ini
-```
+`PYTHONPATH='src' python3 src/run/tuning_run.py config/pg_tpch_manydocs.ini`
 - DB-BERT will parse input text (text from 100 Web documents), initialize the RL algorithm, and start tuning Postgres for TPC-H.
 - Try `config/pg_tpch_onedoc.ini` for tuning using a single, TPC-H specific text document (forum discussion on TPC-H tuning).
 
