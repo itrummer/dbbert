@@ -28,8 +28,6 @@ config = ConfigParser()
 config.read(args.cpath)
 
 device = config['LEARNING']['device'] # cuda or cpu
-input_model = config['LEARNING']['input'] # name or path to input model
-output_model = config['LEARNING']['output'] # path to output model
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
 timeout_s = float(config['LEARNING']['timeout_s']) # seconds until timeout
 p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
