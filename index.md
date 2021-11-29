@@ -9,4 +9,4 @@ To analyze text, DB-BERT uses pre-trained language models (i.e., large neural ne
 # Publications
 
 - **SIGMOD Record 2021** Database tuning using natural language processing. _Immanuel Trummer_.
-- **VLDB 2021** The case for nlp-enhanced database tuning: towards tuning tools that "read the manuel". _Immanuel Trummer_.
+- **VLDB 2021** The case for nlp-enhanced database tuning: towards tuning tools that "read the manual". _Immanuel Trummer_.
