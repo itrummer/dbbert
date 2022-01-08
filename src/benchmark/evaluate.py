@@ -11,6 +11,7 @@ import os
 import pandas as pd
 import psycopg2
 import subprocess
+import streamlit as st
 import time
 from dbms.generic_dbms import ConfigurableDBMS
 
@@ -115,10 +116,12 @@ class OLAP(Benchmark):
     
     def print_stats(self):
         """ Print out benchmark statistics. """
-        print(f'Minimal time (ms): {self.min_time}')
-        print(f'Achieved with configuration: {self.min_conf}')
-        print(f'Maximal time (ms): {self.max_time}')
-        print(f'Achieved with configuration: {self.max_conf}')
+        print('--- Tuning Updates ---')
+        st.write('--- Tuning Updates ---')
+        st.write(f'Minimal time (ms): {self.min_time}')
+        st.write(f'Achieved with configuration: {self.min_conf}')
+        st.write(f'Maximal time (ms): {self.max_time}')
+        st.write(f'Achieved with configuration: {self.max_conf}')
         
     def _init_stats(self):
         """ Initialize minimal and maximal time and configurations. """

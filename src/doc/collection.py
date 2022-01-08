@@ -208,6 +208,7 @@ class DocCollection():
                         answer = qa_result['answer']
                         score = qa_result['score']
                         if score > 0.05:
+                        # if score > 0:
                             values = re.finditer(
                                 parameters.util.value_reg, answer)
                             for value in values:
