@@ -19,6 +19,13 @@ DB-BERT is a database tuning tools that exploits natural language text as additi
 # How to Cite
 A video talk introducing the vision behind this project is [available online](https://youtu.be/Spa5qzKbJ4M).
 ```
+@inproceedings{trummer2022dbbert,
+  title={DB-BERT: a database tuning tool that "reads the manual"},
+  author={Trummer, Immanuel},
+  booktitle={SIGMOD},
+  year={2022}
+}
+
 @article{trummer2021case,
   title={The case for NLP-enhanced database tuning: towards tuning tools that" read the manual"},
   author={Trummer, Immanuel},
