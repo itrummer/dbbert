@@ -1,7 +1,7 @@
-<a class="twitter-share-button"
+DB-BERT extracts tuning hints for database systems from text documents such as the manual. It uses extracted hints as a starting point for automated performance tuning. <a class="twitter-share-button"
   href="https://twitter.com/intent/tweet?text=DB-BERT%20mines%20hints%20for%20database%20tuning%20from%20text%20documents%20-%20check%20it%20out%21%20%40ImmanuelTrummer%20%23NLP%20%23ML%20%23AI%20%23Databases"
   data-size="large">
-Tweet About!</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> DB-BERT extracts tuning hints for database systems from text documents such as the manual. It uses extracted hints as a starting point for automated performance tuning. 
+Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 To analyze text, DB-BERT uses pre-trained language models such as BERT. During tuning, DB-BERT iteratively selects parameter settings and measures performance on a user-defined benchmark. It selects settings to try via reinforcement learning, integrating information extracted from text as well as performance measurements in past iterations. By exploiting text as additional input, DB-BERT tends to find promising configurations faster than baselines.
 
