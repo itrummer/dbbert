@@ -1,8 +1,5 @@
 # dbbert
-<a class="twitter-share-button"
-  href="https://twitter.com/intent/tweet?text=DB-BERT%20mines%20hints%20for%20database%20tuning%20from%20text%20documents%20-%20check%20it%20out%20at%20https%3A%2F%2Fitrummer.github.io%2Fdbbert%2F%21"
-  data-size="large">
-Tweet</a> DB-BERT is a database tuning tools that exploits natural language text as additional input. It extracts recommendations for database parameter settings from tuning-related text via natural language analysis. It optimizes parameter settings for a given workload and performance metric using reinforcement learning.
+DB-BERT is a database tuning tools that exploits natural language text as additional input. It extracts recommendations for database parameter settings from tuning-related text via natural language analysis. It optimizes parameter settings for a given workload and performance metric using reinforcement learning.
 
 # Quickstart
 - DB-BERT was tested on an Amazon EC2 p3.2xlarge instance using Deep Learning AMI (Ubuntu 18.04) Version 43.0.
