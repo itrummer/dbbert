@@ -7,6 +7,8 @@ import os
 import pathlib
 import streamlit as st
 import sys
+from dbms.postgres import PgConfig
+from dbms.mysql import MySQLconfig
 
 cur_file_dir = os.path.dirname(__file__)
 src_dir = pathlib.Path(cur_file_dir).parent
@@ -113,41 +115,53 @@ with st.expander('Hardware Properties'):
     disk = st.number_input('Disk Space (bytes)', value=def_disk)
     cores = st.number_input('Number of Cores', value=def_cores)
 
-#device = config['LEARNING']['device'] # cuda or cpu
-nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
-timeout_s = float(config['LEARNING']['timeout_s']) # seconds until timeout
-p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
-a_scaling = float(config['LEARNING']['assignment_scaling']) # assignment reward scaling
-nr_evals = int(config['LEARNING']['nr_evaluations']) # number of evaluations per episode
-nr_hints = int(config['LEARNING']['nr_hints']) # number of hints per episode
-min_batch_size = int(config['LEARNING']['min_batch_size']) # samples per batch
+with st.expander('Database'):
+    def_db_name = get_value(config, 'DATABASE', 'name', '')
+    def_db_user = get_value(config, 'DATABASE', 'user', 'ubuntu')
+    def_restart = get_value(config, 'DATABASE', 'restart_cmd', '')
+    def_recover = get_value(config, 'DATABASE', 'recovery_cmd', '')
+    dbms_id = st.selectbox(
+        'DBMS', options=range(2), 
+        format_func=lambda i:['Postgres', 'MySQL'][i])
+    db_name = st.text_input('Database Name', value=def_db_name)
+    db_user = st.text_input('Database User', value=def_db_user)
+    db_pwd = st.text_input('Database Password')
+    restart_cmd = st.text_input(
+        'Command for DBMS Restart', value=def_restart)
+    recover_cmd = st.text_input(
+        'Command for DBMS Recovery', value=def_recover)
+    if dbms_id == 0:
+        dbms = PgConfig(
+            db_name, db_user, db_pwd, restart_cmd, 
+            recover_cmd, timeout_s)
+    elif dbms_id == 1:
+        dbms = MySQLconfig(
+            db_name, db_user, db_pwd, restart_cmd, 
+            recover_cmd, timeout_s)
+    else:
+        raise ValueError(f'Error - Unknown DBMS ID: {dbms}')
+
+with st.expander('Benchmark'):
+    pass
 
 nr_runs = int(config['BENCHMARK']['nr_runs'])
 # path_to_docs = config['BENCHMARK']['docs']
 log_path = config['BENCHMARK']['logging']
 
-dbms_label = st.selectbox('Select DBMS: ', ['Postgres', 'MySQL'], index=0)
 bench_label = st.selectbox('Select Benchmark: ', ['TPC-H', 'TPC-C'], index=0)
 obj_label = st.selectbox('Select Metric: ', ['Latency', 'Throughput'], index=0)
 path_to_docs = st.text_input(
     'Enter Path to Text: ', 
     '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg_tpch_single')
 
-nr_frames = st.number_input('Enter Iteration Limit: ', min_value=1, max_value=500, value=1)
-timeout_s = st.number_input('Enter Timeout (s): ', min_value=60, max_value=1500, value=600)
-
-
 if st.button('Start Tuning'):
     
     obj_config = ConfigParser()
     obj_config.read(str(config_dir.joinpath(obj_label)))
-    dbms_config = ConfigParser()
-    dbms_config.read(str(config_dir.joinpath(dbms_label)))
     bench_config = ConfigParser()
     bench_config.read(str(config_dir.joinpath(bench_label)))
     
     objective = search.objectives.from_file(obj_config)
-    dbms = dbms.factory.from_file(dbms_config)
     bench = benchmark.factory.from_file(bench_config, dbms)
     
     st.write('Starting tuning session ...')
