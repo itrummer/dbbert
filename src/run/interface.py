@@ -63,7 +63,7 @@ with st.expander('Text Analysis'):
     def_max_length = int(get_value(config, 'BENCHMARK', 'max_length', 128))
     def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
     def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
-    def_order_id = get_value(config, 'BENCHMARK', 'hint_order', 2)
+    def_order_id = int(get_value(config, 'BENCHMARK', 'hint_order', 2))
     max_length = st.number_input('Text Block Size', value=def_max_length)
     filter_params = st.selectbox(
         'Heuristic Text Filter', index=def_filter_params, 
