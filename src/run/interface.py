@@ -103,18 +103,20 @@ path_to_docs = st.text_input(
 nr_frames = st.number_input('Enter Iteration Limit: ', min_value=1, max_value=500, value=1)
 timeout_s = st.number_input('Enter Timeout (s): ', min_value=60, max_value=1500, value=600)
 
-obj_config = ConfigParser()
-obj_config.read(str(config_dir.joinpath(obj_label)))
-dbms_config = ConfigParser()
-dbms_config.read(str(config_dir.joinpath(dbms_label)))
-bench_config = ConfigParser()
-bench_config.read(str(config_dir.joinpath(bench_label)))
-
-objective = search.objectives.from_file(obj_config)
-dbms = dbms.factory.from_file(dbms_config)
-bench = benchmark.factory.from_file(bench_config, dbms)
 
 if st.button('Start Tuning'):
+    
+    obj_config = ConfigParser()
+    obj_config.read(str(config_dir.joinpath(obj_label)))
+    dbms_config = ConfigParser()
+    dbms_config.read(str(config_dir.joinpath(dbms_label)))
+    bench_config = ConfigParser()
+    bench_config.read(str(config_dir.joinpath(bench_label)))
+    
+    objective = search.objectives.from_file(obj_config)
+    dbms = dbms.factory.from_file(dbms_config)
+    bench = benchmark.factory.from_file(bench_config, dbms)
+    
     st.write('Starting tuning session ...')
     # Initialize for new run
     dbms.reset_config()
