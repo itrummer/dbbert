@@ -67,12 +67,12 @@ with st.expander('Text Analysis'):
     max_length = st.number_input('Text Block Size', value=def_max_length)
     filter_params = st.selectbox(
         'Heuristic Text Filter', index=def_filter_params, 
-        format_func=lambda i:['No', 'Yes'][i])
+        options=range(2), format_func=lambda i:['No', 'Yes'][i])
     use_implicit = st.selectbox(
-        'Implicit Parameter References', index=def_use_implicit,
-        format_func=lambda i:['No', 'Yes'][i])
+        'Implicit Parameter References', index=def_use_implicit, 
+        options=range(2), format_func=lambda i:['No', 'Yes'][i])
     hint_order_id = st.selectbox(
-        'Order Hints', index=def_order_id,
+        'Order Hints', index=def_order_id, options=range(3),
         format_func=lambda i:[
             'Document Order', 
             'Frequent Parameters First', 
