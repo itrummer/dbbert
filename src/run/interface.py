@@ -63,13 +63,13 @@ with st.expander('Hardware Properties'):
     def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8))
     def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500))
     def_cores = int(get_value(config, 'BENCHMARK', 'cores', 8))
-    memory = st.slider(
+    memory = st.number_input(
         'Main Memory (GB)', min_value=1.0, 
         max_value=1000.0, value=def_mem)
-    disk = st.slider(
+    disk = st.number_input(
         'Disk Space (GB)', min_value=1.0, 
         max_value=10000.0, value=def_disk)
-    cores = st.slider(
+    cores = st.number_input(
         'Number of Cores', min_value=1,
         max_value=1024, value=def_cores)
 
