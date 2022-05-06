@@ -59,16 +59,40 @@ config.read(str(config_dir.joinpath('Defaults')))
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+with st.expander('Text Analysis'):
+    def_max_length = int(get_value(config, 'BENCHMARK', 'max_length', 128))
+    def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
+    def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
+    def_order_id = get_value(config, 'BENCHMARK', 'hint_order', 2)
+    max_length = st.number_input('Text Block Size', value=def_max_length)
+    filter_params = st.selectbox(
+        'Heuristic Text Filter', value=def_filter_params, 
+        format_func=lambda i:['No', 'Yes'][i])
+    use_implicit = st.selectbox(
+        'Implicit Parameter References', value=def_use_implicit,
+        format_func=lambda i:['No', 'Yes'][i])
+    hint_order_id = st.selectbox(
+        'Order Hints', value=def_order_id,
+        format_func=lambda i:[
+            'Document Order', 
+            'Frequent Parameters First', 
+            'Frequent Parameters First with Limit'][i])
+    hint_order = [
+        environment.multi_doc.HintOrder.DOCUMENT, 
+        environment.multi_doc.HintOrder.BY_PARAMETER, 
+        environment.multi_doc.HintOrder.BY_STRIDE][hint_order_id]
+
 with st.expander('Hardware Properties'):
-    def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8))
-    def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500))
+    def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8000000))
+    def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500000000))
     def_cores = int(get_value(config, 'BENCHMARK', 'cores', 8))
-    memory = st.number_input(
-        'Main Memory (GB)', value=def_mem)
-    disk = st.number_input(
-        'Disk Space (GB)', value=def_disk)
-    cores = st.number_input(
-        'Number of Cores', value=def_cores)
+    memory = st.number_input('Main Memory (bytes)', value=def_mem)
+    disk = st.number_input('Disk Space (bytes)', value=def_disk)
+    cores = st.number_input('Number of Cores', value=def_cores)
+
+with st.expander('Reinforcement Learning'):
+    pass
+
 
 #device = config['LEARNING']['device'] # cuda or cpu
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
@@ -86,9 +110,6 @@ filter_params = int(config['BENCHMARK']['filter_param'])
 use_implicit = int(config['BENCHMARK']['use_implicit'])
 hint_order = environment.multi_doc.parse_order(config)
 log_path = config['BENCHMARK']['logging']
-memory = float(config['BENCHMARK']['memory'])
-disk = float(config['BENCHMARK']['disk'])
-cores = float(config['BENCHMARK']['cores'])
 
 dbms_label = st.selectbox('Select DBMS: ', ['Postgres', 'MySQL'], index=0)
 bench_label = st.selectbox('Select Benchmark: ', ['TPC-H', 'TPC-C'], index=0)
