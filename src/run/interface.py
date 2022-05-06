@@ -64,14 +64,11 @@ with st.expander('Hardware Properties'):
     def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500))
     def_cores = int(get_value(config, 'BENCHMARK', 'cores', 8))
     memory = st.number_input(
-        'Main Memory (GB)', min_value=1.0, 
-        max_value=1000.0, value=def_mem)
+        'Main Memory (GB)', value=def_mem)
     disk = st.number_input(
-        'Disk Space (GB)', min_value=1.0, 
-        max_value=10000.0, value=def_disk)
+        'Disk Space (GB)', value=def_disk)
     cores = st.number_input(
-        'Number of Cores', min_value=1,
-        max_value=1024, value=def_cores)
+        'Number of Cores', value=def_cores)
 
 #device = config['LEARNING']['device'] # cuda or cpu
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
