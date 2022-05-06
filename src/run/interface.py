@@ -35,10 +35,9 @@ st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
 root_dir = src_dir.parent
-config_dir = str(root_dir.joinpath('config'))
-#config_dir = '/Users/immanueltrummer/git/literateDBtuners/config/'
+config_dir = root_dir.joinpath('config')
 default_config = ConfigParser()
-default_config.read(config_dir + 'Defaults')
+default_config.read(str(config_dir.joinpath('Defaults')))
 
 device = default_config['LEARNING']['device'] # cuda or cpu
 nr_frames = int(default_config['LEARNING']['nr_frames']) # number of frames
@@ -71,11 +70,11 @@ nr_frames = st.number_input('Enter Iteration Limit: ', min_value=1, max_value=50
 timeout_s = st.number_input('Enter Timeout (s): ', min_value=60, max_value=1500, value=600)
 
 obj_config = ConfigParser()
-obj_config.read(config_dir + obj_label)
+obj_config.read(str(config_dir.joinpath(obj_label)))
 dbms_config = ConfigParser()
-dbms_config.read(config_dir + dbms_label)
+dbms_config.read(str(config_dir.joinpath(dbms_label)))
 bench_config = ConfigParser()
-bench_config.read(config_dir + bench_label)
+bench_config.read(str(config_dir.joinpath(bench_label)))
 
 objective = search.objectives.from_file(obj_config)
 dbms = dbms.factory.from_file(dbms_config)
