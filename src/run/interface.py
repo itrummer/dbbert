@@ -34,7 +34,9 @@ st.set_page_config(page_title='DB-BERT', layout='wide')
 st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
-config_dir = '/Users/immanueltrummer/git/literateDBtuners/config/'
+root_dir = src_dir.parent
+config_dir = str(root_dir.joinpath('config'))
+#config_dir = '/Users/immanueltrummer/git/literateDBtuners/config/'
 default_config = ConfigParser()
 default_config.read(config_dir + 'Defaults')
 
