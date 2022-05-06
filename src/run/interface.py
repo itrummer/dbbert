@@ -3,10 +3,15 @@ Created on Jan 7, 2022
 
 @author: immanueltrummer
 '''
+import os
+import pathlib
 import streamlit as st
 import sys
 
-sys.path.append('/Users/immanueltrummer/git/literateDBtuners/src/')
+cur_file_dir = os.path.dirname(__file__)
+src_dir = pathlib.Path(cur_file_dir).parent
+sys.path.append(str(src_dir))
+print(sys.path)
 
 from pybullet_utils.util import set_global_seeds
 from configparser import ConfigParser
