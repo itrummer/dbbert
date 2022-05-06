@@ -130,16 +130,6 @@ with st.expander('Database'):
         'Command for DBMS Restart', value=def_restart)
     recover_cmd = st.text_input(
         'Command for DBMS Recovery', value=def_recover)
-    if dbms_id == 0:
-        dbms = PgConfig(
-            db_name, db_user, db_pwd, restart_cmd, 
-            recover_cmd, timeout_s)
-    elif dbms_id == 1:
-        dbms = MySQLconfig(
-            db_name, db_user, db_pwd, restart_cmd, 
-            recover_cmd, timeout_s)
-    else:
-        raise ValueError(f'Error - Unknown DBMS ID: {dbms}')
 
 with st.expander('Benchmark'):
     pass
@@ -155,6 +145,18 @@ path_to_docs = st.text_input(
     '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg_tpch_single')
 
 if st.button('Start Tuning'):
+    
+    if dbms_id == 0:
+        dbms = PgConfig(
+            db_name, db_user, db_pwd, restart_cmd, 
+            recover_cmd, timeout_s)
+    elif dbms_id == 1:
+        dbms = MySQLconfig(
+            db_name, db_user, db_pwd, restart_cmd, 
+            recover_cmd, timeout_s)
+    else:
+        raise ValueError(f'Error - Unknown DBMS ID: {dbms}')
+
     
     obj_config = ConfigParser()
     obj_config.read(str(config_dir.joinpath(obj_label)))
