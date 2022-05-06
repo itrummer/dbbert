@@ -61,10 +61,13 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 with st.expander('Text Analysis'):
     def_max_length = int(get_value(config, 'BENCHMARK', 'max_length', 128))
+    def_batch_size = int(get_value(config, 'BENCHMARK', 'min_batch_size', 8))
     def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
     def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
     def_order_id = int(get_value(config, 'BENCHMARK', 'hint_order', 2))
-    max_length = st.number_input('Text Block Size', value=def_max_length)
+    max_length = st.number_input(
+        'Characters per Text Block', value=def_max_length)
+    min_batch_size = st.number_input('Text Batch Size', value=def_batch_size)
     filter_params = st.selectbox(
         'Heuristic Text Filter', index=def_filter_params, 
         options=range(2), format_func=lambda i:['No', 'Yes'][i])
@@ -82,6 +85,26 @@ with st.expander('Text Analysis'):
         environment.multi_doc.HintOrder.BY_PARAMETER, 
         environment.multi_doc.HintOrder.BY_STRIDE][hint_order_id]
 
+with st.expander('Reinforcement Learning'):
+    def_nr_frames = int(get_value(config, 'LEARNING', 'nr_frames', 1))
+    def_timeout_s = int(get_value(config, 'LEARNING', 'timeout_s', 120))
+    def_p_scaling = float(get_value(
+        config, 'LEARNING', 'performance_scaling', 0.1))
+    def_a_scaling = float(get_value(
+        config, 'LEARNING', 'assignment_scaling', 0.1))
+    def_nr_evals = int(get_value(config, 'LEARNING', 'nr_evaluations', 1))
+    def_nr_hints = int(get_value(config, 'LEARNING', 'nr_hints', 1))
+    nr_frames = st.number_input('Number of Frames', value=def_nr_frames)
+    timeout_s = st.number_input('Timeout in Seconds', value=def_timeout_s)
+    p_scaling = st.number_input(
+        'Reward Weight for Performance', value=def_p_scaling)
+    a_scaling = st.number_input(
+        'Reward Weight for Successful Setting', value=def_a_scaling)
+    nr_evals = st.number_input(
+        'Number of Configurations Evaluated per Episode', value=def_nr_evals)
+    nr_hints = st.number_input(
+        'Number of Hints Processed per Episode', value=def_nr_hints)
+
 with st.expander('Hardware Properties'):
     def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8000000))
     def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500000000))
@@ -89,10 +112,6 @@ with st.expander('Hardware Properties'):
     memory = st.number_input('Main Memory (bytes)', value=def_mem)
     disk = st.number_input('Disk Space (bytes)', value=def_disk)
     cores = st.number_input('Number of Cores', value=def_cores)
-
-with st.expander('Reinforcement Learning'):
-    pass
-
 
 #device = config['LEARNING']['device'] # cuda or cpu
 nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
@@ -105,10 +124,6 @@ min_batch_size = int(config['LEARNING']['min_batch_size']) # samples per batch
 
 nr_runs = int(config['BENCHMARK']['nr_runs'])
 # path_to_docs = config['BENCHMARK']['docs']
-max_length = int(config['BENCHMARK']['max_length'])
-filter_params = int(config['BENCHMARK']['filter_param'])
-use_implicit = int(config['BENCHMARK']['use_implicit'])
-hint_order = environment.multi_doc.parse_order(config)
 log_path = config['BENCHMARK']['logging']
 
 dbms_label = st.selectbox('Select DBMS: ', ['Postgres', 'MySQL'], index=0)
