@@ -30,34 +30,68 @@ import time
 import torch
 import pandas as pd
 
+def get_value(configuration, category, property_, default):
+    """ Get value from configuration or defaults.
+    
+    Args:
+        configuration: contains values for configuration properties
+        category: category of configuration property
+        property_: retrieve value for this property
+        default: default value if property not stored
+    
+    Returns:
+        value for given property
+    """
+    if not category in configuration:
+        return default
+    else:
+        return configuration[category].get(property_, default)
+
+
 st.set_page_config(page_title='DB-BERT', layout='wide')
 st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
 root_dir = src_dir.parent
 config_dir = root_dir.joinpath('config')
-default_config = ConfigParser()
-default_config.read(str(config_dir.joinpath('Defaults')))
+config = ConfigParser()
+config.read(str(config_dir.joinpath('Defaults')))
 
-device = default_config['LEARNING']['device'] # cuda or cpu
-nr_frames = int(default_config['LEARNING']['nr_frames']) # number of frames
-timeout_s = float(default_config['LEARNING']['timeout_s']) # seconds until timeout
-p_scaling = float(default_config['LEARNING']['performance_scaling']) # scaling for performance reward
-a_scaling = float(default_config['LEARNING']['assignment_scaling']) # assignment reward scaling
-nr_evals = int(default_config['LEARNING']['nr_evaluations']) # number of evaluations per episode
-nr_hints = int(default_config['LEARNING']['nr_hints']) # number of hints per episode
-min_batch_size = int(default_config['LEARNING']['min_batch_size']) # samples per batch
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-nr_runs = int(default_config['BENCHMARK']['nr_runs'])
-# path_to_docs = default_config['BENCHMARK']['docs']
-max_length = int(default_config['BENCHMARK']['max_length'])
-filter_params = int(default_config['BENCHMARK']['filter_param'])
-use_implicit = int(default_config['BENCHMARK']['use_implicit'])
-hint_order = environment.multi_doc.parse_order(default_config)
-log_path = default_config['BENCHMARK']['logging']
-memory = float(default_config['BENCHMARK']['memory'])
-disk = float(default_config['BENCHMARK']['disk'])
-cores = float(default_config['BENCHMARK']['cores'])
+with st.expander('Hardware Properties'):
+    def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8))
+    def_disk = float(get_value(config, 'BENCHMARK', 'disk', 500))
+    def_cores = float(get_value(config, 'BENCHMARK', 'cores', 8))
+    memory = st.slider(
+        'Main Memory (GB)', min_value=1, 
+        max_value=1000, value=def_mem)
+    disk = st.slider(
+        'Disk Space (GB)', min_value=1, 
+        max_value=10000, value=def_disk)
+    cores = st.slider(
+        'Number of Cores', min_value=1,
+        max_value=1024, value=def_cores)
+
+#device = config['LEARNING']['device'] # cuda or cpu
+nr_frames = int(config['LEARNING']['nr_frames']) # number of frames
+timeout_s = float(config['LEARNING']['timeout_s']) # seconds until timeout
+p_scaling = float(config['LEARNING']['performance_scaling']) # scaling for performance reward
+a_scaling = float(config['LEARNING']['assignment_scaling']) # assignment reward scaling
+nr_evals = int(config['LEARNING']['nr_evaluations']) # number of evaluations per episode
+nr_hints = int(config['LEARNING']['nr_hints']) # number of hints per episode
+min_batch_size = int(config['LEARNING']['min_batch_size']) # samples per batch
+
+nr_runs = int(config['BENCHMARK']['nr_runs'])
+# path_to_docs = config['BENCHMARK']['docs']
+max_length = int(config['BENCHMARK']['max_length'])
+filter_params = int(config['BENCHMARK']['filter_param'])
+use_implicit = int(config['BENCHMARK']['use_implicit'])
+hint_order = environment.multi_doc.parse_order(config)
+log_path = config['BENCHMARK']['logging']
+memory = float(config['BENCHMARK']['memory'])
+disk = float(config['BENCHMARK']['disk'])
+cores = float(config['BENCHMARK']['cores'])
 
 dbms_label = st.selectbox('Select DBMS: ', ['Postgres', 'MySQL'], index=0)
 bench_label = st.selectbox('Select Benchmark: ', ['TPC-H', 'TPC-C'], index=0)
