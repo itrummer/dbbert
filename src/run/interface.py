@@ -55,9 +55,15 @@ st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
 root_dir = src_dir.parent
-config_dir = root_dir.joinpath('config')
+config_dir = root_dir.joinpath('demo_configs')
+config_files = [f for f in config_dir.iterdir() if f.is_file()]
+nr_configs = len(config_files)
+config_idx = st.selectbox(
+    'Choose Default Configuration', options=range(nr_configs), 
+    format_func=lambda i:str(config_files[i]), index=0)
 config = ConfigParser()
-config.read(str(config_dir.joinpath('Defaults')))
+config_path = str(config_files[config_idx])
+config.read(config_path)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 log_path = 'log_db_bert'
