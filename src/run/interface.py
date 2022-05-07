@@ -83,9 +83,9 @@ with st.expander('Text Analysis'):
     def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
     def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
     def_order_id = int(get_value(config, 'BENCHMARK', 'hint_order', 2))
-    max_length = st.number_input(
-        'Characters per Text Block', value=def_max_length)
-    min_batch_size = st.number_input('Text Batch Size', value=def_batch_size)
+    max_length = int(st.number_input(
+        'Characters per Text Block', value=def_max_length))
+    min_batch_size = int(st.number_input('Text Batch Size', value=def_batch_size))
     filter_params = st.selectbox(
         'Heuristic Text Filter', index=def_filter_params, 
         options=range(2), format_func=lambda i:['No', 'Yes'][i])
@@ -113,15 +113,15 @@ with st.expander('Reinforcement Learning'):
     def_nr_evals = int(get_value(config, 'LEARNING', 'nr_evaluations', 1))
     def_nr_hints = int(get_value(config, 'LEARNING', 'nr_hints', 1))
     nr_frames = int(st.number_input('Number of Frames', value=def_nr_frames))
-    timeout_s = st.number_input('Timeout in Seconds', value=def_timeout_s)
+    timeout_s = int(st.number_input('Timeout in Seconds', value=def_timeout_s))
     p_scaling = st.number_input(
         'Reward Weight for Performance', value=def_p_scaling)
     a_scaling = st.number_input(
         'Reward Weight for Successful Setting', value=def_a_scaling)
-    nr_evals = st.number_input(
-        'Number of Configurations Evaluated per Episode', value=def_nr_evals)
-    nr_hints = st.number_input(
-        'Number of Hints Processed per Episode', value=def_nr_hints)
+    nr_evals = int(st.number_input(
+        'Number of Configurations Evaluated per Episode', value=def_nr_evals))
+    nr_hints = int(st.number_input(
+        'Number of Hints Processed per Episode', value=def_nr_hints))
 
 with st.expander('Hardware Properties'):
     def_mem = float(get_value(config, 'BENCHMARK', 'memory', 8000000))
@@ -169,8 +169,8 @@ with st.expander('Benchmark'):
         oltp_config = st.text_input(
             'Path to OLTP Configuration File', value=def_oltp_config)
         oltp_result = pathlib.Path(oltp_home).joinpath('results')
-        reset_every = st.number_input(
-            'Database Reset Frequency', value=def_reset_every)
+        reset_every = int(st.number_input(
+            'Database Reset Frequency', value=def_reset_every))
         template_db = st.text_input(
             'Name of Template Database', value=def_template_db)
         target_db = st.text_input(
