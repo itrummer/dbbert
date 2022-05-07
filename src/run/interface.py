@@ -112,7 +112,7 @@ with st.expander('Reinforcement Learning'):
         config, 'LEARNING', 'assignment_scaling', 0.1))
     def_nr_evals = int(get_value(config, 'LEARNING', 'nr_evaluations', 1))
     def_nr_hints = int(get_value(config, 'LEARNING', 'nr_hints', 1))
-    nr_frames = st.number_input('Number of Frames', value=def_nr_frames)
+    nr_frames = int(st.number_input('Number of Frames', value=def_nr_frames))
     timeout_s = st.number_input('Timeout in Seconds', value=def_timeout_s)
     p_scaling = st.number_input(
         'Reward Weight for Performance', value=def_p_scaling)
