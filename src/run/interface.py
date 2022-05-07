@@ -50,7 +50,7 @@ def get_value(configuration, category, property_, default):
         return configuration[category].get(property_, default)
 
 
-st.set_page_config(page_title='DB-BERT', layout='wide')
+st.set_page_config(page_title='DB-BERT')
 st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
