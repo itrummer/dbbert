@@ -3,6 +3,7 @@ Created on Jan 7, 2022
 
 @author: immanueltrummer
 '''
+import altair as alt
 import os
 import pathlib
 import streamlit as st
@@ -178,6 +179,10 @@ with st.expander('Benchmark'):
         objective = search.objectives.Objective.THROUGHPUT
     else:
         raise ValueError(f'Error - unknown benchmark type: {benchmark_type}')
+
+
+lines = alt.Chart(pd.DataFrame(np.random.randn(10,2))).mark_line()
+st.altair_chart(lines)
 
 if st.button('Start Tuning'):
     
