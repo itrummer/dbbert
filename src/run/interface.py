@@ -10,7 +10,9 @@ import sys
 
 cur_file_dir = os.path.dirname(__file__)
 src_dir = pathlib.Path(cur_file_dir).parent
+root_dir = src_dir.parent
 sys.path.append(str(src_dir))
+sys.path.append(str(root_dir))
 print(sys.path)
 
 from dbms.postgres import PgConfig
@@ -54,7 +56,6 @@ st.set_page_config(page_title='DB-BERT')
 st.header('DB-BERT Demonstration')
 st.markdown('DB-BERT uses hints mined from text for database tuning.')
 
-root_dir = src_dir.parent
 config_dir = root_dir.joinpath('demo_configs')
 config_files = [f for f in config_dir.iterdir() if f.is_file()]
 nr_configs = len(config_files)
