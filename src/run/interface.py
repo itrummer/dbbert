@@ -152,7 +152,8 @@ with st.expander('Benchmark'):
         format_func=lambda i:[
             'Minimize Run Time', 'Maximize Throughput'][i], index=0)
     if benchmark_type == 0:
-        query_path = st.text_input('Path to SQL Queries')
+        def_query_path = get_value(config, 'BENCHMARK', 'queries', '')
+        query_path = st.text_input('Path to SQL Queries', value=def_query_path)
         objective = search.objectives.Objective.TIME
     elif benchmark_type == 1:
         def_oltp_home = get_value(config, 'BENCHMARK', 'oltp_home', '')
