@@ -159,7 +159,7 @@ with st.expander('Benchmark'):
         def_oltp_config = get_value(config, 'BENCHMARK', 'oltp_config', '')
         def_template_db = get_value(config, 'BENCHMARK', 'template_db', '')
         def_target_db = get_value(config, 'BENCHMARK', 'target_db', '')
-        def_reset_every = int(get_value(config, 'BENCHMARK', 'reset_every', ''))
+        def_reset_every = int(get_value(config, 'BENCHMARK', 'reset_every', 10))
         oltp_home = st.text_input(
             'Home Directory of OLTP Benchmark Generator', value=def_oltp_home)
         oltp_config = st.text_input(
