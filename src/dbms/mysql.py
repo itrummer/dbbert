@@ -81,7 +81,11 @@ class MySQLconfig(ConfigurableDBMS):
         print('Initialized new database')
             
     def _connect(self):
-        """ Establish connection to database, returns success flag. """
+        """ Establish connection to database, returns success flag. 
+        
+        Returns:
+            True if connection attempt is successful
+        """
         print(f'Trying to connect to {self.db} with user {self.user}')
         # Need to recover in case of bad configuration
         try:
@@ -89,14 +93,18 @@ class MySQLconfig(ConfigurableDBMS):
                 database=self.db, user=self.user, 
                 password=self.password, host="localhost")
             self.set_timeout(self.timeout_s)
+            self.failed_connections = 0
             return True
         except Exception as e:
             print(f'Exception while trying to connect to MySQL: {e}')
-            print(f'Trying recovery with "{self.recovery_cmd}" ...')
-            os.system(self.recovery_cmd)
-            os.system(self.restart_cmd)            
-            self.reset_config()
-            self.reconfigure()
+            self.failed_connections += 1
+            print(f'Had {self.failed_connections} failed tries.')
+            if self.failed_connections < 3:
+                print(f'Trying recovery with "{self.recovery_cmd}" ...')
+                os.system(self.recovery_cmd)
+                os.system(self.restart_cmd)            
+                self.reset_config()
+                self.reconfigure()
             return False
         
     def _disconnect(self):

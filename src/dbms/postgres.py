@@ -58,7 +58,11 @@ class PgConfig(ConfigurableDBMS):
         self.update(f'create database {target_db} with template {source_db}')
             
     def _connect(self):
-        """ Establish connection to database, returns success flag. """
+        """ Establish connection to database, returns success flag. 
+        
+        Returns:
+            True iff connection to Postgres was established
+        """
         print(f'Trying to connect to {self.db} with user {self.user}')
         # Need to recover in case of bad configuration
         try:            
@@ -66,13 +70,16 @@ class PgConfig(ConfigurableDBMS):
                 database = self.db, user = self.user, 
                 password = self.password, host = "localhost")
             self.set_timeout(self.timeout_s)
+            self.failed_connections = 0
             return True
         except Exception as e:
             # Delete changes to default configuration and restart
             print(f'Exception while trying to connect: {e}')
-            print(f'Trying recovery with "{self.recovery_cmd}" ...')
-            os.system(self.recovery_cmd)
-            self.reconfigure()
+            print(f'Had {self.failed_connections} failed connections.')
+            if self.failed_connections < 3:
+                print(f'Trying recovery with "{self.recovery_cmd}" ...')
+                os.system(self.recovery_cmd)
+                self.reconfigure()
             return False
         
     def _disconnect(self):
@@ -149,12 +156,13 @@ class PgConfig(ConfigurableDBMS):
         self.config = {}
     
     def reconfigure(self):
-        """ Makes parameter settings take effect. Returns true if successful. """
+        """ Makes parameter settings take effect. Returns true if successful.
+        
+        Returns:
+            True iff reconfiguration was successful
+        """
         self._disconnect()
         os.system(self.restart_cmd)
         time.sleep(3)
-        #/opt/homebrew/bin/brew services restart postgresql
-        #os.system(r'/opt/homebrew/bin/pg_ctl -D /opt/homebrew/var/postgres restart')
         success = self._connect()
-        return success
-    
+        return success    
