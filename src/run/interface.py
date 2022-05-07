@@ -60,6 +60,7 @@ config = ConfigParser()
 config.read(str(config_dir.joinpath('Defaults')))
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+log_path = 'log_db_bert'
 
 with st.expander('Text Analysis'):
     def_path_docs = get_value(config, 'BENCHMARK', 'docs_path', '')
@@ -161,8 +162,6 @@ with st.expander('Benchmark'):
         objective = search.objectives.Objective.THROUGHPUT
     else:
         raise ValueError(f'Error - unknown benchmark type: {benchmark_type}')
-
-log_path = 'log_db_bert'
 
 if st.button('Start Tuning'):
     
