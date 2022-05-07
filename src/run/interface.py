@@ -59,23 +59,29 @@ config_dir = root_dir.joinpath('demo_configs')
 config_files = [f for f in config_dir.iterdir() if f.is_file()]
 nr_configs = len(config_files)
 config_idx = st.selectbox(
-    'Choose Default Configuration', options=range(nr_configs), 
+    'Default Configuration', options=range(nr_configs), 
     format_func=lambda i:str(config_files[i]), index=0)
-config = ConfigParser()
 config_path = str(config_files[config_idx])
+config = ConfigParser()
 config.read(config_path)
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 log_path = 'log_db_bert'
 
+text_dir = root_dir.joinpath('demo_docs')
+text_files = [f for f in text_dir.iterdir() if f .is_file()]
+nr_texts = len(text_files)
+text_idx = st.selectbox(
+    'Text Documents with Tuning Hints', options=range(nr_texts), 
+    index=0, format_func=lambda i:str(text_files[i]))
+path_to_docs = str(text_files[text_idx])
+
 with st.expander('Text Analysis'):
-    def_path_docs = get_value(config, 'BENCHMARK', 'docs_path', '')
     def_max_length = int(get_value(config, 'BENCHMARK', 'max_length', 128))
     def_batch_size = int(get_value(config, 'BENCHMARK', 'min_batch_size', 8))
     def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
     def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
     def_order_id = int(get_value(config, 'BENCHMARK', 'hint_order', 2))
-    path_to_docs = st.text_input('Path to Text', value=def_path_docs)
     max_length = st.number_input(
         'Characters per Text Block', value=def_max_length)
     min_batch_size = st.number_input('Text Batch Size', value=def_batch_size)
