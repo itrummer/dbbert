@@ -30,6 +30,7 @@ class ConfigurableDBMS(ABC):
         self.recovery_cmd = recovery_cmd
         self.timeout_s = timeout_s
         self.config = {}
+        self.failed_connections = 0
         self.connection = None
         self._connect()
         
