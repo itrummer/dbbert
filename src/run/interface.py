@@ -162,11 +162,7 @@ with st.expander('Benchmark'):
     else:
         raise ValueError(f'Error - unknown benchmark type: {benchmark_type}')
 
-log_path = config['BENCHMARK']['logging']
-
-path_to_docs = st.text_input(
-    'Enter Path to Text: ', 
-    '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg_tpch_single')
+log_path = 'log_db_bert'
 
 if st.button('Start Tuning'):
     
