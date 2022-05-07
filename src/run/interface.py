@@ -134,6 +134,7 @@ with st.expander('Hardware Properties'):
 with st.expander('Database'):
     def_db_name = get_value(config, 'DATABASE', 'name', '')
     def_db_user = get_value(config, 'DATABASE', 'user', 'ubuntu')
+    def_db_pwd = get_value(config, 'DATABASE', 'password', '')
     def_restart = get_value(config, 'DATABASE', 'restart_cmd', '')
     def_recover = get_value(config, 'DATABASE', 'recovery_cmd', '')
     dbms_id = st.selectbox(
@@ -141,7 +142,8 @@ with st.expander('Database'):
         format_func=lambda i:['Postgres', 'MySQL'][i])
     db_name = st.text_input('Database Name', value=def_db_name)
     db_user = st.text_input('Database User', value=def_db_user)
-    db_pwd = st.text_input('Database Password')
+    db_pwd = st.text_input(
+        'Database Password', value=def_db_pwd, type='password')
     restart_cmd = st.text_input(
         'Command for DBMS Restart', value=def_restart)
     recover_cmd = st.text_input(
