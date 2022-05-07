@@ -75,6 +75,7 @@ class PgConfig(ConfigurableDBMS):
         except Exception as e:
             # Delete changes to default configuration and restart
             print(f'Exception while trying to connect: {e}')
+            self.failed_connections += 1
             print(f'Had {self.failed_connections} failed connections.')
             if self.failed_connections < 3:
                 print(f'Trying recovery with "{self.recovery_cmd}" ...')
