@@ -62,11 +62,13 @@ config.read(str(config_dir.joinpath('Defaults')))
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 with st.expander('Text Analysis'):
+    def_path_docs = get_value(config, 'BENCHMARK', 'docs_path', '')
     def_max_length = int(get_value(config, 'BENCHMARK', 'max_length', 128))
     def_batch_size = int(get_value(config, 'BENCHMARK', 'min_batch_size', 8))
     def_filter_params = int(get_value(config, 'BENCHMARK', 'filter_param', 1))
     def_use_implicit = int(get_value(config, 'BENCHMARK', 'use_implicit', 1))
     def_order_id = int(get_value(config, 'BENCHMARK', 'hint_order', 2))
+    path_to_docs = st.text_input('Path to Text', value=def_path_docs)
     max_length = st.number_input(
         'Characters per Text Block', value=def_max_length)
     min_batch_size = st.number_input('Text Batch Size', value=def_batch_size)
@@ -132,14 +134,36 @@ with st.expander('Database'):
         'Command for DBMS Recovery', value=def_recover)
 
 with st.expander('Benchmark'):
-    pass
+    benchmark_type = st.selectbox(
+        'Benchmark Type', options=range(2), 
+        format_func=lambda i:[
+            'Minimize Run Time', 'Maximize Throughput'][i], index=0)
+    if benchmark_type == 0:
+        query_path = st.text_input('Path to SQL Queries')
+        objective = search.objectives.Objective.TIME
+    elif benchmark_type == 1:
+        def_oltp_home = get_value(config, 'BENCHMARK', 'oltp_home', '')
+        def_oltp_config = get_value(config, 'BENCHMARK', 'oltp_config', '')
+        def_template_db = get_value(config, 'BENCHMARK', 'template_db', '')
+        def_target_db = get_value(config, 'BENCHMARK', 'target_db', '')
+        def_reset_every = int(get_value(config, 'BENCHMARK', 'reset_every', ''))
+        oltp_home = st.text_input(
+            'Home Directory of OLTP Benchmark Generator', value=def_oltp_home)
+        oltp_config = st.text_input(
+            'Path to OLTP Configuration File', value=def_oltp_config)
+        oltp_result = pathlib.Path(oltp_home).joinpath('results')
+        reset_every = st.number_input(
+            'Database Reset Frequency', value=def_reset_every)
+        template_db = st.text_input(
+            'Name of Template Database', value=def_template_db)
+        target_db = st.text_input(
+            'Name of Target Database', value=def_target_db)
+        objective = search.objectives.Objective.THROUGHPUT
+    else:
+        raise ValueError(f'Error - unknown benchmark type: {benchmark_type}')
 
-nr_runs = int(config['BENCHMARK']['nr_runs'])
-# path_to_docs = config['BENCHMARK']['docs']
 log_path = config['BENCHMARK']['logging']
 
-bench_label = st.selectbox('Select Benchmark: ', ['TPC-H', 'TPC-C'], index=0)
-obj_label = st.selectbox('Select Metric: ', ['Latency', 'Throughput'], index=0)
 path_to_docs = st.text_input(
     'Enter Path to Text: ', 
     '/Users/immanueltrummer/git/literateDBtuners/tuning_docs/pg_tpch_single')
@@ -155,16 +179,16 @@ if st.button('Start Tuning'):
             db_name, db_user, db_pwd, restart_cmd, 
             recover_cmd, timeout_s)
     else:
-        raise ValueError(f'Error - Unknown DBMS ID: {dbms}')
-
+        raise ValueError(f'Unknown DBMS ID: {dbms}')
     
-    obj_config = ConfigParser()
-    obj_config.read(str(config_dir.joinpath(obj_label)))
-    bench_config = ConfigParser()
-    bench_config.read(str(config_dir.joinpath(bench_label)))
-    
-    objective = search.objectives.from_file(obj_config)
-    bench = benchmark.factory.from_file(bench_config, dbms)
+    if benchmark_type == 0:
+        bench = benchmark.evaluate.OLAP(dbms, query_path)
+    elif benchmark_type == 1:
+        bench = benchmark.evaluate.TpcC(
+            oltp_home, oltp_config, oltp_result, 
+            dbms, template_db, target_db, reset_every)
+    else:
+        raise ValueError(f'Unknown benchmark type: {benchmark_type}')
     
     st.write('Starting tuning session ...')
     # Initialize for new run
