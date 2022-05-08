@@ -18,9 +18,8 @@ import typing
 
 class DecisionType(enum.IntEnum):
     """ Describes next decision to make by agent. """
-    PICK_BASE=0, # Pick base value for parameter (or decide to neglect hint)
-    PICK_FACTOR=1, # Pick a factor to multiply parameter value with
-    PICK_WEIGHT=2, # Pick importance of tuning hint
+    PICK_FACTOR=0, # Pick a factor to multiply parameter value with
+    PICK_WEIGHT=1, # Pick importance of tuning hint
 
 class HintOrder(enum.IntEnum):
     """ The order in which tuning hints are considered. """
@@ -108,8 +107,7 @@ class NlpTuningEnv(gym.Env):
             'zero-shot-classification', model='facebook/bart-large-mnli')
         self.explorer = search.search_with_hints.ParameterExplorer(
             dbms, benchmark, objective)
-        self.warmup = True
-        self.decision = DecisionType.PICK_BASE
+        self.decision = DecisionType.PICK_FACTOR
         self.type_texts = [
             'ratio (disk)', 'ratio (RAM)', 'ratio (cores)', 
             'value (RAM/disk/cores)', 'no hint']
@@ -119,6 +117,7 @@ class NlpTuningEnv(gym.Env):
         self.obs_cache = {}
         self.observation_space = gym.spaces.Box(0, 1, (8,), np.float32)
         self.hint_ctr = 0
+        self.episode_hint_ctr = 0
         self.nr_hints = len(self.hints)
         self.log = []
         print('All hints considered for multi-doc tuning:')
@@ -131,12 +130,12 @@ class NlpTuningEnv(gym.Env):
         Returns:
             current observations
         """
-        if not self.warmup:
-            self.decision = DecisionType.PICK_FACTOR
-            self.base = None
-            self.factor = None
-            self.hint_to_weight = collections.defaultdict(lambda: 0)
-            self.benchmark.print_stats()
+        self.decision = DecisionType.PICK_FACTOR
+        self.base = None
+        self.factor = None
+        self.hint_to_weight = collections.defaultdict(lambda: 0)
+        self.episode_hint_ctr = 0
+        self.benchmark.print_stats()
         obs = self._observe()
         return obs
         
@@ -149,39 +148,13 @@ class NlpTuningEnv(gym.Env):
         Returns:
             observation, reward, termination flag, debugging info
         """
-        if self.warmup:
-            reward = self._bart_reward(action)
-            self.hint_ctr += 1
-            return self._observe(), reward, False, {}
-        else:
-            print(f'Choice: {action}')
-            reward = self._take_action(action)
-            done = self._next_state(action)
-            if done:
-                reward += self._finalize_episode()
-            obs = self._observe()
-            return obs, reward, done, {}
-    
-    def stop_warmup(self):
-        """ Switch from warm-up mode to actual evaluations. """
-        self.warmup = False
-        self.obs_cache = {}
-        self.hint_ctr = 0
-        self.reset()
-    
-    def _bart_reward(self, action):
-        """ Calculate reward for taking actions consistent with BART.
-        
-        Args:
-            action: take this action
-        
-        Returns:
-            reward for taking model recommendation
-        """
-        observations = self._observe()
-        bart_reward_idx = 3+action
-        bart_reward = observations[bart_reward_idx]
-        return bart_reward
+        print(f'Choice: {action}')
+        reward = self._take_action(action)
+        done = self._next_state(action)
+        if done:
+            reward += self._finalize_episode()
+        obs = self._observe()
+        return obs, reward, done, {}
     
     def _finalize_episode(self):
         """ Return optimal benchmark reward when using weighted hints.
@@ -251,22 +224,20 @@ class NlpTuningEnv(gym.Env):
         """
         # Update decision and decide whether to advance
         to_next_hint = False
-        if self.decision == DecisionType.PICK_BASE:
-            if action == 4: # Skip to next hint
-                to_next_hint = True
-            else:
-                self.decision = DecisionType.PICK_FACTOR
-        elif self.decision == DecisionType.PICK_FACTOR:
+        if self.decision == DecisionType.PICK_FACTOR:
             self.decision = DecisionType.PICK_WEIGHT
         else:
             to_next_hint = True
         # Did we advance to next hint?
         if to_next_hint:
-            self.decision = DecisionType.PICK_BASE
+            self.decision = DecisionType.PICK_FACTOR
+            # Update hint counter
             self.hint_ctr += 1
             if self.hint_ctr >= self.nr_hints:
                 self.hint_ctr = 0
-            if  self.hint_ctr % self.hints_per_episode == 0:
+            # Update episode hint counter
+            self.episode_hint_ctr += 1
+            if self.episode_hint_ctr >= self.hints_per_episode:
                 return True
         return False
         
@@ -285,17 +256,7 @@ class NlpTuningEnv(gym.Env):
         else:
             print(f'No warmup - hint counter: {self.hint_ctr}')
             _, hint = self.hints[self.hint_ctr]
-            if self.decision == DecisionType.PICK_BASE:
-                decision_txt = f'Deciding hint type of {hint}'
-                choices = self.type_texts
-                    #
-                    #
-                    # 'relative to RAM size', 
-                    # 'relative to disk size', 
-                    # 'relative to the number of CPU cores', 
-                    # 'recommends concrete value', 
-                    # 'not recommendation']
-            elif self.decision == DecisionType.PICK_FACTOR:
+            if self.decision == DecisionType.PICK_FACTOR:
                 decision_txt = f'Deciding adaption of {hint}'
                 choices = ['Decrease recommendation strongly', 
                            'Decrease recommendation', 
@@ -405,5 +366,4 @@ class NlpTuningEnv(gym.Env):
             self.factor = float(self.factors[action])
         else:
             reward = self._process_hint(hint, action)
-        reward += self._bart_reward(action)
         return reward
