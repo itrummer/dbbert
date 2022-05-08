@@ -216,21 +216,32 @@ if st.button('Start Tuning'):
         use_implicit=use_implicit, filter_params=filter_params)
     st.write('Pre-processing of input text is finished.')
     
-    st.markdown('### Extracted Tuning Hints (Popular Parameters First): ')
-    by_param = list(docs.param_to_hints.items())
-    by_param.sort(key=lambda i:len(i[1]), reverse=True)
-    for param, docs_hints in by_param:
-        nr_hints = len(docs_hints)
-        caption = f'{param} ({nr_hints} hints)'
-        with st.expander(caption):
-            hints = [dh[1] for dh in docs_hints]
-            params = [h.param.group() for h in hints]
-            values = [h.value.group() for h in hints]
-            passages = [h.passage for h in hints]
-            df = pd.DataFrame({
-                'Parameter':params, 'Value':values, 
-                'Text Passage':passages})
-            st.table(df)
+    st.markdown('### Extracted Tuning Hints: ')
+    hint_rows = []
+    for param, doc_hints in docs.param_to_hints.items():
+        frequency = len(doc_hints)
+        for doc_id, hint in doc_hints:
+            row = [
+                param, frequency, doc_id, 
+                hint.value.group(), hint.passage()]
+            hint_rows += [row]
+    hint_df = pd.DataFrame(hint_rows, columns=[
+        'Parameter', 'Frequency', 'Document', 'Value', 'Text'])
+    st.dataframe(hint_df)
+    # by_param = list(docs.param_to_hints.items())
+    # by_param.sort(key=lambda i:len(i[1]), reverse=True)
+    # for param, docs_hints in by_param:
+        # nr_hints = len(docs_hints)
+        # caption = f'{param} ({nr_hints} hints)'
+        # with st.expander(caption):
+            # hints = [dh[1] for dh in docs_hints]
+            # params = [h.param.group() for h in hints]
+            # values = [h.value.group() for h in hints]
+            # passages = [h.passage for h in hints]
+            # df = pd.DataFrame({
+                # 'Parameter':params, 'Value':values, 
+                # 'Text Passage':passages})
+            # st.table(df)
     # hints = docs.get_hints(0)
     # params = [h.param.group() for h in hints]
     # values = [h.value.group() for h in hints]
