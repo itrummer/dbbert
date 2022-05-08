@@ -221,8 +221,13 @@ if st.button('Start Tuning'):
         print(param)
         with st.expander(param):
             hints = [dh[1] for dh in docs_hints]
-            print(hints)
-            st.table(hints)
+            params = [h.param.group() for h in hints]
+            values = [h.value.group() for h in hints]
+            passages = [h.passage for h in hints]
+            df = pd.DataFrame({
+                'Parameter':params, 'Value':values, 
+                'Text Passage':passages})
+            st.table(df)
     # hints = docs.get_hints(0)
     # params = [h.param.group() for h in hints]
     # values = [h.value.group() for h in hints]
