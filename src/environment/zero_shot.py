@@ -231,6 +231,7 @@ class NlpTuningEnv(gym.Env):
             # Update episode hint counter
             self.episode_hint_ctr += 1
             print(f'Episode hint counter: {self.episode_hint_ctr}')
+            print(f'Hints per episode: {self.hints_per_episode}')
             if self.episode_hint_ctr >= self.hints_per_episode:
                 return True
         return False
