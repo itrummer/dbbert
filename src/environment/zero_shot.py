@@ -365,6 +365,7 @@ class NlpTuningEnv(gym.Env):
             reward = 10 * self.scale_asg
         else:
             print(f'Assignment {assignment} was rejected')
+            weight = -1
             reward = -10
         
         log_entry = pd.DataFrame([{
