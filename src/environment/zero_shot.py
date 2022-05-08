@@ -132,7 +132,7 @@ class NlpTuningEnv(gym.Env):
             current observations
         """
         if not self.warmup:
-            self.decision = DecisionType.PICK_BASE
+            self.decision = DecisionType.PICK_FACTOR
             self.base = None
             self.factor = None
             self.hint_to_weight = collections.defaultdict(lambda: 0)
@@ -389,15 +389,19 @@ class NlpTuningEnv(gym.Env):
         reward = 0
         _, hint = self.hints[self.hint_ctr]
         # Distinguish by decision type
-        if self.decision == DecisionType.PICK_BASE:
-            self.type_text = self.type_texts[action]
-            if action <= 2 and hint.float_val < 1.0:
-                # Multiply given value with hardware properties
-                self.base = float(self.hardware[action]) * hint.float_val
-            else:
-                # Use provided value as is
+        if self.decision == DecisionType.PICK_FACTOR:
+            hint_type = hint.hint_type
+            self.type_text = str(hint_type)
+            if hint_type == doc.collection.HintType.DISK_RATIO:
+                self.base = float(self.hardware[0]) * hint.float_val
+            elif hint_type == doc.collection.HintType.RAM_RATIO:
+                self.base = float(self.hardware[1]) * hint.float_val
+            elif hint_type == doc.collection.HintType.CORES_RATIO:
+                self.base = float(self.hardware[2]) * hint.float_val
+            elif hint_type == doc.collection.HintType.ABSOLUTE:
                 self.base = hint.float_val
-        elif self.decision == DecisionType.PICK_FACTOR:
+            else:
+                raise ValueError(f'Unknown hint type: {hint_type}')
             self.factor = float(self.factors[action])
         else:
             reward = self._process_hint(hint, action)

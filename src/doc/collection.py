@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from doc.util import get_parameters, get_values
 from parameters.util import decompose_val
+import enum
 import pandas as pd
 import parameters.util
 import re
@@ -15,6 +16,13 @@ from dbms.generic_dbms import ConfigurableDBMS
 from sentence_transformers import SentenceTransformer, util
 from transformers import pipeline
 from typing import Any
+
+class HintType(enum.IntEnum):
+    """ Represents the type of tuning hint. """
+    DISK_RATIO=0,
+    RAM_RATIO=1,
+    CORES_RATIO=2,
+    ABSOLUTE=3
 
 @dataclass
 class TuningHint():
@@ -26,8 +34,11 @@ class TuningHint():
     passage: str
     float_val: float
     val_unit: str
+    hint_type: HintType
     
-    def __init__(self, doc_id, passage, recommendation, param, value):
+    def __init__(
+            self, doc_id, passage, recommendation, 
+            param, value, hint_type):
         """ Initializes tuning hint for given passage. 
         
         Args:
@@ -36,6 +47,7 @@ class TuningHint():
             param: match object referencing parameter in passage.
             recommendation: text passage with recommended value.
             value: match object referencing value in passage.
+            hint_type: type of tuning hint.
         """
         self.doc_id = doc_id
         self.passage = passage
@@ -43,6 +55,7 @@ class TuningHint():
         self.param = param
         self.value = value
         self.float_val, self.val_unit = decompose_val(value.group())
+        self.hint_type = hint_type
             
 class DocCollection():
     """ Represents a collection of documents with tuning hints. """
@@ -76,6 +89,10 @@ class DocCollection():
         self.qa_pipeline = pipeline(
             'question-answering', model=qa_model_name, 
             tokenizer=qa_model_name)
+        zsc_model_name = 'facebook/bart-large-mnli'
+        self.zsc_pipeline = pipeline(
+            'zero-shot-classification', model=zsc_model_name, 
+            tokenizer=zsc_model_name)
         
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
@@ -202,20 +219,18 @@ class DocCollection():
                 p_names = set([p.group() for p in params])
                 for p_name in p_names:
                     if not self.filter_params or self.dbms.is_param(p_name):
-                        question = f'Which values are recommended for {p_name}?'
-                        qa_input = {'question': question, 'context': exp_passage}
-                        qa_result = self.qa_pipeline(qa_input)
-                        answer = qa_result['answer']
-                        score = qa_result['score']
+                        answer, score = self._extract_value(p_name, exp_passage)
                         if score > 0.05:
                         # if score > 0:
                             values = re.finditer(
                                 parameters.util.value_reg, answer)
                             for value in values:
+                                hint_type = self._classify_hint(
+                                    p_name, passage, value)
                                 param = re.search(p_name, exp_passage)
                                 hint = TuningHint(
-                                    doc_id, exp_passage, 
-                                    answer, param, value)
+                                    doc_id, exp_passage, answer, 
+                                    param, value, hint_type)
                                 hints.append(hint)
                                 print(f'Adding hint {hint} with confidence {score}')
                         else:
@@ -243,7 +258,50 @@ class DocCollection():
             for param in doc_params:
                 param_counter.update([param])
         return asg_counter, param_counter
+    
+    def _classify_hint(self, p_name, passage, value):
+        """ Classifies hint depending on recommendation type.
         
+        Args:
+            p_name: name of parameter
+            passage: text recommending values
+            value: one specific recommended value
+        """
+        value_str = value.group()
+        if '%' in value_str:
+            resources = ['Disk', 'RAM', 'Cores']
+            labels = [f'{p_name}: {value} ({r})' for r in resources]
+            result = self.zsc_pipeline(passage, labels)
+            winner_label = result['labels']
+            winner_idx = labels.index(winner_label)
+            if winner_idx == 0:
+                return HintType.DISK_RATIO
+            elif winner_idx == 1:
+                return HintType.RAM_RATIO
+            elif winner_idx == 2:
+                return HintType.CORES_RATIO
+            else:
+                raise ValueError(f'Unknown label "{winner_label}"')
+        else:
+            return HintType.ABSOLUTE
+
+    def _extract_value(self, p_name, passage):
+        """ Extracts recommended parameter value from passage.
+        
+        Args:
+            p_name: name of parameter for which to extract values
+            passage: extract recommendations from this passage
+        
+        Returns:
+            tuple: recommendation, confidence
+        """
+        question = f'Which values are recommended for {p_name}?'
+        qa_input = {'question': question, 'context': passage}
+        qa_result = self.qa_pipeline(qa_input)
+        answer = qa_result['answer']
+        score = qa_result['score']
+        return answer, score
+    
     def _hints_by_param(self):
         """ Maps parameters to corresponding hints. """
         param_to_hints = defaultdict(lambda: [])

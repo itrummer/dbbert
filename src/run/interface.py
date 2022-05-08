@@ -216,14 +216,13 @@ if st.button('Start Tuning'):
         use_implicit=use_implicit, filter_params=filter_params)
     st.write('Pre-processing of input text is finished.')
     
-    st.markdown('### Extracted Tuning Hints: ')
+    st.markdown('### Extracted Tuning Hints')
     hint_rows = []
     for param, doc_hints in docs.param_to_hints.items():
         frequency = len(doc_hints)
         for doc_id, hint in doc_hints:
-            row = [
-                param, frequency, doc_id, 
-                hint.value.group(), hint.passage]
+            row = [param, frequency, doc_id, hint.value.group(), 
+                   hint.passage, hint.hint_type]
             hint_rows += [row]
     hint_df = pd.DataFrame(hint_rows, columns=[
         'Parameter', 'Frequency', 'Document', 'Value', 'Text'])
@@ -291,7 +290,7 @@ if st.button('Start Tuning'):
     st.write(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
     start_s = time.time()
     # Could move warmup to pre-training
-    model.learn(total_timesteps=20000)
+    #model.learn(total_timesteps=20000)
     unsupervised_env.stop_warmup()
     for i in range(nr_frames):
         
