@@ -217,14 +217,20 @@ if st.button('Start Tuning'):
     st.write('Pre-processing of input text is finished.')
     
     st.write('Extracted Hints: ')
-    hints = docs.get_hints(0)
-    params = [h.param.group() for h in hints]
-    values = [h.value.group() for h in hints]
-    passages = [h.passage for h in hints]
-    df = pd.DataFrame({
-        'Parameter':params, 'Value':values, 
-        'Text Passage':passages})
-    st.table(df)
+    for param, docs_hints in docs.param_to_hints.items():
+        print(param)
+        with st.expander(param):
+            hints = [dh[1] for dh in docs_hints]
+            print(hints)
+            st.table(hints)
+    # hints = docs.get_hints(0)
+    # params = [h.param.group() for h in hints]
+    # values = [h.value.group() for h in hints]
+    # passages = [h.passage for h in hints]
+    # df = pd.DataFrame({
+        # 'Parameter':params, 'Value':values, 
+        # 'Text Passage':passages})
+    # st.table(df)
     # for hint in docs.get_hints(0):
         # st.write(hint)
     
