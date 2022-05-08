@@ -217,9 +217,12 @@ if st.button('Start Tuning'):
     st.write('Pre-processing of input text is finished.')
     
     st.write('Extracted Hints: ')
-    for param, docs_hints in docs.param_to_hints.items():
-        print(param)
-        with st.expander(param):
+    by_param = list(docs.param_to_hints.items())
+    by_param.sort(key=lambda i:len(i[1]), reverse=True)
+    for param, docs_hints in by_param:
+        nr_hints = len(docs_hints)
+        caption = f'{param} ({nr_hints} hints)'
+        with st.expander(caption):
             hints = [dh[1] for dh in docs_hints]
             params = [h.param.group() for h in hints]
             values = [h.value.group() for h in hints]
