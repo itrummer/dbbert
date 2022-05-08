@@ -145,7 +145,8 @@ class NlpTuningEnv(gym.Env):
         """
         print(f'Choice: {action}')
         reward = self._take_action(action)
-        done = self._next_state(action)
+        done = self._next_state()
+        print(f'Done flag: {done}')
         if done:
             reward += self._finalize_episode()
         obs = self._observe()
@@ -209,11 +210,8 @@ class NlpTuningEnv(gym.Env):
                     ordered_hints += stride
         return ordered_hints
 
-    def _next_state(self, action):
+    def _next_state(self):
         """ Advance to next state in MDP and return termination flag. 
-        
-        Args:
-            action: calculate next state if taking this action
         
         Returns:
             flag indicating termination of episode
@@ -233,6 +231,7 @@ class NlpTuningEnv(gym.Env):
             print(f'Episode hint counter: {self.episode_hint_ctr}')
             print(f'Hints per episode: {self.hints_per_episode}')
             if self.episode_hint_ctr >= self.hints_per_episode:
+                print('Episode finished!')
                 return True
         return False
         
