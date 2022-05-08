@@ -262,6 +262,7 @@ if st.button('Start Tuning'):
     for i in range(nr_frames):
         model.learn(total_timesteps=1)
         for log_entry in bench.log:
+            print(log_entry)
             evaluation_table.add_rows(log_entry)
         bench.log = []
         elapsed_s = time.time() - start_s
