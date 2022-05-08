@@ -272,7 +272,7 @@ class DocCollection():
             resources = ['Disk', 'RAM', 'Cores']
             labels = [f'{p_name}: {value_str} ({r})' for r in resources]
             result = self.zsc_pipeline(passage, labels)
-            winner_label = result['labels']
+            winner_label = result['labels'][0]
             winner_idx = labels.index(winner_label)
             if winner_idx == 0:
                 return HintType.DISK_RATIO
