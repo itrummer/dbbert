@@ -55,16 +55,11 @@ class LabeledObservation():
     choices: typing.List[str]
     scores: typing.List[float]
     
-    def output(self, warmup):
-        """ Generates output, depending on warmup flag. 
-        
-        Args:
-            warmup: whether this is the warmup phase
-        """
-        if not warmup:
-            print(f'Decision: {self.decision_txt}')
-            print(f'Choices: {self.choices}')
-            print(f'Scores: {self.scores}')
+    def output(self,):
+        """ Generates output describing observation. """
+        print(f'Decision: {self.decision_txt}')
+        print(f'Choices: {self.choices}')
+        print(f'Scores: {self.scores}')
 
 
 class NlpTuningEnv(gym.Env):
@@ -280,7 +275,7 @@ class NlpTuningEnv(gym.Env):
             obs = scaled_vals + scores
             l_obs = LabeledObservation(obs, decision_txt, choices, scores)
         
-        l_obs.output(self.warmup)
+        l_obs.output()
         self.obs_cache[obs_idx] = l_obs
         return l_obs.obs
     
