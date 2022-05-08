@@ -262,11 +262,19 @@ if st.button('Start Tuning'):
         'MlpPolicy', unsupervised_env, 
         verbose=1, normalize_advantage=True)
 
+    st.markdown('### Evaluated DBMS Configurations')
     evaluation_df = pd.DataFrame(columns=[
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
         'Performance', 'Best Configuration', 'Best Performance'],
         index=range(0))
     evaluation_table = st.table(evaluation_df)
+    
+    st.markdown('### DBMS Tuning Decisions')
+    decision_df = pd.DataFrame(columns=[
+        'Parameter', 'Recommendation',  'Inferred Type', 
+        'Base', 'Factor', 'Value', 'Weight', 
+        'Accepted', 'Reward'], index=range(0))
+    decision_table = st.table(decision_df)
         
     # Warm-up phase (quick), followed by actual tuning
     st.write(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
@@ -275,12 +283,15 @@ if st.button('Start Tuning'):
     model.learn(total_timesteps=20000)
     unsupervised_env.stop_warmup()
     for i in range(nr_frames):
+        
         model.learn(total_timesteps=1)
-        print('About to add rows ...')
         for log_entry in bench.log:
-            print(f'Log entry: {log_entry}')
             evaluation_table.add_rows(log_entry)
         bench.log = []
+        for log_entry in unsupervised_env.log:
+            decision_table.add_rows(log_entry)
+        unsupervised_env.log = []
+        
         elapsed_s = time.time() - start_s
         if elapsed_s > timeout_s:
             break

@@ -109,6 +109,9 @@ class NlpTuningEnv(gym.Env):
             dbms, benchmark, objective)
         self.warmup = True
         self.decision = DecisionType.PICK_BASE
+        self.type_texts = [
+            'ratio (disk)', 'ratio (RAM)', 'ratio (cores)', 
+            'value (RAM/disk/cores)', 'no hint']
         self.factors = [0.25, 0.5, 1, 2, 4]
         self.weights = [1, 2, 4, 8, 16]
         self.action_space = gym.spaces.Discrete(5)
@@ -116,6 +119,7 @@ class NlpTuningEnv(gym.Env):
         self.observation_space = gym.spaces.Box(0, 1, (8,), np.float32)
         self.hint_ctr = 0
         self.nr_hints = len(self.hints)
+        self.log = []
         print('All hints considered for multi-doc tuning:')
         for i, (_, hint) in enumerate(self.hints):
             print(f'Hint {i}: {hint.param.group()} -> {hint.value.group()}')
@@ -282,8 +286,7 @@ class NlpTuningEnv(gym.Env):
             _, hint = self.hints[self.hint_ctr]
             if self.decision == DecisionType.PICK_BASE:
                 decision_txt = f'Deciding hint type of {hint}'
-                choices = ['ratio (disk)', 'ratio (RAM)', 'ratio (cores)', 
-                           'value (RAM/disk/cores)', 'no hint']
+                choices = self.type_texts
                     #
                     #
                     # 'relative to RAM size', 
@@ -362,6 +365,14 @@ class NlpTuningEnv(gym.Env):
         else:
             print(f'Assignment {assignment} was rejected')
             reward = -10
+        
+        log_entry = {
+            'Parameter':param, 'Recommendation':hint.recommendation, 
+            'Inferred Type':self.type_text, 
+            'Base':self.base + ' ' + hint.val_unit, 
+            'Factor':self.factor, 'Value':value, 'Weight':weight, 
+            'Accepted':success, 'Reward':reward}
+        self.log += [log_entry]
         return reward
 
     def _take_action(self, action):
@@ -377,6 +388,7 @@ class NlpTuningEnv(gym.Env):
         _, hint = self.hints[self.hint_ctr]
         # Distinguish by decision type
         if self.decision == DecisionType.PICK_BASE:
+            self.type_text = self.type_texts[action]
             if action <= 2 and hint.float_val < 1.0:
                 # Multiply given value with hardware properties
                 self.base = float(self.hardware[action]) * hint.float_val
