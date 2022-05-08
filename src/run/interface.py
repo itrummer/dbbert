@@ -225,7 +225,7 @@ if st.button('Start Tuning'):
                    hint.passage, hint.hint_type.name]
             hint_rows += [row]
     hint_df = pd.DataFrame(hint_rows, columns=[
-        'Parameter', 'Frequency', 'Document', 'Value', 'Text', 'Type'])
+        'Parameter', 'Frequency', 'Document', 'Value', 'Text', 'Inferred Type'])
     st.dataframe(hint_df)
     # by_param = list(docs.param_to_hints.items())
     # by_param.sort(key=lambda i:len(i[1]), reverse=True)
