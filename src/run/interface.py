@@ -181,9 +181,6 @@ with st.expander('Benchmark'):
         raise ValueError(f'Error - unknown benchmark type: {benchmark_type}')
 
 
-lines = alt.Chart(pd.DataFrame(np.random.randn(10,2))).mark_line()
-st.altair_chart(lines)
-
 if st.button('Start Tuning'):
     
     if dbms_id == 0:
@@ -224,7 +221,9 @@ if st.button('Start Tuning'):
     params = [h.param.group() for h in hints]
     values = [h.value.group() for h in hints]
     passages = [h.passage for h in hints]
-    df = pd.DataFrame({'Parameter':params, 'Value':values, 'Text Passage':passages})
+    df = pd.DataFrame({
+        'Parameter':params, 'Value':values, 
+        'Text Passage':passages})
     st.table(df)
     # for hint in docs.get_hints(0):
         # st.write(hint)
@@ -248,6 +247,11 @@ if st.button('Start Tuning'):
     model = A2C(
         'MlpPolicy', unsupervised_env, 
         verbose=1, normalize_advantage=True)
+
+    evaluation_df = pd.DataFrame(columns=[
+        'Elapsed (ms)', 'Evaluations', 'Configuration', 
+        'Performance', 'Best Configuration', 'Best Performance'])
+    evaluation_table = st.table(evaluation_df)
         
     # Warm-up phase (quick), followed by actual tuning
     st.write(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
@@ -257,6 +261,9 @@ if st.button('Start Tuning'):
     unsupervised_env.stop_warmup()
     for i in range(nr_frames):
         model.learn(total_timesteps=1)
+        for log_entry in bench.log:
+            evaluation_table.add_rows(log_entry)
+        bench.log = []
         elapsed_s = time.time() - start_s
         if elapsed_s > timeout_s:
             break

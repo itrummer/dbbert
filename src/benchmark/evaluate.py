@@ -11,22 +11,25 @@ import os
 import pandas as pd
 import psycopg2
 import subprocess
-import streamlit as st
 import time
 from dbms.generic_dbms import ConfigurableDBMS
 
 class Benchmark(ABC):
     """ Runs a benchmark to evaluate database configuration. """
     
+    def __init__(self):
+        """ Initializes logging. """
+        self.log = []
+    
     @abstractmethod
     def evaluate(self):
         """ Evaluates performance for benchmark and returns reward. """
-        pass
+        raise NotImplementedError()
     
     @abstractmethod
     def print_stats(self):
         """ Prints out some benchmark statistics. """
-        pass
+        raise NotImplementedError()
     
     def reset(self, log_path, run_ctr):
         """ Reset timestamps for logging and reset statistics. 
@@ -54,7 +57,7 @@ class Benchmark(ABC):
     @abstractmethod
     def _init_stats(self):
         """ Initializes benchmark statistics. """
-        pass
+        raise NotImplementedError()
             
     def _log(self, best_quality, best_config, cur_quality, cur_config):
         """ Write quality and timestamp to log file. 
@@ -67,9 +70,16 @@ class Benchmark(ABC):
             cur_quality: quality of most recently tried configuration
             cur_config: most recently tried configuration
         """
+        cur_ms = time.time() * 1000.0
+        total_ms = cur_ms - self.start_ms
+        log_entry = pd.DataFrame([{
+            'Elapsed (ms)':total_ms, 'Evaluations':self.eval_ctr, 
+            'Configuration':cur_config, 'Performance':cur_quality, 
+            'Best Configuration':best_config, 
+            'Best Performance':best_quality}])
+        self.log += [log_entry]
+                
         if self.log_path:
-            cur_ms = time.time() * 1000.0
-            total_ms = cur_ms - self.start_ms
             with open(self.log_perf_path, 'a') as file:
                 file.write(
                     f'{self.run_ctr}\t{self.eval_ctr}\t{total_ms}\t' +
@@ -83,7 +93,13 @@ class OLAP(Benchmark):
     """ Runs an OLAP style benchmark with single queries stored in files. """
     
     def __init__(self, dbms: ConfigurableDBMS, query_path):
-        """ Initialize with database and path to queries. """
+        """ Initialize with database and path to queries. 
+        
+        Args:
+            dbms: interface for configurable DBMS
+            query_path: path to file containing queries
+        """
+        super().init()
         self.dbms = dbms
         self.query_path = query_path
         self.log_path = None
@@ -117,11 +133,10 @@ class OLAP(Benchmark):
     def print_stats(self):
         """ Print out benchmark statistics. """
         print('--- Tuning Updates ---')
-        st.write('--- Tuning Updates ---')
-        st.write(f'Minimal time (ms): {self.min_time}')
-        st.write(f'Achieved with configuration: {self.min_conf}')
-        st.write(f'Maximal time (ms): {self.max_time}')
-        st.write(f'Achieved with configuration: {self.max_conf}')
+        print(f'Minimal time (ms): {self.min_time}')
+        print(f'Achieved with configuration: {self.min_conf}')
+        print(f'Maximal time (ms): {self.max_time}')
+        print(f'Achieved with configuration: {self.max_conf}')
         
     def _init_stats(self):
         """ Initialize minimal and maximal time and configurations. """
