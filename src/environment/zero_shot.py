@@ -227,6 +227,7 @@ class NlpTuningEnv(gym.Env):
             if self.hint_ctr >= self.nr_hints:
                 self.hint_ctr = 0
             # Update episode hint counter
+            print(f'Episode hint counter before: {self.episode_hint_ctr}')
             self.episode_hint_ctr += 1
             print(f'Episode hint counter: {self.episode_hint_ctr}')
             print(f'Hints per episode: {self.hints_per_episode}')
