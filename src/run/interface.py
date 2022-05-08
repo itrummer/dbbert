@@ -250,7 +250,8 @@ if st.button('Start Tuning'):
 
     evaluation_df = pd.DataFrame(columns=[
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
-        'Performance', 'Best Configuration', 'Best Performance'])
+        'Performance', 'Best Configuration', 'Best Performance'],
+        index=range(0))
     evaluation_table = st.table(evaluation_df)
         
     # Warm-up phase (quick), followed by actual tuning
