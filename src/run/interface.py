@@ -261,8 +261,9 @@ if st.button('Start Tuning'):
     unsupervised_env.stop_warmup()
     for i in range(nr_frames):
         model.learn(total_timesteps=1)
+        print('About to add rows ...')
         for log_entry in bench.log:
-            print(log_entry)
+            print(f'Log entry: {log_entry}')
             evaluation_table.add_rows(log_entry)
         bench.log = []
         elapsed_s = time.time() - start_s
