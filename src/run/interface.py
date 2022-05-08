@@ -290,8 +290,6 @@ if st.button('Start Tuning'):
     st.write(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
     start_s = time.time()
     # Could move warmup to pre-training
-    #model.learn(total_timesteps=20000)
-    unsupervised_env.stop_warmup()
     for i in range(nr_frames):
         
         model.learn(total_timesteps=1)

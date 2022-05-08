@@ -250,9 +250,6 @@ class NlpTuningEnv(gym.Env):
         obs_idx = (self.hint_ctr, int(self.decision))
         if obs_idx in self.obs_cache:
             l_obs = self.obs_cache[obs_idx]
-        elif self.warmup:
-            obs =  self.observation_space.sample()
-            l_obs = LabeledObservation(obs, '', [], [])
         else:
             print(f'No warmup - hint counter: {self.hint_ctr}')
             _, hint = self.hints[self.hint_ctr]
