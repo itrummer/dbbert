@@ -99,7 +99,7 @@ class OLAP(Benchmark):
             dbms: interface for configurable DBMS
             query_path: path to file containing queries
         """
-        super().init()
+        super().__init__()
         self.dbms = dbms
         self.query_path = query_path
         self.log_path = None
