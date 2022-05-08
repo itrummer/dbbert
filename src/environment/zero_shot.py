@@ -11,6 +11,7 @@ import doc
 import enum
 import gym.spaces
 import numpy as np
+import pandas as pd
 import search.search_with_hints
 import transformers
 import typing
@@ -366,12 +367,12 @@ class NlpTuningEnv(gym.Env):
             print(f'Assignment {assignment} was rejected')
             reward = -10
         
-        log_entry = {
+        log_entry = pd.DataFrame([{
             'Parameter':param, 'Recommendation':hint.recommendation, 
             'Inferred Type':self.type_text, 
             'Base':str(self.base) + ' ' + hint.val_unit, 
             'Factor':self.factor, 'Value':value, 'Weight':weight, 
-            'Accepted':success, 'Reward':reward}
+            'Accepted':success, 'Reward':reward}])
         self.log += [log_entry]
         return reward
 

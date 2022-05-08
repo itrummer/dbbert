@@ -216,7 +216,7 @@ if st.button('Start Tuning'):
         use_implicit=use_implicit, filter_params=filter_params)
     st.write('Pre-processing of input text is finished.')
     
-    st.write('Extracted Hints by Parameter (Popular Parameters First): ')
+    st.markdown('### Extracted Tuning Hints (Popular Parameters First): ')
     by_param = list(docs.param_to_hints.items())
     by_param.sort(key=lambda i:len(i[1]), reverse=True)
     for param, docs_hints in by_param:
