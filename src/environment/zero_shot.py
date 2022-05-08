@@ -369,7 +369,7 @@ class NlpTuningEnv(gym.Env):
         log_entry = {
             'Parameter':param, 'Recommendation':hint.recommendation, 
             'Inferred Type':self.type_text, 
-            'Base':self.base + ' ' + hint.val_unit, 
+            'Base':str(self.base) + ' ' + hint.val_unit, 
             'Factor':self.factor, 'Value':value, 'Weight':weight, 
             'Accepted':success, 'Reward':reward}
         self.log += [log_entry]
