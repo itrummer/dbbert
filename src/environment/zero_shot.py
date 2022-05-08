@@ -157,6 +157,7 @@ class NlpTuningEnv(gym.Env):
         Returns:
             reward representing improvements over default configuration
         """
+        print('Finalizing episode!')
         if self.hint_to_weight:
             reward, config = self.explorer.explore(
                 self.hint_to_weight, self.nr_evals)
@@ -218,20 +219,18 @@ class NlpTuningEnv(gym.Env):
             flag indicating termination of episode
         """
         # Update decision and decide whether to advance
-        to_next_hint = False
         if self.decision == DecisionType.PICK_FACTOR:
             self.decision = DecisionType.PICK_WEIGHT
         else:
-            to_next_hint = True
-        # Did we advance to next hint?
-        if to_next_hint:
             self.decision = DecisionType.PICK_FACTOR
             # Update hint counter
             self.hint_ctr += 1
+            print(f'Hint counter: {self.hint_ctr}')
             if self.hint_ctr >= self.nr_hints:
                 self.hint_ctr = 0
             # Update episode hint counter
             self.episode_hint_ctr += 1
+            print(f'Episode hint counter: {self.episode_hint_ctr}')
             if self.episode_hint_ctr >= self.hints_per_episode:
                 return True
         return False
