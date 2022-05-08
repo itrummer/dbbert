@@ -270,7 +270,7 @@ class DocCollection():
         value_str = value.group()
         if '%' in value_str:
             resources = ['Disk', 'RAM', 'Cores']
-            labels = [f'{p_name}: {value} ({r})' for r in resources]
+            labels = [f'{p_name}: {value_str} ({r})' for r in resources]
             result = self.zsc_pipeline(passage, labels)
             winner_label = result['labels']
             winner_idx = labels.index(winner_label)
