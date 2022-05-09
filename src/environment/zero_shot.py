@@ -163,6 +163,7 @@ class NlpTuningEnv(gym.Env):
             reward, config = self.explorer.explore(
                 self.hint_to_weight, self.nr_evals)
             print(f'Achieved unscaled reward of {reward} using {config}.')
+            self.hint_to_weight = collections.defaultdict(lambda: 0)
             return reward * self.scale_perf
         else:
             return 0
@@ -232,7 +233,6 @@ class NlpTuningEnv(gym.Env):
             print(f'Episode hint counter: {self.episode_hint_ctr}')
             print(f'Hints per episode: {self.hints_per_episode}')
             if self.episode_hint_ctr >= self.hints_per_episode:
-                self.hint_to_weight = collections.defaultdict(lambda: 0)
                 self.episode_hint_ctr = 0
                 print('Episode finished!')
                 return True
