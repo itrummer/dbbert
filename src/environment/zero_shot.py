@@ -114,6 +114,7 @@ class NlpTuningEnv(gym.Env):
         self.hint_ctr = 0
         self.episode_hint_ctr = 0
         self.nr_hints = len(self.hints)
+        self.hint_to_weight = collections.defaultdict(lambda: 0)
         self.log = []
         print('All hints considered for multi-doc tuning:')
         for i, (_, hint) in enumerate(self.hints):
