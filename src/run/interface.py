@@ -140,9 +140,9 @@ with st.expander('Database'):
     def_restart = get_value(config, 'DATABASE', 'restart_cmd', '')
     def_recover = get_value(config, 'DATABASE', 'recovery_cmd', '')
     if def_db == 'ms':
-        def_db_idx = 0
-    else:
         def_db_idx = 1
+    else:
+        def_db_idx = 0
     dbms_id = st.selectbox(
         'DBMS', options=range(2), index=def_db_idx,
         format_func=lambda i:['Postgres', 'MySQL'][i])
