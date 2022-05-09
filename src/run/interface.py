@@ -289,6 +289,6 @@ if st.button('Start Tuning'):
             st.write(f'Step {i} - tuned for {elapsed_s} seconds')
             
     # Show final summary
-    st.write('Tuning process of DB-BERT is finished.')
+    st.write('DB-BERT: finished tuning session.')
     # st.write('Summary of results:')
     bench.print_stats()
