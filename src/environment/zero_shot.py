@@ -125,6 +125,7 @@ class NlpTuningEnv(gym.Env):
         Returns:
             current observations
         """
+        print('RESET FUNCTION WAS CALLED!!!')
         self.decision = DecisionType.PICK_FACTOR
         self.base = None
         self.factor = None
