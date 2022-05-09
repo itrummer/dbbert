@@ -230,32 +230,9 @@ if st.button('Start Tuning'):
                    hint.passage, hint.hint_type.name]
             hint_rows += [row]
     hint_df = pd.DataFrame(hint_rows, columns=[
-        'Parameter', 'Frequency', 'Document', 'Value', 'Text', 'Inferred Type'])
+        'Parameter', 'Frequency', 'Document', 
+        'Value', 'Text', 'Inferred Type'])
     st.dataframe(hint_df)
-    # by_param = list(docs.param_to_hints.items())
-    # by_param.sort(key=lambda i:len(i[1]), reverse=True)
-    # for param, docs_hints in by_param:
-        # nr_hints = len(docs_hints)
-        # caption = f'{param} ({nr_hints} hints)'
-        # with st.expander(caption):
-            # hints = [dh[1] for dh in docs_hints]
-            # params = [h.param.group() for h in hints]
-            # values = [h.value.group() for h in hints]
-            # passages = [h.passage for h in hints]
-            # df = pd.DataFrame({
-                # 'Parameter':params, 'Value':values, 
-                # 'Text Passage':passages})
-            # st.table(df)
-    # hints = docs.get_hints(0)
-    # params = [h.param.group() for h in hints]
-    # values = [h.value.group() for h in hints]
-    # passages = [h.passage for h in hints]
-    # df = pd.DataFrame({
-        # 'Parameter':params, 'Value':values, 
-        # 'Text Passage':passages})
-    # st.table(df)
-    # for hint in docs.get_hints(0):
-        # st.write(hint)
     
     # Initialize environment
     set_random_seed(0)
@@ -282,14 +259,14 @@ if st.button('Start Tuning'):
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
         'Performance', 'Best Configuration', 'Best Performance'],
         index=range(0))
-    evaluation_table = st.table(evaluation_df)
+    evaluation_table = st.dataframe(evaluation_df)
     
     st.markdown('### DBMS Tuning Decisions')
     decision_df = pd.DataFrame(columns=[
         'Parameter', 'Recommendation',  'Inferred Type', 
         'Base', 'Factor', 'Value', 'Weight', 
         'Accepted', 'Reward'], index=range(0))
-    decision_table = st.table(decision_df)
+    decision_table = st.dataframe(decision_df)
         
     # Warm-up phase (quick), followed by actual tuning
     st.write(f'Running for up to {timeout_s} seconds, {nr_frames} frames')
