@@ -144,7 +144,7 @@ with st.expander('Database'):
     db_name = st.text_input('Database Name', value=def_db_name)
     db_user = st.text_input('Database User', value=def_db_user)
     db_pwd = st.text_input(
-        'Database Password', value=def_db_pwd, type='password')
+        'Database Password', value=def_db_pwd)
     restart_cmd = st.text_input(
         'Command for DBMS Restart', value=def_restart)
     recover_cmd = st.text_input(
