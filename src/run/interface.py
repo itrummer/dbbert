@@ -133,18 +133,23 @@ with st.expander('Hardware Properties'):
     cores = st.number_input('Number of Cores', value=def_cores)
 
 with st.expander('Database'):
+    def_db = get_value(config, 'DATABASE', 'dbms', 'pg')
     def_db_name = get_value(config, 'DATABASE', 'name', '')
     def_db_user = get_value(config, 'DATABASE', 'user', 'ubuntu')
     def_db_pwd = get_value(config, 'DATABASE', 'password', '')
     def_restart = get_value(config, 'DATABASE', 'restart_cmd', '')
     def_recover = get_value(config, 'DATABASE', 'recovery_cmd', '')
+    if def_db == 'ms':
+        def_db_idx = 0
+    else:
+        def_db_idx = 1
     dbms_id = st.selectbox(
-        'DBMS', options=range(2), 
+        'DBMS', options=range(2), index=def_db_idx,
         format_func=lambda i:['Postgres', 'MySQL'][i])
     db_name = st.text_input('Database Name', value=def_db_name)
     db_user = st.text_input('Database User', value=def_db_user)
     db_pwd = st.text_input(
-        'Database Password', value=def_db_pwd)
+        'Database Password', value=def_db_pwd, type='password')
     restart_cmd = st.text_input(
         'Command for DBMS Restart', value=def_restart)
     recover_cmd = st.text_input(
