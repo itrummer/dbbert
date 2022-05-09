@@ -129,8 +129,6 @@ class NlpTuningEnv(gym.Env):
         self.decision = DecisionType.PICK_FACTOR
         self.base = None
         self.factor = None
-        self.hint_to_weight = collections.defaultdict(lambda: 0)
-        self.episode_hint_ctr = 0
         self.benchmark.print_stats()
         obs = self._observe()
         return obs
@@ -233,6 +231,8 @@ class NlpTuningEnv(gym.Env):
             print(f'Episode hint counter: {self.episode_hint_ctr}')
             print(f'Hints per episode: {self.hints_per_episode}')
             if self.episode_hint_ctr >= self.hints_per_episode:
+                self.hint_to_weight = collections.defaultdict(lambda: 0)
+                self.episode_hint_ctr = 0
                 print('Episode finished!')
                 return True
         return False
