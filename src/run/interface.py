@@ -260,6 +260,9 @@ if st.button('Start Tuning'):
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
         'Performance', 'Best Configuration', 'Best Performance'],
         index=range(0))
+    evaluation_df = evaluation_df.astype({
+        'Elapsed (ms)':'float64', 
+        'Best Performance':'float64'})
     evaluation_table = st.dataframe(evaluation_df)
     
     st.markdown('### Performance vs. Tuning Time')
