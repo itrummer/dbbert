@@ -226,12 +226,14 @@ if st.button('Start Tuning'):
     for param, doc_hints in docs.param_to_hints.items():
         frequency = len(doc_hints)
         for doc_id, hint in doc_hints:
-            row = [param, frequency, doc_id, hint.value.group(), 
-                   hint.passage, str(hint.hint_type)]
+            row = [doc_id, hint.passage, param, frequency, 
+                   hint.value.group(), str(hint.hint_type)]
             hint_rows += [row]
-    hint_df = pd.DataFrame(hint_rows, columns=[
-        'Parameter', 'Frequency', 'Document', 
-        'Value', 'Text', 'Inferred Type'])
+    hint_df = pd.DataFrame(
+        hint_rows, columns=[
+            'Document', 'Text', 
+            'Parameter', 'Frequency',
+            'Value', 'Inferred Type'])
     st.dataframe(hint_df)
     
     # Initialize environment
