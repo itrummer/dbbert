@@ -118,7 +118,7 @@ with st.expander('Reinforcement Learning'):
     p_scaling = st.number_input(
         'Reward Weight for Performance', value=def_p_scaling)
     a_scaling = st.number_input(
-        'Reward Weight for Successful Setting', value=def_a_scaling)
+        'Reward Weight for Successful Assignments', value=def_a_scaling)
     nr_evals = int(st.number_input(
         'Number of Configurations Evaluated per Episode', value=def_nr_evals))
     nr_hints = int(st.number_input(
@@ -266,7 +266,7 @@ if st.button('Start Tuning'):
     decision_df = pd.DataFrame(columns=[
         'Parameter', 'Recommendation',  'Inferred Type', 
         'Rec. Value', 'Factor', 'Value', 'Weight', 
-        'Accepted', 'Reward'], index=range(0))
+        'Accepted', 'A-Reward', 'P-Reward'], index=range(0))
     decision_table = st.dataframe(decision_df)
         
     # Warm-up phase (quick), followed by actual tuning

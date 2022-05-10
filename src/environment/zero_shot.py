@@ -144,7 +144,12 @@ class NlpTuningEnv(gym.Env):
         done = self._next_state()
         print(f'Done flag: {done}')
         if done:
-            reward += self._finalize_episode()
+            p_reward = self._finalize_episode()
+            reward += p_reward
+            self.log_dict['P-Reward'] = p_reward
+        
+        log_entry = pd.DataFrame([self.log_dict])
+        self.log += [log_entry]
         obs = self._observe()
         return obs, reward, done, {}
     
@@ -319,13 +324,12 @@ class NlpTuningEnv(gym.Env):
             weight = -1
             reward = -10.0
         
-        log_entry = pd.DataFrame([{
+        self.log_dict = {
             'Parameter':param, 'Recommendation':hint.recommendation, 
             'Inferred Type':self.type_text, 
             'Rec. Value':str(self.base) + ' ' + hint.val_unit, 
             'Factor':self.factor, 'Value':value, 'Weight':weight, 
-            'Accepted':success, 'Reward':reward}])
-        self.log += [log_entry]
+            'Accepted':success, 'A-Reward':reward, 'P-Reward':0.0}
         return reward
 
     def _take_action(self, action):
