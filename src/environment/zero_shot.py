@@ -113,6 +113,7 @@ class NlpTuningEnv(gym.Env):
         self.nr_hints = len(self.hints)
         self.hint_to_weight = collections.defaultdict(lambda: 0)
         self.log = []
+        self.log_dict = {}
         print('All hints considered for multi-doc tuning:')
         for i, (_, hint) in enumerate(self.hints):
             print(f'Hint {i}: {hint.param.group()} -> {hint.value.group()}')
@@ -148,8 +149,11 @@ class NlpTuningEnv(gym.Env):
             reward += p_reward
             self.log_dict['P-Reward'] = p_reward
         
-        log_entry = pd.DataFrame([self.log_dict])
-        self.log += [log_entry]
+        if self.log_dict:
+            log_entry = pd.DataFrame([self.log_dict])
+            self.log += [log_entry]
+            self.log_dict = {}
+        
         obs = self._observe()
         return obs, reward, done, {}
     
