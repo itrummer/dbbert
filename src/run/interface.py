@@ -263,7 +263,7 @@ if st.button('Start Tuning'):
     evaluation_table = st.dataframe(evaluation_df)
     
     st.markdown('### Performance vs. Tuning Time')
-    alt_chart = alt.Chart(evaluation_df).mark_circle().encode(
+    alt_chart = alt.Chart(evaluation_df).mark_line().encode(
         x='Elapsed (ms)', y='Best Performance')
     performance_chart = st.altair_chart(alt_chart)
     
