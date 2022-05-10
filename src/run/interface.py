@@ -254,13 +254,18 @@ if st.button('Start Tuning'):
     model = A2C(
         'MlpPolicy', unsupervised_env, 
         verbose=1, normalize_advantage=True)
-
+    
     st.markdown('### Evaluated DBMS Configurations')
     evaluation_df = pd.DataFrame(columns=[
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
         'Performance', 'Best Configuration', 'Best Performance'],
         index=range(0))
     evaluation_table = st.dataframe(evaluation_df)
+    
+    st.markdown('### Performance vs. Tuning Time')
+    alt_chart = alt.Chart(evaluation_df).mark_circle().encode(
+        x='Elapsed (ms)', y='Best Performance')
+    performance_chart = st.altair_chart(alt_chart)
     
     st.markdown('### DBMS Tuning Decisions')
     decision_df = pd.DataFrame(columns=[
@@ -278,6 +283,7 @@ if st.button('Start Tuning'):
         model.learn(total_timesteps=1)
         for log_entry in bench.log:
             evaluation_table.add_rows(log_entry)
+            performance_chart.add_rows(log_entry)
         bench.log = []
         for log_entry in unsupervised_env.log:
             decision_table.add_rows(log_entry)
