@@ -243,7 +243,8 @@ if st.button('Start Tuning'):
     
     unsupervised_env = NlpTuningEnv(
         docs=docs, max_length=max_length, hint_order=hint_order, 
-        dbms=dbms, benchmark=bench, hardware=[memory, disk, cores], 
+        dbms=dbms, benchmark=bench, 
+        hardware={'memory':memory, 'disk':disk, 'cores':cores}, 
         hints_per_episode=nr_hints, nr_evals=nr_evals, 
         scale_perf=p_scaling, scale_asg=a_scaling, objective=objective)
     unsupervised_env.reset()

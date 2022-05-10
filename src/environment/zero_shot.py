@@ -81,7 +81,7 @@ class NlpTuningEnv(gym.Env):
             hint_order: process tuning hints in this order
             dbms: database management system to tune
             benchmark: benchmark for which to tune system
-            hardware: memory size, disk size, and number of cores
+            hardware: dictionary with entries for memory/disk/cores
             hints_per_episode: candidate hints before episode ends
             nr_evals: how many evaluations with extracted hints
             scale_perf: scale performance reward by this factor
@@ -103,9 +103,6 @@ class NlpTuningEnv(gym.Env):
         self.explorer = search.search_with_hints.ParameterExplorer(
             dbms, benchmark, objective)
         self.decision = DecisionType.PICK_FACTOR
-        self.type_texts = [
-            'ratio (disk)', 'ratio (RAM)', 'ratio (cores)', 
-            'value (RAM/disk/cores)', 'no hint']
         self.factors = [0.25, 0.5, 1, 2, 4]
         self.weights = [1, 2, 4, 8, 16]
         self.action_space = gym.spaces.Discrete(5)
@@ -126,7 +123,6 @@ class NlpTuningEnv(gym.Env):
         Returns:
             current observations
         """
-        print('RESET FUNCTION WAS CALLED!!!')
         self.decision = DecisionType.PICK_FACTOR
         self.base = None
         self.factor = None
@@ -348,11 +344,11 @@ class NlpTuningEnv(gym.Env):
             hint_type = hint.hint_type
             self.type_text = str(hint_type)
             if hint_type == doc.collection.HintType.DISK_RATIO:
-                self.base = float(self.hardware[0]) * hint.float_val
+                self.base = float(self.hardware['disk']) * hint.float_val
             elif hint_type == doc.collection.HintType.RAM_RATIO:
-                self.base = float(self.hardware[1]) * hint.float_val
+                self.base = float(self.hardware['memory']) * hint.float_val
             elif hint_type == doc.collection.HintType.CORES_RATIO:
-                self.base = float(self.hardware[2]) * hint.float_val
+                self.base = float(self.hardware['cores']) * hint.float_val
             elif hint_type == doc.collection.HintType.ABSOLUTE:
                 self.base = hint.float_val
             else:

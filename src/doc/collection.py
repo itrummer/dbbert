@@ -23,6 +23,12 @@ class HintType(enum.IntEnum):
     RAM_RATIO=1,
     CORES_RATIO=2,
     ABSOLUTE=3
+    
+    def __str__(self):
+        """ Return string representation of value. """
+        return [
+            'Relative (disk)', 'Relative (RAM)', 
+            'Relative (Cores)', 'Absolute Value'][self.value()]
 
 @dataclass
 class TuningHint():
