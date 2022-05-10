@@ -322,7 +322,7 @@ class NlpTuningEnv(gym.Env):
         log_entry = pd.DataFrame([{
             'Parameter':param, 'Recommendation':hint.recommendation, 
             'Inferred Type':self.type_text, 
-            'Base':str(self.base) + ' ' + hint.val_unit, 
+            'Rec. Value':str(self.base) + ' ' + hint.val_unit, 
             'Factor':self.factor, 'Value':value, 'Weight':weight, 
             'Accepted':success, 'Reward':reward}])
         self.log += [log_entry]

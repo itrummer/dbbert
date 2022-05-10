@@ -265,7 +265,7 @@ if st.button('Start Tuning'):
     st.markdown('### DBMS Tuning Decisions')
     decision_df = pd.DataFrame(columns=[
         'Parameter', 'Recommendation',  'Inferred Type', 
-        'Base', 'Factor', 'Value', 'Weight', 
+        'Rec. Value', 'Factor', 'Value', 'Weight', 
         'Accepted', 'Reward'], index=range(0))
     decision_table = st.dataframe(decision_df)
         
