@@ -28,7 +28,7 @@ class HintType(enum.IntEnum):
         """ Return string representation of value. """
         return [
             'Relative (disk)', 'Relative (RAM)', 
-            'Relative (Cores)', 'Absolute Value'][self.value()]
+            'Relative (Cores)', 'Absolute Value'][self]
 
 @dataclass
 class TuningHint():
