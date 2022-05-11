@@ -4,13 +4,22 @@ DB-BERT is a database tuning tools that exploits natural language text as additi
 # Quickstart
 - DB-BERT was tested on an Amazon EC2 p3.2xlarge instance using Deep Learning AMI (Ubuntu 18.04) Version 43.0.
 - Install Postgres 13.2 and the TPC-H benchmark database.
-- Install required Python packages, including Huggingface Transformers, stable-baselines-3, psycopg2, Numpy, and Pytorch.
+- Install required Python packages, including Huggingface Transformers, stable-baselines-3, psycopg2, Numpy, Pytorch, and streamlit.
 - DB-BERT uses configuration files, an example file can be found under `config/pg_tpch_manydocs.ini`.
 - For a first try, update credentials in the `[DBMS]` section. You may adapt tuning time and other parameters in the `[BENCHMARK]` section.
 - Execute `src/run/tuning_run.py`, passing the configuration file as first (and only) argument, e.g. (from main directory):
 `PYTHONPATH='src' python3 src/run/tuning_run.py config/pg_tpch_manydocs.ini`
 - DB-BERT will parse input text (text from 100 Web documents), initialize the RL algorithm, and start tuning Postgres for TPC-H.
 - Try `config/pg_tpch_onedoc.ini` for tuning using a single, TPC-H specific text document (forum discussion on TPC-H tuning).
+
+# GUI
+- To start the GUI, run `streamlit run src/run/interface.py` from the root directory.
+- If accessing DB-BERT on a remote EC2 server, make sure to enable inbound traffic to port 8501.
+- Enter the URL shown in the console into your Web browser to access the interface.
+- You can select settings to read from configuration files in the `demo_configs` folder.
+- Select a collection of text documents to extract tuning hints from.
+- You may change parameter related to database access, learning, and tuning goals.
+- Click on the `Start Tuning` button to start the tuning process.
 
 # Ongoing Work
 - Switching language models used from BERT to BART (despite the project name).
