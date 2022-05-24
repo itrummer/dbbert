@@ -257,7 +257,7 @@ if st.button('Start Tuning'):
         'MlpPolicy', unsupervised_env, 
         verbose=1, normalize_advantage=True)
     
-    st.markdown('### Evaluated DBMS Configurations')
+    st.markdown('### Evaluated Parameter Settings')
     evaluation_df = pd.DataFrame(columns=[
         'Elapsed (ms)', 'Evaluations', 'Configuration', 
         'Performance', 'Best Configuration', 'Best Performance'],
