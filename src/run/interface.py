@@ -304,4 +304,4 @@ if st.button('Start Tuning'):
     # Show final summary
     st.write('DB-BERT: finished tuning session.')
     # st.write('Summary of results:')
-    bench.print_stats()
+    #bench.print_stats()
