@@ -161,6 +161,7 @@ class TpcC(Benchmark):
             target_db: used for running the benchmark
             reset_every: reset database every i-th evaluation
         """
+        super().__init__()
         self.oltp_path = oltp_path
         self.config_path = config_path
         self.result_path = result_path
