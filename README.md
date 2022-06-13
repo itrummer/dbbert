@@ -17,7 +17,7 @@ DB-BERT is a database tuning tools that exploits natural language text as additi
 - If accessing DB-BERT on a remote EC2 server, make sure to enable inbound traffic to port 8501.
 - Enter the URL shown in the console into your Web browser to access the interface.
 - You can select settings to read from configuration files in the `demo_configs` folder.
-- Select a collection of text documents to extract tuning hints from.
+- Select a collection of tuning text documents for extraction (e.g., from the `demo_docs` folder).
 - You may change parameter related to database access, learning, and tuning goals.
 - Click on the `Start Tuning` button to start the tuning process.
 
