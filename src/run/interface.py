@@ -156,7 +156,7 @@ with st.expander('Database'):
         'Command for DBMS Recovery', value=def_recover)
 
 with st.expander('Benchmark'):
-    def_type = get_value(config, 'BENCHMARK', 'type', 0)
+    def_type = int(get_value(config, 'BENCHMARK', 'type', 0))
     benchmark_type = st.selectbox(
         'Benchmark Type', options=range(2), 
         format_func=lambda i:[
