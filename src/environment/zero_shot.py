@@ -175,7 +175,7 @@ class NlpTuningEnv(gym.Env):
             self.hint_to_weight = collections.defaultdict(lambda: 0)
             return reward * self.scale_perf
         else:
-            return 0
+            return 0.0
 
     def _hints_by_doc(self):
         """ Returns hints in document collection order. 
