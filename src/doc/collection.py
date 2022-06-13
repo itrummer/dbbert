@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from doc.util import get_parameters, get_values
 from parameters.util import decompose_val
 import enum
+import models.util
 import pandas as pd
 import parameters.util
 import re
@@ -93,10 +94,7 @@ class DocCollection():
               f'{self.use_implicit} ({use_implicit})')
         self._prepare_implicit()        
         
-        if torch.cuda.is_available():
-            device = torch.cuda.current_device()
-        else:
-            device = -1
+        device = models.util.torch_device()
         qa_model_name = "deepset/roberta-base-squad2"
         self.qa_pipeline = pipeline(
             'question-answering', model=qa_model_name, 
