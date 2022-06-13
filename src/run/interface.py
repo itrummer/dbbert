@@ -156,10 +156,11 @@ with st.expander('Database'):
         'Command for DBMS Recovery', value=def_recover)
 
 with st.expander('Benchmark'):
+    def_type = get_value(config, 'BENCHMARK', 'type', 0)
     benchmark_type = st.selectbox(
         'Benchmark Type', options=range(2), 
         format_func=lambda i:[
-            'Minimize Run Time', 'Maximize Throughput'][i], index=0)
+            'Minimize Run Time', 'Maximize Throughput'][i], index=def_type)
     if benchmark_type == 0:
         def_query_path = get_value(config, 'BENCHMARK', 'queries', '')
         query_path = st.text_input('Path to SQL Queries', value=def_query_path)
@@ -167,8 +168,8 @@ with st.expander('Benchmark'):
     elif benchmark_type == 1:
         def_oltp_home = get_value(config, 'BENCHMARK', 'oltp_home', '')
         def_oltp_config = get_value(config, 'BENCHMARK', 'oltp_config', '')
-        def_template_db = get_value(config, 'BENCHMARK', 'template_db', '')
-        def_target_db = get_value(config, 'BENCHMARK', 'target_db', '')
+        def_template_db = get_value(config, 'DATABASE', 'template_db', '')
+        def_target_db = get_value(config, 'DATABASE', 'target_db', '')
         def_reset_every = int(get_value(config, 'BENCHMARK', 'reset_every', 10))
         oltp_home = st.text_input(
             'Home Directory of OLTP Benchmark Generator', value=def_oltp_home)
