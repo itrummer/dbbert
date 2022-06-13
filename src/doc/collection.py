@@ -11,6 +11,7 @@ import enum
 import pandas as pd
 import parameters.util
 import re
+import torch
 import nlp.nlp_util
 from dbms.generic_dbms import ConfigurableDBMS
 from sentence_transformers import SentenceTransformer, util
@@ -91,14 +92,19 @@ class DocCollection():
         print(f'Try to infer implicit parameter references: ' \
               f'{self.use_implicit} ({use_implicit})')
         self._prepare_implicit()        
+        
+        if torch.cuda.is_available():
+            device = torch.cuda.current_device()
+        else:
+            device = -1
         qa_model_name = "deepset/roberta-base-squad2"
         self.qa_pipeline = pipeline(
             'question-answering', model=qa_model_name, 
-            tokenizer=qa_model_name)
+            tokenizer=qa_model_name, device=device)
         zsc_model_name = 'facebook/bart-large-mnli'
         self.zsc_pipeline = pipeline(
             'zero-shot-classification', model=zsc_model_name, 
-            tokenizer=zsc_model_name)
+            tokenizer=zsc_model_name, device=device)
         
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
