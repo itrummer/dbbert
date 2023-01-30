@@ -3,11 +3,6 @@ Created on Jan 30, 2023
 
 @author: immanueltrummer
 '''
-'''
-Created on Jan 7, 2022
-
-@author: immanueltrummer
-'''
 import altair as alt
 import os
 import pathlib
