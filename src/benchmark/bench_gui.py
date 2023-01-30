@@ -62,15 +62,15 @@ docs_dir = root_dir.joinpath('demo_docs')
 
 for config_path, path_to_docs, log_path in [
     (config_dir.joinpath('pg_tpch_base.ini'), 
-        path_to_docs.joinpath('postgres100'), 'pg_tpch_log'),
+        docs_dir.joinpath('postgres100'), 'pg_tpch_log'),
     (config_dir.joinpath('ms_tpch_base.ini'), 
-        path_to_docs.joinpath('mysql100'), 'ms_tpch_log'),
+        docs_dir.joinpath('mysql100'), 'ms_tpch_log'),
     (config_dir.joinpath('pg_tpcc_base.ini'), 
-        path_to_docs.joinpath('postgres100'), 'pg_tpcc_log'),
+        docs_dir.joinpath('postgres100'), 'pg_tpcc_log'),
     (config_dir.joinpath('ms_tpcc_base.ini'), 
-        path_to_docs.joinpath('mysql100'), 'ms_tpcc_log'),
+        docs_dir.joinpath('mysql100'), 'ms_tpcc_log'),
     (config_dir.joinpath('pg_tpch_base.ini'), 
-        path_to_docs.joinpath('pg_tpch_single'), 'pg_tpch_single_log')
+        docs_dir.joinpath('pg_tpch_single'), 'pg_tpch_single_log')
     ]:
     config_path = str(config_path)
     path_to_docs = str(path_to_docs)
