@@ -102,10 +102,9 @@ for config_path, path_to_docs, log_path in [
     restart_cmd = get_value(config, 'DATABASE', 'restart_cmd', '')
     recover_cmd = get_value(config, 'DATABASE', 'recovery_cmd', '')
     if def_db == 'ms':
-        def_db_idx = 1
+        dbms_id = 1
     else:
-        def_db_idx = 0
-    dbms_id = ['Postgres', 'MySQL'][def_db_idx]
+        dbms_id = 0
     
     benchmark_type = int(get_value(config, 'BENCHMARK', 'type', 0))
     if benchmark_type == 0:
