@@ -67,7 +67,17 @@ class TuningHint():
             
 class DocCollection():
     """ Represents a collection of documents with tuning hints. """
-    
+    qa_pipeline = pipeline(
+        'question-answering', 
+        model='deepset/roberta-base-squad2', 
+        tokenizer='deepset/roberta-base-squad2', 
+        device=models.util.torch_device())
+    zsc_pipeline = pipeline(
+        'zero-shot-classification', 
+        model='facebook/bart-large-mnli', 
+        tokenizer='facebook/bart-large-mnli', 
+        device=models.util.torch_device())
+
     def __init__(self, docs_path, dbms:ConfigurableDBMS, 
                  size_threshold, filter_params, use_implicit):
         """ Reads tuning passages from a file. 
@@ -93,16 +103,6 @@ class DocCollection():
         print(f'Try to infer implicit parameter references: ' \
               f'{self.use_implicit} ({use_implicit})')
         self._prepare_implicit()        
-        
-        device = models.util.torch_device()
-        qa_model_name = "deepset/roberta-base-squad2"
-        self.qa_pipeline = pipeline(
-            'question-answering', model=qa_model_name, 
-            tokenizer=qa_model_name, device=device)
-        zsc_model_name = 'facebook/bart-large-mnli'
-        self.zsc_pipeline = pipeline(
-            'zero-shot-classification', model=zsc_model_name, 
-            tokenizer=zsc_model_name, device=device)
         
         self.docs = pd.read_csv(docs_path)
         self.docs.fillna('', inplace=True)
