@@ -68,6 +68,10 @@ class NlpTuningEnv(gym.Env):
         as sequential decisions. Observations provided to the
         agent are derived from zero-shot classification results.
     """
+    bart = transformers.pipeline(
+        'zero-shot-classification', 
+        model='facebook/bart-large-mnli',
+        device=models.util.torch_device())
     
     def __init__(
             self, docs: doc.collection.DocCollection, max_length, 
@@ -99,11 +103,6 @@ class NlpTuningEnv(gym.Env):
         self.nr_evals = nr_evals
         self.scale_perf = scale_perf
         self.scale_asg = scale_asg
-        device = models.util.torch_device()
-        self.bart = transformers.pipeline(
-            'zero-shot-classification', 
-            model='facebook/bart-large-mnli',
-            device=device)
         self.explorer = search.search_with_hints.ParameterExplorer(
             dbms, benchmark, objective)
         self.decision = DecisionType.PICK_FACTOR
