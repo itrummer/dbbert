@@ -6,14 +6,9 @@ Created on Aug 15, 2023
 from dbms.postgres import PgConfig
 from dbms.mysql import MySQLconfig
 from pybullet_utils.util import set_global_seeds
-from doc.collection import DocCollection
-from environment.zero_shot import NlpTuningEnv
-from stable_baselines3 import A2C
-from stable_baselines3.common.utils import set_random_seed
 
 import argparse
 import benchmark
-import environment.multi_doc
 import numpy as np
 import random
 import search.objectives
@@ -27,35 +22,35 @@ if __name__ == '__main__':
     parser.add_argument(
         'text_source_path', type=str, help='Path to input text')
     parser.add_argument(
-        'max_length', type=int, default=128, 
+        '--max_length', type=int, default=128, 
         help='Maximal length of text chunk in characters')
     parser.add_argument(
-        'filter_params', type=int, default=1, choices={0, 1},
+        '--filter_params', type=int, default=1, choices={0, 1},
         help='Set to 1 to filter text passages using heuristics')
     parser.add_argument(
-        'use_implicit', type=int, default=1, choices={0, 1},
+        '--use_implicit', type=int, default=1, choices={0, 1},
         help='Set to 1 to recognize implicit parameter references')
     parser.add_argument(
-        'hint_order', type=int, default=2, choices={0, 1, 2},
+        '--hint_order', type=int, default=2, choices={0, 1, 2},
         help='Order hints by document (0), parameter (1), or optimized (2)')
     parser.add_argument(
-        'nr_frames', type=int, default=100000, help='Maximal number of frames')
+        '--nr_frames', type=int, default=100000, help='Maximal number of frames')
     parser.add_argument(
-        'timeout_s', type=int, default=1500, help='Tuning timeout in seconds')
+        '--timeout_s', type=int, default=1500, help='Tuning timeout in seconds')
     parser.add_argument(
-        'performance_scaling', type=float, default=0.1,
+        '--performance_scaling', type=float, default=0.1,
         help='Scaling factor for performance-related rewards')
     parser.add_argument(
-        'assignment_scaling', type=float, default=1.0,
+        '--assignment_scaling', type=float, default=1.0,
         help='Scaling factor for rewards due to successful value assignments')
     parser.add_argument(
-        'nr_evaluations', type=int, default=2,
+        '--nr_evaluations', type=int, default=2,
         help='Number of parameter settings to try per batch of tuning hints')
     parser.add_argument(
-        'nr_hints', type=int, default=20,
+        '--nr_hints', type=int, default=20,
         help='Number of hints to consider when selecting parameter settings')
     parser.add_argument(
-        'min_batch_size', type=int, default=8,
+        '--min_batch_size', type=int, default=8,
         help='Batch size when processing text via language models')
     parser.add_argument(
         'memory', type=int, default=8000000,
@@ -75,25 +70,31 @@ if __name__ == '__main__':
         'restart_cmd', type=str, 
         help='Terminal command for restarting database server')
     parser.add_argument(
-        'recover_cmd', type=str, 
+        '--recover_cmd', type=str, 
         default='echo "Reset database state!"; sleep 5',
         help='Command to restore default status of database system')
     parser.add_argument(
         'query_path', type=str, default=None, 
         help='Path to file containing SQL queries')
     parser.add_argument(
-        'nr_runs', type=int, default=1, help='Number of benchmark runs')
+        '--nr_runs', type=int, default=1, help='Number of benchmark runs')
     parser.add_argument(
-        'result_path_prefix', type=str, default='dbbert_results',
+        '--result_path_prefix', type=str, default='dbbert_results',
         help='Path prefix for files containing tuning results')
     args = parser.parse_args()
     print(f'Input arguments: {args}')
+
+    from environment.zero_shot import NlpTuningEnv
+    from stable_baselines3 import A2C
+    from doc.collection import DocCollection
+    from stable_baselines3.common.utils import set_random_seed
+    import environment.multi_doc
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     hint_order = [
         environment.multi_doc.HintOrder.DOCUMENT, 
         environment.multi_doc.HintOrder.BY_PARAMETER, 
-        environment.multi_doc.HintOrder.BY_STRIDE][args.hint_order_id]
+        environment.multi_doc.HintOrder.BY_STRIDE][args.hint_order]
     
     if args.dbms == 'pg':
         dbms = PgConfig(
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     if args.query_path is not None:
         # Tune for minimizing run time of given workload
         objective = search.objectives.Objective.TIME
-        bench = benchmark.evaluate.OLAP(dbms, args.query_path_prefix)
+        bench = benchmark.evaluate.OLAP(dbms, args.query_path)
     else:
         raise ValueError('This re-implementation does not yet support OLTP!')
 
@@ -148,7 +149,7 @@ if __name__ == '__main__':
         unsupervised_env = NlpTuningEnv(
             docs=docs, max_length=args.max_length, hint_order=hint_order, 
             dbms=dbms, benchmark=bench, hardware=hardware, 
-            hints_per_episode=args.nr_hints, nr_evals=args.nr_evals, 
+            hints_per_episode=args.nr_hints, nr_evals=args.nr_evaluations, 
             scale_perf=args.performance_scaling, 
             scale_asg=args.assignment_scaling, objective=objective)
         unsupervised_env.reset()
