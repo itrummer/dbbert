@@ -74,9 +74,7 @@ class NlpTuningEnv(gym.Env):
         device=models.util.torch_device())
     
     def __init__(
-            self, docs: doc.collection.DocCollection, max_length, 
-            hint_order, dbms: dbms.generic_dbms.ConfigurableDBMS, 
-            benchmark: benchmark.evaluate.Benchmark, hardware, 
+            self, docs, max_length, hint_order, dbms, benchmark, hardware, 
             hints_per_episode, nr_evals, scale_perf, scale_asg, objective):
         """ Initialize from given tuning documents, database, and benchmark. 
         
