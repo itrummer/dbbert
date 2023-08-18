@@ -3,15 +3,13 @@ Created on Aug 15, 2023
 
 @author: immanueltrummer
 '''
-from dbms.postgres import PgConfig
-from dbms.mysql import MySQLconfig
 from pybullet_utils.util import set_global_seeds
 
 import argparse
-import benchmark
+import benchmark.factory
+import dbms.factory
 import numpy as np
 import random
-import search.objectives
 import time
 import torch
 
@@ -84,6 +82,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(f'Input arguments: {args}')
 
+    # Expensive import statements after parsing arguments
     from environment.zero_shot import NlpTuningEnv
     from stable_baselines3 import A2C
     from doc.collection import DocCollection
@@ -96,35 +95,8 @@ if __name__ == '__main__':
         environment.multi_doc.HintOrder.BY_PARAMETER, 
         environment.multi_doc.HintOrder.BY_STRIDE][args.hint_order]
     
-    if args.dbms == 'pg':
-        dbms = PgConfig(
-            args.db_name, args.db_user, args.db_pwd, args.restart_cmd, 
-            args.recover_cmd, args.timeout_s)
-    elif args.dbms == 'ms':
-        dbms = MySQLconfig(
-            args.db_name, args.db_user, args.db_pwd, args.restart_cmd, 
-            args.recover_cmd, args.timeout_s)
-    else:
-        raise ValueError(f'DBMS {args.dbms} not supported!')
-    
-    if args.query_path is not None:
-        # Tune for minimizing run time of given workload
-        objective = search.objectives.Objective.TIME
-        bench = benchmark.evaluate.OLAP(dbms, args.query_path)
-    else:
-        raise ValueError('This re-implementation does not yet support OLTP!')
-
-        # oltp_home = get_value(config, 'BENCHMARK', 'oltp_home', '')
-        # oltp_config = get_value(config, 'BENCHMARK', 'oltp_config', '')
-        # template_db = get_value(config, 'DATABASE', 'template_db', '')
-        # target_db = get_value(config, 'DATABASE', 'target_db', '')
-        # reset_every = int(get_value(config, 'BENCHMARK', 'reset_every', 10))
-        # oltp_result = pathlib.Path(oltp_home).joinpath('results')
-        # objective = search.objectives.Objective.THROUGHPUT
-    
-        # bench = benchmark.evaluate.TpcC(
-            # oltp_home, oltp_config, oltp_result, 
-            # dbms, template_db, target_db, reset_every)
+    dbms = dbms.factory.from_args(args)
+    objective, bench = benchmark.factory.from_args(args, dbms)
     
     for run_ctr in range(args.nr_runs):
         # Initialize for new run
