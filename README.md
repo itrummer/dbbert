@@ -1,6 +1,6 @@
 # DB-BERT: the Tuning Tool that "Reads" the Manual
 
-DB-BERT is a database tuning tools that exploits natural language text as additional input. It extracts recommendations for database parameter settings from tuning-related text via natural language analysis. It optimizes parameter settings for a given workload and performance metric using reinforcement learning.
+DB-BERT extracts hints for database parameter settings from text via natural language analysis. It then optimizes parameter settings for a given workload and performance metric using reinforcement learning.
 
 # Running Experiments
 
