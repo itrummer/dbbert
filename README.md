@@ -62,6 +62,8 @@ The module requires setting the following parameters:
 | restart_cmd | command for restarting database server from command line. E.g., `"sudo systemctl restart postgresql"` or `"sudo systemctl restart mysql"`. |
 | query_path | path to .sql file containing queries of target workload, separated by semicolon (no semicolon after the last query!). |
 
+Note: specifying `recover_cmd` parameter is optional but highly recommended (otherwise, sub-optimal parameter settings may prevent a restart of the database server, preventing DB-BERT from correcting faulty parameter values).
+
 ## Optional Parameters
 
 You may also want to set the following parameters:
