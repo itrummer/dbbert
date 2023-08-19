@@ -1,3 +1,5 @@
+<img align='right' src='https://github.com/itrummer/dbbert/blob/7f8b9914ca4ef1081cfeeb1685c47e93a951ce6e/dbbert.png' width='192'>
+
 # DB-BERT: the Tuning Tool that "Reads" the Manual
 
 DB-BERT extracts hints for database parameter settings from text via natural language analysis. It then optimizes parameter settings for a given workload and performance metric using reinforcement learning.
