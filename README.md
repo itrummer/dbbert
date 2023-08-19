@@ -103,14 +103,14 @@ url = {https://doi.org/10.1145/3514221.3517843},
 year = {2022}
 }
 
-@article{trummer2021case,
-  title={The case for NLP-enhanced database tuning: towards tuning tools that" read the manual"},
-  author={Trummer, Immanuel},
-  journal={Proceedings of the VLDB Endowment},
-  volume={14},
-  number={7},
-  pages={1159--1165},
-  year={2021},
-  publisher={VLDB Endowment}
+@article{Trummer2021nlp,
+author = {Trummer, Immanuel},
+journal = {PVLDB},
+number = {7},
+pages = {1159--1165},
+title = {{The Case for NLP-Enhanced Database Tuning: Towards Tuning Tools that “Read the Manual”}},
+url = {https://doi.org/10.14778/3450980.3450984},
+volume = {14},
+year = {2021}
 }
 ```
