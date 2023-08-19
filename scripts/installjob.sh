@@ -9,7 +9,7 @@ tar xvf jobdata.tar.gz
 cd jobdata
 
 echo "Creating JOB database in PostgreSQL ..."
-createdb job
+sudo -u dbbert createdb job
 echo "Creating database ..."
 sudo -u dbbert psql -f schema.sql job
 echo "Loading data ..."
