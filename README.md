@@ -52,6 +52,9 @@ The module requires setting the following parameters:
 | Parameter | Explanation |
 | --- | --- |
 | text_source_path | path to text with tuning hints. Text is stored as .csv file, containing document IDs and text snippets. You find example documents in the `demo_docs` folder. |
+| memory | the amount of main memory of the target platform, measured in bytes. |
+| disk | the amount of disk space on the target platform, measured in bytes. |
+| cores | the number of cores available on the target platform. |
 | dbms | whether to tune PostgreSQL (set to `pg`) or MySQL (set to `ms`). |
 | db_name | name of database on which target workload is running. |
 | db_user | name of database login with access to target database. |
@@ -76,9 +79,6 @@ You may also want to set the following parameters:
 | nr_evaluations | number of trial runs based on the same collection of tuning hints (recommended: `2`). |
 | nr_hints | number of hints to consider in combination (recommended: `20`). |
 | min_batch_size | batch size used for text analysis (e.g., `8`, optimal settings depend on language model). |
-| memory | the amount of main memory of the target platform, measured in bytes. |
-| disk | the amount of disk space on the target platform, measured in bytes. |
-| cores | the number of cores available on the target platform. |
 | recover_cmd | command line command to reset database configuration if server restart is impossible. E.g., use `"sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf"` for PostgreSQL. |
 
 # Using DB-BERT: GUI
