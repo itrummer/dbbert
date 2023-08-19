@@ -89,15 +89,18 @@ You may also want to set the following parameters:
 - You may change parameter related to database access, learning, and tuning goals.
 - Click on the `Start Tuning` button to start the tuning process.
 
+# Resources
 
-# How to Cite
-A video talk introducing the vision behind this project is [available online](https://youtu.be/Spa5qzKbJ4M).
+A video talk introducing the vision behind this project is [available online](https://youtu.be/Spa5qzKbJ4M). Please cite:
+
 ```
-@inproceedings{trummer2022dbbert,
-  title={DB-BERT: a database tuning tool that "reads the manual"},
-  author={Trummer, Immanuel},
-  booktitle={SIGMOD},
-  year={2022}
+@inproceedings{Trummer2022,
+author = {Trummer, Immanuel},
+booktitle = {SIGMOD},
+pages = {190--203},
+title = {{DB-BERT: a Database Tuning Tool that ``Reads the Manual''}},
+url = {https://doi.org/10.1145/3514221.3517843},
+year = {2022}
 }
 
 @article{trummer2021case,
