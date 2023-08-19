@@ -69,32 +69,38 @@ Use DB-BERT from the command line using `src/run/run_dbbert.py`.
 ## Required Parameters
 
 The module requires setting the following parameters:
-- text_source_path: path to text with tuning hints. Text is stored as .csv file, containing document IDs and text snippets. You find example documents in the `demo_docs` folder.
-- dbms: whether to tune PostgreSQL (set to `pg`) or MySQL (set to `ms`).
-- db_name: name of database on which target workload is running.
-- db_user: name of database login with access to target database.
-- db_pwd: password of database login.
-- restart_cmd: command for restarting database server from command line. E.g., `"sudo systemctl restart postgresql"` or `"sudo systemctl restart mysql"`.
-- query_path: path to .sql file containing queries of target workload, separated by semicolon (no semicolon after the last query!).
+
+| Parameter | Explanation |
+| --- | --- |
+| text_source_path | path to text with tuning hints. Text is stored as .csv file, containing document IDs and text snippets. You find example documents in the `demo_docs` folder. |
+| dbms | whether to tune PostgreSQL (set to `pg`) or MySQL (set to `ms`). |
+| db_name | name of database on which target workload is running. |
+| db_user | name of database login with access to target database. |
+| db_pwd | password of database login. |
+| restart_cmd | command for restarting database server from command line. E.g., `"sudo systemctl restart postgresql"` or `"sudo systemctl restart mysql"`. |
+| query_path | path to .sql file containing queries of target workload, separated by semicolon (no semicolon after the last query!). |
 
 ## Optional Parameters
 
 You may also want to set the following parameters:
-- max_length: divide text into chunks of at most that many characters for extracting tuning hints.
-- filter_params: filter text passages via simple heuristic (set to `1`, recommended) or not (set to `0`).
-- use_implicit: try to detect implicit parameter references (set to `1`, recommended) or not (set to `0`).
-- hint_order: try out tuning hints in document order (set to `0`), parameter order (set to `1`), or optimized order (set to `2`, recommended).
-- nr_frames: maximal number of frames to execute for learning (recommendation: set high, e.g. `100000`, to rely on timeout instead).
-- timeout_s: maximal number of seconds used for tuning (this number is approximate since system finishes trial runs before checking for timeouts).
-- performance_scaling: scale rewards due to performance improvements by this factor.
-- assignment_scaling: scale rewards due to successful parameter value changes by this factor.
-- nr_evaluations: number of trial runs based on the same collection of tuning hints (recommended: `2`).
-- nr_hints: number of hints to consider in combination (recommended: `20`).
-- min_batch_size: batch size used for text analysis (e.g., `8`, optimal settings depend on language model).
-- memory: the amount of main memory of the target platform, measured in bytes.
-- disk: the amount of disk space on the target platform, measured in bytes.
-- cores: the number of cores available on the target platform.
-- recover_cmd: command line command to reset database configuration if server restart is impossible. E.g., use `"sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf"` for PostgreSQL.
+
+| Parameter | Explanation |
+| --- | --- |
+| max_length | divide text into chunks of at most that many characters for extracting tuning hints. |
+| filter_params | filter text passages via simple heuristic (set to `1`, recommended) or not (set to `0`). |
+| use_implicit | try to detect implicit parameter references (set to `1`, recommended) or not (set to `0`). |
+| hint_order | try out tuning hints in document order (set to `0`), parameter order (set to `1`), or optimized order (set to `2`, recommended). |
+| nr_frames | maximal number of frames to execute for learning (recommendation: set high, e.g. `100000`, to rely on timeout instead). |
+| timeout_s | maximal number of seconds used for tuning (this number is approximate since system finishes trial runs before checking for timeouts). |
+| performance_scaling | scale rewards due to performance improvements by this factor. |
+| assignment_scaling | scale rewards due to successful parameter value changes by this factor. |
+| nr_evaluations | number of trial runs based on the same collection of tuning hints (recommended: `2`). |
+| nr_hints | number of hints to consider in combination (recommended: `20`). |
+| min_batch_size | batch size used for text analysis (e.g., `8`, optimal settings depend on language model). |
+| memory | the amount of main memory of the target platform, measured in bytes. |
+| disk | the amount of disk space on the target platform, measured in bytes. |
+| cores | the number of cores available on the target platform. |
+| recover_cmd | command line command to reset database configuration if server restart is impossible. E.g., use `"sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf"` for PostgreSQL. |
 
 # How to Cite
 A video talk introducing the vision behind this project is [available online](https://youtu.be/Spa5qzKbJ4M).
