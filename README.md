@@ -16,7 +16,7 @@ sudo apt install mysql-server-8.0
 ```
 2. Create a user named "dbbert" with password "dbbert" for PostgreSQL and MySQL:
 ```
-sudo adduser dbbert # Type "dbbert" as password twice, then press enter repeatedly
+sudo adduser dbbert # Type "dbbert" as password twice, then press enter repeatedly, finally "Y" to confirm
 sudo -u postgres psql -c "create user dbbert with password 'dbbert' superuser;"
 sudo mysql -e "create user 'dbbert'@'localhost' identified by 'dbbert'; grant all privileges on *.* to 'dbbert'@'localhost'; flush privileges;"
 ```
