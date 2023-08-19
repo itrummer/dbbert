@@ -58,7 +58,7 @@ sudo scripts/installtpch.sh
 ```
 6. You can now run experiments with DB-BERT, e.g.:
 ```
-PYTHONPATH=src python3.9 src/run/run_dbbert.py demo_docs/postgres100 8000000 1000000000 8 pg tpch ubuntu ubuntu "sudo systemctl restart postgresql" "/home/ubuntu/tpchdata/queries.sql" --recover_cmd="sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf" --timeout_s=120
+PYTHONPATH=src python3.9 src/run/run_dbbert.py demo_docs/postgres100 8000000 1000000000 8 pg tpch ubuntu ubuntu "sudo systemctl restart postgresql" "/tmp/tpchdata/queries.sql" --recover_cmd="sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf" --timeout_s=120
 ```
 See next section for explanations on DB-BERT's command line parameters.
 
