@@ -8,7 +8,7 @@ tar xvf tpchdata.tar.gz
 cd tpchdata
 
 echo "Installing TPC-H on PostgreSQL ..."
-createdb tpch
+sudo -u dbbert createdb tpch
 echo "Creating database ..."
 sudo -u dbbert psql -f schema.sql tpch
 echo "Loading data ..."
