@@ -32,8 +32,8 @@ sudo pip install -r requirements.txt
 ```
 5. Install benchmark databases using scripts in `scripts` folder (installing all databases may take one to two hours):
 ```
-sudo scripts/installjob.sh
 sudo scripts/installtpch.sh
+sudo scripts/installjob.sh
 ```
 6. You can now run experiments with DB-BERT, e.g.:
 ```
