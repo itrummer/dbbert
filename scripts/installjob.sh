@@ -1,4 +1,4 @@
-echo "Downloading data files ..."
+echo "Downloading data files for JOB benchmark ..."
 echo "Installing gdown ..."
 pip install gdown==4.7.1
 echo "Downloading benchmark data ..."

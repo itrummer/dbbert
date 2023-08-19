@@ -1,4 +1,4 @@
-echo "Downloading benchmark files ..."
+echo "Downloading benchmark files for TPC-H benchmark ..."
 pip install gdown==4.7.1
 echo "Downloading benchmark data ..."
 gdown "https://drive.google.com/uc?id=1BjHTNXwGoZIkadECex3PzMdYuSJ1NCOp" -O /tmp/tpchdata.tar.gz
