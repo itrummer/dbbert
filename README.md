@@ -39,6 +39,10 @@ sudo scripts/installjob.sh
 ```
 PYTHONPATH=src python3.9 src/run/run_dbbert.py demo_docs/postgres100 64000000000 200000000000 8 pg tpch dbbert dbbert "sudo systemctl restart postgresql" /tmp/tpchdata/queries.sql --recover_cmd="sudo rm /var/lib/postgresql/12/main/postgresql.auto.conf"
 ```
+During execution, DB-BERT generates two result files:
+- dbbert_results_performance: contains tab-separated rows describing performance measurements for each trial run. The columns represent (from left to right) the run counter, the evaluation counter within the run, the time since the start of the current run in milliseconds, the optimal performance achieved over all evaluations within the run (e.g., if minimizing run time, this is the minimal query execution time in milliseconds), and the performance measured for the current trial run.
+- dbbert_results_configure: contains tab-separated rows describing configurations used for each trial run. The columns represent (from left to right) the run counter, the evaluation counter within the run, the time since the start of the current run in milliseconds, the optimal configuration over all evaluations within the run, and the current configuration. Each configuration is represented by a dictionary, mapping parameter names to their values (it only contains parameters with non-default settings).
+
 See next section for explanations on DB-BERT's command line parameters.
 
 # Using DB-BERT: CLI
